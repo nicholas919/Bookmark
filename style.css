@@ -1,0 +1,653 @@
+html,body{
+    height:100%;
+}
+
+img{
+     -webkit-touch-callout: none;
+     -webkit-user-select: none; 
+     -khtml-user-select: none; 
+     -moz-user-select: none; 
+     -ms-user-select: none; 
+     user-select: none;
+}
+.logo-galaxy{
+     z-index: 1;
+     display: inline-block;
+     margin:10px 20px 0px 20px;
+     padding:10px 0;
+     width:80%;
+     -webkit-user-drag: none;
+     -khtml-user-drag: none;
+     -moz-user-drag: none;
+     -o-user-drag: none;
+     user-drag: none;
+}
+
+.navigasi-kiri {
+     position: fixed;
+     width: 200px;
+     height: 100%;
+     background: #f5f5f5;
+     overflow: hidden;
+
+}
+.isikonten {
+     margin-left: 200px;
+     height: 100%;
+     width: auto;
+     position: relative;
+     overflow: auto;
+
+}
+
+.ukuran{
+     width:200px;
+     color:black;
+     background-color: #f5f5f5;
+
+}
+
+
+.ukuran:hover{
+     color:red;
+}
+
+.menu{
+     width:200px;
+     color:black;
+}
+
+.menu:hover{
+     color:red;
+}
+
+.btn:focus, .btn:active:focus, .btn.active:focus{
+    outline:none;
+    box-shadow:none;
+    align-items: left;
+}
+
+.btn.ukuran:focus, .btn.ukuran:active:focus, .btn.ukuran.active:focus{
+    outline:none;
+    box-shadow:none;
+    align-items: left;
+}
+
+.btn.menu:focus, .btn.menu:active:focus, .btn.menu.active:focus{
+    outline:none;
+    box-shadow:none;
+    align-items: left;
+}
+
+
+.btn.perbaruimarquee:focus, .btn.perbaruimarquee:active:focus, .btn.perbaruimarquee.active:focus{
+    outline:none !important;
+    box-shadow:none !important;
+    align-items: left !important;
+}
+
+.menu{
+     background-color:#f5f5f5;
+     border-radius: 0 !important;
+}
+
+
+.menu.pengecualian{
+     background-color: #f5f5f5;
+     border-radius: 0 !important;
+}
+
+.btn.ukuran.text-left{
+     border-radius: 0;
+}
+
+.text-left{
+     padding-left: 20px !important;
+}
+
+
+div.card-header{
+     padding:0;
+}
+
+.daftar3menu{
+     padding-left:30px;
+}
+
+
+.marquee{
+     cursor: default;
+     -webkit-touch-callout: none;
+     -webkit-user-select: none; 
+     -khtml-user-select: none; 
+     -moz-user-select: none; 
+     -ms-user-select: none; 
+     user-select: none;
+}
+
+*{
+     -webkit-user-drag: none;
+     -khtml-user-drag: none;
+     -moz-user-drag: none;
+     -o-user-drag: none;
+     user-drag: none;
+}
+
+.halaman{
+    margin-top:10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#pengumuman{
+    background-color: #f9f9f9;
+    display: block;
+    width: auto;
+    height:auto;
+}
+
+a.dropdown-item{
+    padding: 5px 4px;
+    text-align: center;
+}
+
+a#navbarDropdown{
+    color:white;
+}
+
+.navbar-nav > li{
+    margin-left: 40px;
+    margin-right:40px;
+}
+
+.navbar-nav.navbar-kedua > li{
+    margin-left: 35px;
+    margin-right:35px;
+}
+
+.dropdown-menu-center {
+left: 50% !important;
+  right: auto !important;
+  text-align: center !important;
+  transform: translate(-50%, 0) !important;
+}
+
+
+ul.nav > li:last-child {
+  border-right: 1px solid #475d88;
+}
+
+a.dropdown-item{
+    display: block !important;
+}
+
+nav.navbar{
+    padding:0px;
+}
+
+#judul-pengumuman{
+    font-size: 30px;
+    text-align: center;
+    font-weight: bolder;
+    color:#ff2626;
+    padding-top:40px;
+}
+
+#pengumuman{
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  border: 10px solid #adb2bd;
+  box-shadow: inset -1px 2px 2px #404040, 6px 6px 1px #404040;
+  overflow: hidden;
+  z-index: 1;
+  padding: 0px 0px 8px 12px;
+}
+
+#isipengumuman{
+    margin-bottom: 50px;
+}
+
+#edit i{
+    font-size: 20px;
+    background-color: #adb2bd;
+    padding:10px;
+    float:right;
+    z-index: 0;
+    cursor: pointer;
+    border-bottom-left-radius: 10px;
+    box-shadow: inset -1px 2px 2px #404040, 2px 2px 1px #404040;
+}
+
+#edit i:hover{
+    color:white;
+}
+
+#edit i:active{
+    color:black;
+}
+
+a.hapus{
+    font-size: 13.5px;
+    background-color: red;
+    color:white !important;
+    padding:10px 15px 10px 15px;
+    z-index: 0;
+    cursor: pointer;
+    float: right;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    box-shadow: inset -1px 0px 0px  #404040, 2px 2px 1px  #404040;
+    position:relative;
+    bottom: 41px;
+}
+
+a.hapus:hover{
+    color:black !important;
+}
+
+a.hapus:active{
+    color:white !important;
+}
+
+.baru{
+    animation:animasi 2s infinite;
+}
+
+@keyframes animasi {
+    0%{transform: translateY(-2px);}
+    25%{transform: translateY(-5px);}
+    50%{transform: translateY(-2px);}
+    75%{transform: translateY(-5px);}
+    100%{transform: translateY(-2px);}
+}
+
+ul.navbar-nav{
+    padding:5px 0px;
+}
+
+.peringatan-keterangan{
+    text-align: center;
+    margin-top: 20px;
+}
+
+li{
+    list-style: none;
+}
+
+#tambahcatatan{
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    display: block;
+    position: fixed;
+    bottom: 0px;
+    right:0;
+    left:0;
+    margin-left: 200px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    padding:5px 0px;
+    font-size: 30px;
+}
+
+#tambahcatatan:hover{
+    background-color: white;
+    color:#007bff;
+}
+
+#tambahcatatan:active{
+    background-color: #007bff;
+    color:white;
+}
+
+#halaman-catatan div .card-header{
+    padding: 15px !important;
+    background-color: #555657 !important;
+}
+
+.judul-catatan{
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding:10px;
+    border:2px solid #5b5c5b;
+}       
+
+.judul-daftar-catatan{
+    font-size: 20px;
+    z-index: 0;
+    color: #0ff;
+}
+
+#keterangan-catatan{
+    border-left:2px solid #5b5c5b;
+    border-bottom:2px solid #5b5c5b;
+    border-right:2px solid #5b5c5b;
+    padding:10px;
+    background-color: white;
+    background-color: #f2f2f2;
+}
+
+
+.daftar-catatan a.hapusya{
+    color:blue !important;
+}
+
+.hapusya{
+    cursor: pointer;
+    border-left:2px solid #5b5c5b;
+    border-bottom:2px solid #5b5c5b;
+    border-right:2px solid #5b5c5b;
+    background-color: #f74a4a;
+    display: block;
+    text-align: center;
+    color: white !important;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding:5px 0px;
+    font-weight: bold;
+}
+
+.hapusya:hover{
+    background-color: white;
+    color:#f74a4a !important;
+}
+
+.hapusya:active{
+    background-color: #f74a4a;
+    color:white !important;
+
+}
+
+a.hapuspromo{
+    float: right;
+    background-color: red;
+    color:white;
+    border-top-right-radius: 15px;
+    border-top:2px solid #5b5c5b;
+    border-bottom:2px solid #5b5c5b;
+    border-right:2px solid #5b5c5b;
+    border-bottom-right-radius: 15px;
+    position: relative;
+    top:auto;
+    bottom:auto;
+}
+
+.judul-promo{
+    border-top-left-radius: 15px;
+    padding:10px;
+    border:2px solid #5b5c5b;
+}       
+
+.judul-daftar-promo{
+    font-size: 20px;
+    z-index: 0;
+    color: #0ff;
+}
+
+#keterangan-promo{
+    border-left:2px solid #5b5c5b;
+    border-bottom:2px solid #5b5c5b;
+    border-right:2px solid #5b5c5b;
+    padding:10px;
+    background-color: white;
+    background-color: #f2f2f2;
+    border-bottom-left-radius: 15px;
+}
+
+button.daftar-promo{
+    padding-right: 0px !important;
+    padding-left:40px !important;
+}
+
+button.card-header{
+    text-align: left !important;
+    color:#0ff !important;
+    text-decoration: none !important;
+    border:2px solid #5b5c5b;
+}
+
+
+
+.keterangan-promo{
+    border-left:2px solid #5b5c5b;
+    border-bottom:2px solid #5b5c5b;
+    border-right:2px solid #5b5c5b;
+    padding-left:50px !important;
+    padding-right:50px !important;
+}
+
+#tambahpromo{
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    display: block;
+    position: fixed;
+    bottom: 0px;
+    right:0;
+    left:0;
+    margin-left: 200px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    padding:5px 0px;
+    font-size: 30px;
+}
+
+#tambahpromo:hover{
+    background-color: white;
+    color:#007bff;
+}
+
+#tambahpromo:active{
+    background-color: #007bff;
+    color:white;
+}
+
+.expired{
+    color:white;
+    background-color:#DC3545;
+    border:1px solid #DC3545;
+    border-radius:10px;
+    padding:3px;
+    float: right;
+    display: none;
+}
+
+.notes{
+    text-align: center;
+    display: block;
+    color:gray;
+}
+
+.card{
+    padding:0px !important;
+    margin-bottom:0px !important;
+}
+
+.hapus-promo{
+    cursor: pointer;
+    border:2px solid #5b5c5b;
+    background-color: #f74a4a;
+    display: block;
+    text-align: center;
+    color: white !important;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding:5px 0px;
+    font-weight: bold;
+    margin:0px 1px;
+}
+
+.hapus-promo:hover{
+    color:#DC3545 !important;
+    background-color: white;
+}
+
+.hapus-promo:active{
+    color:white !important;
+    background-color: #DC3545;
+}
+
+#marquee-pengaturan, #kalkulator-pengaturan{
+    padding:65px !important;
+    margin-bottom:15px !important;
+}
+
+.available-promo{
+    display: none;
+    page-break-inside: avoid;
+}
+
+marquee span { 
+    margin-right: 100%; 
+} 
+marquee p { 
+    white-space:nowrap;
+    margin-right: 1000px; 
+} 
+
+.hapus-marquee{
+    margin-right:10px;
+}
+
+
+#tambahcust{
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    display: block;
+    position: fixed;
+    bottom: 0px;
+    right:0;
+    left:0;
+    margin-left: 200px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    padding:5px 0px;
+    font-size: 30px;
+}
+
+#tambahcust:hover{
+    background-color: white;
+    color:#007bff;
+}
+
+#tambahcust:active{
+    background-color: #007bff;
+    color:white;
+}
+
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.hapus-cust{
+    cursor: pointer;
+    border:2px solid #5b5c5b;
+    background-color: #f74a4a;
+    display: block;
+    text-align: center;
+    color: white !important;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding:5px 0px;
+    font-weight: bold;
+    margin:0px 1px;
+}
+
+.hapus-cust:hover{
+    color:#DC3545 !important;
+    background-color: white;
+}
+
+.hapus-cust:active{
+    color:white !important;
+    background-color: #DC3545;
+}
+
+.form-check{
+    padding-left:30px !important;
+}
+
+
+#hasil-kalkulator{
+  text-align: center;
+  font-family: 'Righteous', cursive;
+  font-weight: bold;
+  border:1px solid rgba(0,0,0,.2);
+  font-size: 18px;
+  padding:20px;
+  display: block;
+  cursor: pointer;
+  background-color: black;
+  color:white;
+  width: 100%;
+  justify-content: center;
+}
+
+#hasil-kalkulator:hover{
+  border:1px solid rgba(0,0,0,.2);
+  background-color: white;
+  color:black;
+}
+
+#hasil-kalkulator:active{
+  border:1px solid rgba(0,0,0,.2);
+  background-color: black;
+  color:white;
+}
+
+.hasil{
+  text-align: center;
+  display: block;
+}
+
+.peringatan1{
+  color:#787573;
+}
+
+#info-cicilan{
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+#hasil-perhitungan{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+fieldset{
+  margin-bottom: 10px !important;
+}
+
+#copas{
+  display: none;
+  margin-left: auto;
+  margin-top: 10px;
+  margin-right:auto ;
+}
+
+#isikalkulator, #note-catatan, #note-promo{
+  padding:64px !important;
+}
+
+
+.display-4{
+  color:#31ad52 !important;
+}
+
+.fa-gear{
+  color:black !important;
+}
+
+.fa-exclamation-circle{
+  color:#DC3545 !important;
+}
+
+.lead{
+  margin-bottom: 0px !important;
+}
+

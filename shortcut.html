@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Shortcut</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<style type="text/css">
+
+
+		body{
+			width: 80%;
+			margin:auto;
+			letter-spacing: 2px;
+		}
+		header{
+			padding:20px;
+			background-color: #f72f53;
+			/*background-color: #f72f53;*/
+			background-color: #e50000;
+			color: white;
+			font-weight: bold;
+			text-align: center;
+			margin:auto;
+			font-size:4em;
+		}
+
+		.box:hover{
+			background-color: #dfe0e1;
+
+		}
+
+
+		.box{
+			float:left;
+			width:50%;
+			text-align: center;
+			background-color: #f7f7f7;
+			padding:100px;
+			margin-top:100px;
+			border:30px white solid;
+			color:#333359;
+			border-radius:50px;
+
+			
+		}
+	
+
+		.clear{
+			clear: both;
+		}
+
+
+		i{
+			font-size: 4em;
+		}
+
+		.judul{
+			font-weight: bold;
+			padding:10px;
+		}
+		.variant{
+			background-color:#333359;
+			padding:3px;
+		}
+
+		.box-1{
+			margin-top:20px;
+			padding:20px;
+			border-left: #333359 10px solid;
+			background-color: #f7f7f7;
+			text-align: center;
+		}
+
+
+		footer{
+			background-color: #333359;
+			color:white;
+			padding:5px;
+			margin-top:100px;
+		}
+	</style>
+</head>
+<body>
+
+	<header>
+		<h2 style="font-weight:bold; letter-spacing:10px;" >GALAXY CAMERA</h2>
+	</header>
+	<div class="variant"></div>
+
+	<div class="clearfix">
+		<a href="https://intraweb.datascrip.co.id/cdms_icp/index.php" target="_blank">
+			<div class="box" id="canon">
+			<i class="glyphicon glyphicon-folder-open"></i>
+			<p class="judul">REPORT CANON</p>
+			</div>
+			</a>
+
+			<a href="http://dms-panasonic.store" target="_blank">
+			<div class="box" id="lumix">
+			<i class="glyphicon glyphicon-folder-open"></i>
+			<p class="judul">REPORT PANASONIC</p>
+			</div>
+			</a>
+	</div>
+	<div class="clear"></div>
+
+	<button onclick="myFunction()">
+		SHOW PASSWORD
+	</button>
+
+	<div class="box-1" id="myDIV">
+		<h4>CANON</h4>
+		<p>Login : 4375</p>
+		<p>Password : (STacy*1989)</p>	
+		<h4>PANASONIC</h4>
+		<p>Login : 7065</p>
+		<p>Password : (STacy*1989)</p>
+	</div>
+
+
+	<footer>Copyright Galaxy Camera 2018</footer>
+
+	<script type="text/javascript">
+		
+		function myFunction() {
+    var x = document.getElementById("myDIV");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+	</script>
+
+</body>
+</html>

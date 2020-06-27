@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bookmark</title>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link href="https://fonts.googleapis.com/css?family=Righteous&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+  <link rel="icon" type="text/css" href="bookmark-alt-flat.png">
+  <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-firestore.js"></script>
+</head>
+<body>
+
+
+
+<div class="navigasi-kiri nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+	<img class="logo-galaxy" src="logo.png" style="mix-blend-mode: multiply;opacity: 1;">
+<div id="accordion">
+	<div class="daftar-menu">
+<hr style="margin:0;">
+
+		<a class="tab-halaman btn text-left menu" id="tab-beranda" data-toggle="pill" href="#halaman-beranda" role="tab" aria-controls="halaman-beranda" aria-selected="true"><span class="daftar2menu"><i class="fa fa-home"></i> Beranda</span></a>
+
+<hr style="margin:0;">
+
+		<div class="card-header" id="headingMenu">
+		<a class="btn text-left menu pengecualian" data-toggle="collapse" data-target="#collapseMenu" aria-expanded="true" aria-controls="collapseMenu" href="#"><span class="daftar2menu"><i class='fas fa-bookmark'></i> Informasi</span></a>
+
+<hr style="margin:0;">
+
+		<div id="collapseMenu" class="collapse show nav-pills" aria-labbeledby="headingMenu" data-parent="#accordion" role="tablist" aria-orientation="vertical">
+		<a class="tab-halaman btn ukuran text-left" id="tab-catatan" data-toggle="pill" href="#halaman-catatan" role="tab" aria-controls="halaman-catatan" aria-selected="true"><span class="daftar3menu"><i class='far fa-sticky-note'></i> Catatan</span></a>
+
+<hr style="margin:0;">
+
+			<a class="tab-halaman btn ukuran text-left" id="tab-promo" data-toggle="pill" href="#halaman-promo" role="tab" aria-controls="halaman-promo" aria-selected="true"><span class="daftar3menu"><i class='fas fa-book'></i> Info Promo</span></a>
+
+<hr style="margin:0;">
+		
+    </div>
+		<a class="tab-halaman btn text-left menu" id="tab-cust" data-toggle="pill" href="#halaman-cust" role="tab" aria-controls="halaman-cust" aria-selected="true"><span class="daftar2menu"></span><i class="fa fa-address-book"></i> Penawaran/Indent</a>
+
+<hr style="margin:0;">
+
+    <a class="tab-halaman btn text-left menu" id="tab-kalkulator" data-toggle="pill" href="#halaman-kalkulator" role="tab" aria-controls="halaman-kalkulator" aria-selected="true"><span class="daftar2menu"> <i class='fas fa-calculator'></i> Kalkulator HCI</span></a>
+	</div>
+
+		</div>
+	</div>
+
+<small style="position: absolute;bottom: 0;left: 0;margin-left: 10px;margin-right: 10px;">Bookmark V1.0.0</small>
+</div>
+
+
+<div class="isikonten">
+  	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto mx-auto" style="text-align: center;">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Spreadsheet
+        </a>
+          <div class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" target="_blank" href="https://docs.google.com/spreadsheets/d/1CzDiK_nmTa6S2CNcbucivcN5KrVLFQrFmPaXHT2Flu4/edit#gid=0">Report Tangerang</a>
+            <a class="dropdown-item" target="_blank" href="https://docs.google.com/spreadsheets/d/1B5WmdLKKpJMIOjLytxJeUSwSuLcFFWIkp0ouXWaPouM/edit#gid=0">Report Depok</a>
+            <a class="dropdown-item" target="_blank" href="https://docs.google.com/spreadsheets/d/1syU49OGq7PPjQmxRXroplpPdbQTpXUVKnMrAx21gd4s/edit#gid=975334227">Report Jakarta</a>
+            <a class="dropdown-item" target="_blank" href="https://docs.google.com/spreadsheets/d/1frU5cLqx5krvG1miQLYuOrx8E-XYIT4I6jvIoHDj7Sw/edit#gid=1184085661">Report Senen</a>
+            <a class="dropdown-item" target="_blank" href="https://docs.google.com/spreadsheets/d/17v7aaVwkWmUB16nx1w001hyUmoERLhPncqE61DB5mJo/edit#gid=0">Report HCI</a>
+            <a class="dropdown-item" target="_blank" href="https://docs.google.com/spreadsheets/d/1e66CAObQcgQEMkbkog0LDJC3AXexI11XvqwXkr9F79o/edit#gid=0">Harga Galaxy</a>
+            <a class="dropdown-item" target="_blank" href="https://docs.google.com/spreadsheets/d/121zCN5NwONaU0I7yS5F9Lz6fTy1PhGhcpmhpEe9MAn4/edit#gid=0">Harga ACC</a>
+            <a class="dropdown-item" target="_blank" href="https://docs.google.com/spreadsheets/d/1xMD6SiwpxY5AHHkolRFdKoQsM5WgGeOjKOsIaVQwTmg/edit#gid=0">List Cicilan</a>
+            <a class="dropdown-item" target="_blank" href="https://docs.google.com/spreadsheets/d/15MEYSaugu0FF6Akca_6TwDFUK_KjKwu4iQ-JMKP4G0Y/edit#gid=0">Data Kartu Garansi</a>
+          </div>
+        </li>
+
+      <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Appsheet
+        </a>
+          <div class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/8a2b9bef-aba3-48a7-8f04-2d717acf79c1#appName=ReportTangerang-511530&group=%5B%5D&page=fastTable&sort=%5B%7B%22Column%22%3A%22Tanggal%22%2C%22Order%22%3A%22Descending%22%7D%5D&table=Report+Tangerang&view=Report+Tangerang">Report Tangerang</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/3d6a5f17-94f7-47a1-a65e-13e52e873898#appName=ReportDepok-511530&group=%5B%5D&page=fastTable&sort=%5B%7B%22Column%22%3A%22Tanggal%22%2C%22Order%22%3A%22Descending%22%7D%5D&table=Report+Depok&view=Report+Depok">Report Depok</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/715ddd0e-7325-423d-882f-69b72fbad7a7">Report Jakarta</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/bf661e05-cbb7-480b-9ca1-c2014871eca2#appName=ReportHCI-511530&group=%5B%5D&page=fastTable&sort=%5B%7B%22Column%22%3A%22_RowNumber%22%2C%22Order%22%3A%22Descending%22%7D%5D&table=Report+HCI&view=Report+HCI">Report HCI</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/3661a577-67c2-44b1-b00d-040a089d93f8">Report Senen</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/885d48cf-c91f-4bf1-9a45-6ba23660b5d9">Harga Galaxy</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/94edac78-18f2-4ef6-bb06-ae969599c8e3">Harga ACC</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/3539f3c3-470c-4982-98d1-6b786f82a29d">Harga Lensa</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/4c742bf1-ca01-4ffd-9c09-ba13913c37f5">Stock Galaxy</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/f1c7eb50-254d-4a07-bb37-54da7e557abb">Stock Pending</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/f1c7eb50-254d-4a07-bb37-54da7e557abb">Setor Depok</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/7dda7bc3-d16c-46c7-86ce-ec4fe8023c92">Setor Jakarta</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/fbe027cc-6e58-4a24-9bf1-549cb05715e6">Setor Senen</a>
+            <a class="dropdown-item" target="_blank" href="https://www.appsheet.com/start/47228c41-f5d9-4971-9196-875129da8262">Data Kartu Garansi</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          E-Commerce
+        </a>
+          <div class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" target="_blank" href="https://www.bukalapak.com/my_products/stocked?from=dropdown">Bukalapak</a>
+            <a class="dropdown-item" target="_blank" href="https://www.tokopedia.com/">Tokopedia</a>
+            <a class="dropdown-item" target="_blank" href="https://seller.shopee.co.id/portal/product/list/all">Shopee</a>
+            <a class="dropdown-item" target="_blank" href="https://sellercenter.lazada.co.id/">Lazada</a>
+            <a class="dropdown-item" target="_blank" href="https://galaxycamera.id/admin">Galaxy Camera</a>
+            <a class="dropdown-item" target="_blank" href="https://merchant.blibli.com/MTA/login">Blibli</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Social Media
+        </a>
+          <div class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" target="_blank" href="https://web.whatsapp.com/">Whatsapp</a>
+            <a class="dropdown-item" target="_blank" href="https://admin-official.line.me/">Line Official</a>
+            <a class="dropdown-item" target="_blank" href="https://business.facebook.com/galaxycamera99">Facebook</a>
+            <a class="dropdown-item" target="_blank" href="https://instagram.com/galaxycamera99">Instagram</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Email
+        </a>
+          <div class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" target="_blank" href="https://mail.google.com/mail/u/0/#inbox">Gmail</a>
+            <a class="dropdown-item" target="_blank" href="https://mail.yahoo.com/">Yahoo</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Banking
+        </a>
+          <div class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" target="_blank" href="https://ibank.klikbca.com/">Klik BCA</a>
+            <a class="dropdown-item" target="_blank" href="bca.html">BCA Bisnis</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Ads
+        </a>
+          <div class="dropdown-menu dropdown-menu-center" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" target="_blank" href="https://ads.google.com/aw/overview">Google Ads</a>
+            <a class="dropdown-item" target="_blank" href="https://business.facebook.com/adsmanager/">Instagram Ads</a>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </nav>
+<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav navbar-kedua ml-auto mx-auto" style="text-align: center;">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="reporthci/homecredit.html" target="_blank" id="navbarDropdown" role="button">
+          Homecredit
+        </a>
+        </li>
+
+      <li class="nav-item dropdown">
+          <a class="nav-link" href="shortcut.html" target="_blank" id="navbarDropdown" role="button">
+          Datascrip
+        </a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="https://dashboard.tawk.to/#/chat" target="_blank" id="navbarDropdown" role="button">
+          Tawk.to
+        </a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="https://galaxycamera.id/admin/admin/index/index/key/8d8aca0f0280e6cfaf0d92e493695244b20b570f2718d92301baacbf4e48bfdb/" target="_blank" id="navbarDropdown" role="button">
+          Magento Admin
+        </a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="https://www.alexa.com/siteinfo/galaxycamera.id#CountryRank" target="_blank" id="navbarDropdown" role="button">
+          Alexa Galaxy
+        </a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="https://galaxyapp-2893d.firebaseapp.com/#" target="_blank" id="navbarDropdown" role="button">
+          AppGalaxy
+        </a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="https://nicholas919.github.io/Customer-Reply/" target="_blank" id="navbarDropdown" role="button">
+          Customer Reply
+        </a>
+        </li>
+
+      </ul>
+    </div>
+  </nav>
+<div id="scroller-anchor"></div> 
+<marquee id="isimarquee" class="marquee" direction="right" style="width:100%;background-color:#f74a4a;color:white;"></marquee>
+
+<div class="tab-content" id="myTabContent">
+<div class="halaman tab-pane fade show active" id="halaman-beranda" role="tabpanel" aria-labelledby="tab-beranda">
+
+
+  
+  <div id="pengumuman">
+    <a id="edit" data-toggle="modal" data-target="#modalpengumuman"><i class='fas fa-pen'></i></a>
+  <div id="isipengumuman"></div>
+  </div>
+
+
+<div class="modal fade" id="modalpengumuman" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelmodalpengumuman">Menambahkan Pengumuman Terbaru</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-pengumuman">
+                <div class="form-group">
+                  <label class="col-form-label">Judul</label>
+                  <input type="text" class="form-control" id="judul" minlength="10" maxlength="20" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Keterangan</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="keterangan" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Sifat <small>(Note: Tidak wajib untuk diisi)</small></label>
+                  <select class="form-control" id="sifat">
+                    <option value="" disabled selected hidden>-</option>
+                    <option>Penting</option>
+                  </select>
+                </div>
+
+                      <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button id="submit" type="submit" class="btn btn-primary">Simpan</button>
+                      </div>
+                  </form>
+          
+            </div>
+          </div>
+       </div>
+     </div>
+
+
+
+
+
+  </div>
+
+<div class="halaman tab-pane fade" id="halaman-catatan" role="tabpanel" aria-labelledby="tab-catatan">
+
+<div class="jumbotron jumbotron-fluid" id="marquee-pengaturan">
+<div class="container">
+    <h1 class="display-4">Ada Customer yang ingin Indent Produk atau Meminta Penawaran Produk?</h1>
+    <p class="lead">Jika ada customer yang menginginkan hal tersebut diharapkan kepada semua Admin Galaxy Camera untuk mendaftarkan Data Customer yang dituju pada Halaman "Penawaran/Indent" yang tersedia.</p>
+</div>
+
+</div>
+<div id="isicatatan"></div>
+<div style="margin-top: 70px;"></div>
+<a id="tambahcatatan" data-toggle="modal" data-target="#modalcatatan">+</a>
+
+<div class="modal fade" id="modalcatatan" tabindex="-1" role="dialog" aria-labelledby="modalcatatan" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelmodalcatatan">Menambahkan Catatan Terbaru</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-catatan">
+                <div class="form-group">
+                  <label class="col-form-label">Nama Penulis</label>
+                  <input type="text" class="form-control" id="creatorcatatan" autocomplete="off" placeholder="Cantumkan Nama Anda" minlength="4" required>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Keterangan</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="keterangancatatan" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" maxlength="100" minlength="10" required></textarea>
+                </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            </div>
+          </div>
+       </div>
+     </div>
+
+</div>
+<div class="halaman tab-pane fade" id="halaman-promo" role="tabpanel" aria-labelledby="tab-promo">
+
+<div class="jumbotron jumbotron-fluid" id="marquee-pengaturan">
+<div class="container">
+    <h1 class="display-4"><i class="fa fa-gear"></i> Pengaturan Teks Berjalan</h1>
+    <p class="lead">Fitur teks berjalan ini dikhususkan untuk menginformasikan kepada semua Admin Galaxy Camera seputar perihal-perihal yang bersifat umum. Untuk menambahkan teks berjalan diperlukan kode pin berikut : <span id="kode-pin"></span></p>
+    <a></a>
+    <a class="btn btn-primary btn-lg pull-right lead" href="#" role="button" data-toggle="modal" data-target="#modalmarquee">Edit <i class='fas fa-pen'></i></a>
+</div>
+</div>
+    <div id="isipromo"></div>
+
+
+<div style="margin-top: 70px;"></div>
+<a id="tambahpromo" data-toggle="modal" data-target="#modalpromo">+</a>
+
+    <div class="modal fade" id="modalpromo" tabindex="-1" role="dialog" aria-labelledby="modalpromo" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelmodalpromo">Menambahkan Promo Terbaru</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-promo">
+                <div class="form-group">
+                  <label class="col-form-label">Brand</label>
+                  <input type="text" class="form-control" id="brandpromo" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Keterangan</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="keteranganpromo" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required></textarea>
+                </div>
+            <div class="row">
+                <div class="form-group col">
+                  <label class="col-form-label">Promo Bulanan<small></small></label>
+                  <select class="form-control" id="bulanpromo" required>
+                    <option value="" disabled selected hidden>-</option>
+                    <option>Januari</option>
+                    <option>Februari</option>
+                    <option>Maret</option>
+                    <option>April</option>
+                    <option>Mei</option>
+                    <option>Juni</option>
+                    <option>Juli</option>
+                    <option>Agustus</option>
+                    <option>September</option>
+                    <option>Oktober</option>
+                    <option>November</option>
+                    <option>Desember</option>
+                  </select>
+               </div>
+                <div class="form-group col-4">
+                  <label class="col-form-label">Started Date</label>
+                  <input type="date" class="form-control" id="tanggalmulaipromo" autocomplete="off" data-date-format="DD MMMM YYYY" required>
+                </div>
+                <div class="form-group col-4">
+                  <label class="col-form-label">Expiration Date</label>
+                  <input type="date" class="form-control" id="tanggalakhirpromo" autocomplete="off" data-date-format="DD MMMM YYYY" required>
+                </div>
+            </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            </div>
+          </div>
+       </div>
+     </div>
+
+  <div class="modal fade" id="modalmarquee" tabindex="-1" role="dialog" aria-labelledby="modalmarquee" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelmodalmarquee">Menambahkan Teks Berjalan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-marquee">
+            <div class="row">
+                <div class="form-group col-10">
+                  <label class="col-form-label">Isi Teks Berjalan</label>
+                  <input type="text" class="form-control" id="keteranganmarquee" autocomplete="off" maxlength="80" minlength="20" required>
+                </div>
+                <div class="form-group col-2">
+                  <label class="col-form-label">PIN</label>
+                  <input type="password" style="text-align: center;" class="form-control" id="password" autocomplete="off" minlength="4"
+       maxlength="4" required>
+                </div>
+                </div>
+                      <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button id="submit" type="submit" class="btn btn-primary">Simpan</button>
+                      </div>
+                  </form>
+          
+            </div>
+          </div>
+       </div>
+     </div>
+
+
+</div>
+
+<div class="halaman tab-pane fade" id="halaman-cust" role="tabpanel" aria-labelledby="tab-cust">
+
+<div class="jumbotron jumbotron-fluid" id="note-promo">
+  <div class="container">
+    <h1 class="display-4">Halo Admin Galaxy Camera Sekalian!</h1>
+    <p class="lead">Jangan lupa untuk menambahkan data penawaran atau indent produk dari customer pada halaman ini dan diharapkan kepada semua Admin Galaxy Camera agar tidak ada kesalahan dalam pengetikan kata saat pengisian data dan jika terjadi kesalahan dalam penambahan, pengisian, penghapusan data, silahkan melakukan refresh untuk menghindarinya.</p>
+  </div>
+
+</div>
+<div id="isicust"></div>
+<div style="margin-top: 70px;"></div>
+<a id="tambahcust" data-toggle="modal" data-target="#modalcust">+</a>
+
+<div class="modal fade" id="modalcust" tabindex="-1" role="dialog" aria-labelledby="modalcust" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelmodalcust">Menambahkan Data Customer Terbaru</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-cust">
+            <div class="row">
+                <div class="form-group col-6">
+                  <label class="col-form-label">Nama Customer</label>
+                  <input type="text" class="form-control" id="namacust" autocomplete="off" placeholder="Cantumkan Nama Customer" required>
+                </div>
+                <div class="form-group col">
+                  <label class="col-form-label">Kontak Customer</label>
+                  <input type="number" class="form-control your_class" id="kontakcust" autocomplete="off" placeholder="e.g. 081234567890" autocomplete="off" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+    maxlength = "13" required>
+                </div>
+             </div>
+                <div class="form-group">
+                  <label class="col-form-label">Daftar Produk</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="daftarproduk" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required></textarea>
+                </div>
+              <div class="row">
+                <div class="form-group col-5">
+                  <label class="col-form-label">Email Customer<small> (Notes : Tidak wajib untuk diisi)</small></label>
+                  <input type="email" class="form-control" id="emailcust" placeholder="google@example.com" autocomplete="off">
+                </div>
+                <div class="form-group col-4">
+                  <label class="col-form-label">Sifat <small>(Note: Tidak wajib untuk diisi)</small></label>
+                  <select class="form-control" id="sifatcust">
+                    <option value="" disabled selected hidden>-</option>
+                    <option>Penting</option>
+                  </select>
+                </div>
+                <div class="form-group col-3">
+                  <label class="col-form-label">Penawaran/Indent</label>
+                  <select class="form-control" id="sifattransaksi" required>
+                    <option value="" disabled selected hidden>-</option>
+                    <option>Penawaran</option>
+                    <option>Indent</option>
+                  </select>
+                </div>
+              </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            </div>
+          </div>
+       </div>
+     </div>
+
+
+</div>
+
+<div class="halaman tab-pane fade" id="halaman-kalkulator" role="tabpanel" aria-labelledby="tab-kalkulator">
+
+
+<div class="jumbotron jumbotron-fluid" id="marquee-pengaturan">
+<div class="container">
+    <h1 class="display-4"><i class="fa fa-gear"></i> Pengaturan Kalkulator HCI</h1>
+    <p class="lead">Informasi mengenai konfigurasi kalkulator HCI tersedia dibawah berikut dan pastikan bahwa konfigurasi Kalkulator HCI sudah benar. Untuk menkonfigurasi ulang Kalkulator diperlukan kode pin berikut : <span id="kode-pin-kalkulator"></span></p>
+    <a></a>
+    <a class="btn btn-primary btn-lg pull-right lead" href="#" role="button" id="edit-kalkulator" data-toggle="modal" data-target="#modalkalkulator">Edit <i class='fas fa-pen'></i></a>
+    <a class="btn btn-danger btn-lg pull-right lead disabled" href="#" role="button" id="reset" style="margin-right: 10px;">Reset <i class="fa fa-refresh fa-spin"></i></a>
+</div>
+</div>
+
+<div class="jumbotron jumbotron-fluid" id="isikalkulator">
+<div class="container">
+    <h1 class="display-4"><i class='fas fa-exclamation-circle'></i> Informasi Konfigurasi Kalkulator HCI</h1>
+    <p class="lead">Biaya admin : <span id="biayaadmin1"></span> & Bunga : <span id="bunga1"></span></p>
+    <a class="btn btn-primary btn-lg pull-right lead" href="#" role="button" id="hitung" data-toggle="modal" data-target="#modalkalkulator1"><i class='fas fa-calculator'></i> Kalkulator HCI</a>
+</div>
+</div>
+
+
+<div class="modal fade" id="modalkalkulator" tabindex="-1" role="dialog" aria-labelledby="modalkalkulator" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelmodalkalkulator">Pengaturan Kalkulator HCI</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-kalkulator">
+            <div class="row">
+                <div class="form-group col-5">
+                  <label class="col-form-label">Biaya Admin</label>
+                  <input type="number" class="form-control your_class" id="biayaadmin" autocomplete="off" autocomplete="off" required>
+                </div>
+                <div class="form-group col-5">
+                  <label class="col-form-label">Bunga<small> (Notes : Desimal menggunakan titik ".")</small></label>
+                  <input type="text" class="form-control your_class" id="bunga" autocomplete="off" autocomplete="off" required>
+                </div>
+                <div class="form-group col-2">
+                  <label class="col-form-label">PIN</label>
+                  <input type="password" id="password1" style="text-align: center;" class="form-control" id="password" autocomplete="off" minlength="4"
+       maxlength="4" required>
+                </div>
+            </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="modalkalkulator1" tabindex="-1" role="dialog" aria-labelledby="modalkalkulator1" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelmodalkalkulator1">Kalkulator HCI</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-kalkulator1">
+            <div class="row">
+                <div class="form-group col-6">
+                  <label class="col-form-label">Harga Produk</label>
+                  <input type="number" class="form-control your_class" id="harga" autocomplete="off" autocomplete="off" minlength="7" maxlength="9" required>
+                </div>
+                <div class="form-group col-6">
+                  <label class="col-form-label">DP</label>
+                  <input type="number" class="form-control your_class" id="dp" autocomplete="off" autocomplete="off" minlength="7" maxlength="9" required>
+                </div>
+             </div>
+<fieldset class="form-group">
+    <div class="row">
+      <legend class="col-form-label col-sm-3 pt-0">Tenor yang tersedia</legend>
+      <div class="col-sm-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="tenor3">
+          <label class="form-check-label">
+            3 Bulan
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox"  id="tenor6">
+          <label class="form-check-label">
+            6 Bulan
+          </label>
+        </div>
+        <div class="form-check disabled">
+          <input class="form-check-input" type="checkbox" id="tenor9">
+          <label class="form-check-label">
+            9 Bulan
+          </label>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="tenor12">
+          <label class="form-check-label">
+            12 Bulan
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox"  id="tenor15">
+          <label class="form-check-label">
+            15 Bulan
+          </label>
+        </div>
+        <div class="form-check disabled">
+          <input class="form-check-input" type="checkbox" id="tenor18">
+          <label class="form-check-label">
+            18 Bulan
+          </label>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="tenor21">
+          <label class="form-check-label">
+            21 Bulan
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox"  id="tenor24">
+          <label class="form-check-label">
+            24 Bulan
+          </label>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+<small class="peringatan1">Notes : Diharapkan agar tidak mengisi simbol pada kolom yang tersedia untuk menghindari kesalahan.</small>
+<button class="btn" type="submit" id="hasil-kalkulator">Hitung Sekarang</button>
+<div id="hasil-perhitungan">
+  <div id="hasil-perhitungan-peringatan" class="hasil"></div>
+<div id="copas-hasil">
+  <div id="hasil-perhitungan-dp" class="hasil"></div>
+  <div id="hasil-perhitungan-tenor3" class="hasil"></div>
+  <div id="hasil-perhitungan-tenor6" class="hasil"></div>
+  <div id="hasil-perhitungan-tenor6" class="hasil"></div>
+  <div id="hasil-perhitungan-tenor9" class="hasil"></div>
+  <div id="hasil-perhitungan-tenor12" class="hasil"></div>
+  <div id="hasil-perhitungan-tenor15" class="hasil"></div>
+  <div id="hasil-perhitungan-tenor18" class="hasil"></div>
+  <div id="hasil-perhitungan-tenor21" class="hasil"></div>
+  <div id="hasil-perhitungan-tenor24" class="hasil"></div>
+  <div id="info-cicilan" class="hasil"></div>
+</div>
+  <button class="btn btn-success align-middle" id="copas">Copy</button>
+</div>
+                <div class="modal-footer">
+                </div>
+            </form>
+            </div>
+          </div>
+       </div>
+     </div>
+
+
+
+</div>
+
+
+
+<audio id="audio" style="display: none;" src="https://firebasestorage.googleapis.com/v0/b/bookmark-61950.appspot.com/o/15726_download_iphone_sms_original_ringtone_iphone_sms_ringtones.mp3?alt=media&token=ce15e5a1-a569-444b-9ea0-576bd677a48a"></audio>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyCEeVAgf7GcdXyJWFyyjt36k24i3gEe7bI",
+    authDomain: "bookmark-61950.firebaseapp.com",
+    databaseURL: "https://bookmark-61950.firebaseio.com",
+    projectId: "bookmark-61950",
+    storageBucket: "bookmark-61950.appspot.com",
+    messagingSenderId: "738310144199",
+    appId: "1:738310144199:web:ef0edaecdbedc540af7ee2",
+    measurementId: "G-WWYTPQTS6Y"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+<script src="app.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+</script>
+<script>
+    $(".navigasi-kiri a.tab-halaman").click(function() {
+    $(".navigasi-kiri a.tab-halaman").removeClass('active');
+    });
+</script> 
+</body>
+</html>
+
+
+
