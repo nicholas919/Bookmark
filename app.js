@@ -345,9 +345,9 @@ createForm3.addEventListener('submit', (e) => {
     db.collection('marquee').add({
         keteranganMarquee: createForm3['keteranganmarquee'].value
     }).then(() => {
-        $('#modalmarquee').modal('hide')
+        $('#modalmarquee').modal('hide');
         document.querySelector('#tambah-marquee').reset();
-
+        db.collection('marquee').delete();
     })
 }else{
     alert('Kode pin yang anda masukkan salah!')
