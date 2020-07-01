@@ -709,6 +709,8 @@ function auto_grow(element){
     element.style.height = (element.scrollHeight)+"px";
 }
 
+
+
 document.querySelector(".your_class").addEventListener("keypress", function (evt) {
     if (evt.which != 8 && evt.which != 0 && evt.which < 48 || evt.which > 57)
     {
