@@ -465,7 +465,7 @@ button.card-header{
     margin-bottom:0px !important;
 }
 
-.hapus-promo{
+a.hapus-promo{
     cursor: pointer;
     border:2px solid #5b5c5b;
     background-color: #f74a4a;
@@ -477,6 +477,7 @@ button.card-header{
     padding:5px 0px;
     font-weight: bold;
     margin:0px 1px;
+    margin-bottom: 8px;
 }
 
 .hapus-promo:hover{

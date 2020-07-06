@@ -111,16 +111,6 @@ const isiCatatan = document.querySelector('#isicatatan');
 
 
 function renderCatatan(doc){
-if(isiCatatan.childNodes.length == 0){
-isiCatatan.innerHTML = `
-<div class="jumbotron jumbotron-fluid" id="note-catatan">
-  <div class="container">
-    <h1 class="display-4">Halo Admin Galaxy Camera Sekalian!</h1>
-    <p class="lead">Untuk saat ini tidak ada pesan tertinggal atau catatan terbaru, jangan lupa untuk meninggalkan pesan pada halaman catatan ini dan jika ada kesalahan dalam penambahan, pengisian ataupun penghapusan data, silahkan melakukan refresh untuk menghindarinya.</p>
-</div>
-</div>`
-}else{
-    document.querySelector('#note-catatan').style.display = "none";
     let div = document.createElement('div');
     let keteranganCatatan = doc.data().keteranganCatatan;
     let tanggalCatatan = doc.data().tanggalCatatan;
@@ -149,8 +139,7 @@ isiCatatan.innerHTML = `
     db.collection('catatan').doc(id).delete();
     }
       
-    });
-  }
+  });
 }
         
 
