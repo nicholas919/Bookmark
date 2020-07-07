@@ -107,6 +107,15 @@ db.collection('catatan').onSnapshot(snapshot =>{
     })
 })
 
+db.collection('catatan').onSnapshot(snapshot =>{
+if(isiCatatan.childNodes.length == 0){
+    document.querySelector('#jumlahcatatan').innerText = '';
+}else{
+    let badgeJumlahCatatan = isiCatatan.childNodes.length;
+    document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
+}
+})
+
 const isiCatatan = document.querySelector('#isicatatan');
 
 
@@ -179,6 +188,16 @@ db.collection('promo').onSnapshot(snapshot =>{
             isiPromo.removeChild(div);
         } 
     })
+})
+
+
+db.collection('promo').onSnapshot(snapshot =>{
+if(isiPromo.childNodes.length == 0){
+    document.querySelector('#jumlahpromo').innerText = '';
+}else{
+    let badgeJumlahPromo = isiPromo.childNodes.length;
+    document.querySelector('#jumlahpromo').innerText = badgeJumlahPromo;
+}
 })
 
 const isiPromo = document.querySelector('#isipromo');
@@ -257,6 +276,26 @@ createForm2.addEventListener('submit', (e) => {
     })
 })
 
+//////////////////////Informasi////////////////////////
+
+db.collection('catatan').onSnapshot(snapshot =>{
+    if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
+    document.querySelector('#jumlahinformasi').innerText = '';
+}else{
+    let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
+    document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
+    }
+})
+
+db.collection('promo').onSnapshot(snapshot =>{
+    if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
+    document.querySelector('#jumlahinformasi').innerText = '';
+}else{
+    let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
+    document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
+    }
+})
+
 
 //////////////////////Marquee////////////////////////
 
@@ -332,6 +371,14 @@ db.collection('customer').onSnapshot(snapshot =>{
     })
 })
 
+db.collection('customer').onSnapshot(snapshot =>{
+if(isiCustomer.childNodes.length == 0){
+    document.querySelector('#jumlahcust').innerText = '';
+}else{
+    let badgeJumlahCust = isiCustomer.childNodes.length;
+    document.querySelector('#jumlahcust').innerText = badgeJumlahCust;
+}
+})
 
 const isiCustomer = document.querySelector('#isicust');
 

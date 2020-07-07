@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Bookmark</title>
-	<meta charset="utf-8">
+  <title>Bookmark</title>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<link href="https://fonts.googleapis.com/css?family=Righteous&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Righteous&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
   <link rel="icon" type="text/css" href="bookmark-alt-flat.png">
@@ -18,31 +18,31 @@
 
 
 <div class="navigasi-kiri nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-	<img class="logo-galaxy" src="logo.png" style="mix-blend-mode: multiply;opacity: 1;">
+  <img class="logo-galaxy" src="logo.png" style="mix-blend-mode: multiply;opacity: 1;">
 <div id="accordion">
-	<div class="daftar-menu">
+  <div class="daftar-menu">
 <hr style="margin:0;">
 
-		<a class="tab-halaman btn text-left menu" id="tab-beranda" data-toggle="pill" href="#halaman-beranda" role="tab" aria-controls="halaman-beranda" aria-selected="true"><span class="daftar2menu"><i class="fa fa-home"></i> Beranda</span></a>
-
-<hr style="margin:0;">
-
-		<div class="card-header" id="headingMenu">
-		<a class="btn text-left menu pengecualian" data-toggle="collapse" data-target="#collapseMenu" aria-expanded="true" aria-controls="collapseMenu" href="#"><span class="daftar2menu"><i class='fas fa-bookmark'></i> Informasi</span></a>
+    <a class="tab-halaman btn text-left menu" id="tab-beranda" data-toggle="pill" href="#halaman-beranda" role="tab" aria-controls="halaman-beranda" aria-selected="true"><span class="daftar2menu"><i class="fa fa-home"></i> Beranda <span id="jumlahpengumuman" class="badge badge-danger"></span></span></a>
 
 <hr style="margin:0;">
 
-		<div id="collapseMenu" class="collapse show nav-pills" aria-labbeledby="headingMenu" data-parent="#accordion" role="tablist" aria-orientation="vertical">
-		<a class="tab-halaman btn ukuran text-left" id="tab-catatan" data-toggle="pill" href="#halaman-catatan" role="tab" aria-controls="halaman-catatan" aria-selected="true"><span class="daftar3menu"><i class='far fa-sticky-note'></i> Catatan</span></a>
+    <div class="card-header" id="headingMenu">
+    <a class="btn text-left menu pengecualian" data-toggle="collapse" data-target="#collapseMenu" aria-expanded="true" aria-controls="collapseMenu" href="#"><span class="daftar2menu"><i class='fas fa-bookmark'></i> Informasi <span id="jumlahinformasi" class="badge badge-danger"></span></span></a>
 
 <hr style="margin:0;">
 
-			<a class="tab-halaman btn ukuran text-left" id="tab-promo" data-toggle="pill" href="#halaman-promo" role="tab" aria-controls="halaman-promo" aria-selected="true"><span class="daftar3menu"><i class='fas fa-book'></i> Info Promo</span></a>
+    <div id="collapseMenu" class="collapse show nav-pills" aria-labbeledby="headingMenu" data-parent="#accordion" role="tablist" aria-orientation="vertical">
+    <a class="tab-halaman btn ukuran text-left" id="tab-catatan" data-toggle="pill" href="#halaman-catatan" role="tab" aria-controls="halaman-catatan" aria-selected="true"><span class="daftar3menu"><i class='far fa-sticky-note'></i> Catatan <span id="jumlahcatatan" class="badge badge-danger"></span></span></a>
 
 <hr style="margin:0;">
-		
+
+      <a class="tab-halaman btn ukuran text-left" id="tab-promo" data-toggle="pill" href="#halaman-promo" role="tab" aria-controls="halaman-promo" aria-selected="true"><span class="daftar3menu"><i class='fas fa-book'></i> Info Promo <span id="jumlahpromo" class="badge badge-danger"></span></span></a>
+
+<hr style="margin:0;">
+    
     </div>
-		<a class="tab-halaman btn text-left menu" id="tab-cust" data-toggle="pill" href="#halaman-cust" role="tab" aria-controls="halaman-cust" aria-selected="true"><span class="daftar2menu"></span><i class="fa fa-address-book"></i> Penawaran/Indent</a>
+    <a class="tab-halaman btn text-left menu" id="tab-cust" data-toggle="pill" href="#halaman-cust" role="tab" aria-controls="halaman-cust" aria-selected="true"><span class="daftar2menu"></span><i class="fa fa-address-book"></i> Penawaran/Indent <span id="jumlahcust" class="badge badge-danger"></span></a>
 
 <hr style="margin:0;">
 
@@ -51,17 +51,17 @@
 <hr style="margin:0;">
 
     <a class="btn text-left menu" id="tab-sheet" target="_blank" href="https://docs.google.com/spreadsheets/u/0/"><span class="daftar2menu"> <i class='fas fa-book-reader'></i> Sheet</span></a>
-	</div>
+  </div>
 
-		</div>
-	</div>
+    </div>
+  </div>
 
-<small style="position: absolute;bottom: 0;left: 0;margin-left: 10px;margin-right: 10px;">Bookmark V1.0.0</small>
+<small style="position: absolute;bottom: 0;left: 0;margin-left: 10px;margin-right: 10px;">Bookmark V1.0.1</small>
 </div>
 
 
 <div class="isikonten">
-  	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto mx-auto" style="text-align: center;">
