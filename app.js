@@ -50,7 +50,7 @@ if(isiPengumuman.childNodes.length === 0){
     let hapus = document.querySelector('a#hapus' + doc.id);
     hapus.addEventListener('click', function(e){
     e.stopPropagation();
-    var konfirmasi = confirm('Anda yakin ingin menghapus pengumuman ini?');
+    let konfirmasi = confirm('Anda yakin ingin menghapus pengumuman ini?');
     if(konfirmasi == true){
     let id = e.target.parentElement.getAttribute('data-id');
     db.collection('pengumuman').doc(id).delete();
@@ -306,7 +306,14 @@ db.collection('marquee').onSnapshot(snapshot =>{
     changes.forEach(change =>{
         if(change.type == 'added'){
             renderMarquee(change.doc);
-        }
+            document.querySelector('#reset-marquee').classList.remove('disabled');
+            document.querySelector('#edit-marquee').classList.add('disabled');
+        }else if (change.type == 'removed'){
+            document.querySelectorAll('[data-id=' + change.doc.id + ']').forEach(e =>
+            e.parentNode.removeChild(e));
+            document.querySelector('#reset-marquee').classList.add('disabled');
+            document.querySelector('#edit-marquee').classList.remove('disabled');
+        } 
     })
 })
 
@@ -332,9 +339,19 @@ const password = document.querySelector('#password');
 function renderMarquee(doc){
     isiMarquee.setAttribute('data-id', doc.id);
     let keteranganMarquee = doc.data().keteranganMarquee;
-    isiMarquee.innerHTML=`
-    ${keteranganMarquee}
-    `
+    isiMarquee.innerHTML = keteranganMarquee
+
+    let reset = document.querySelector('#reset-marquee');
+    reset.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin mereset ulang teks berjalan ini?');
+    if(konfirmasi == true){
+    e.preventDefault();
+    let id = isiMarquee.getAttribute('data-id');
+    db.collection('marquee').doc(id).delete();
+        }
+    })
+
     }
 
 const createForm3 = document.querySelector('#tambah-marquee');
@@ -653,8 +670,8 @@ function renderKalkulator(doc){
     let reset = document.querySelector('#reset');
     reset.addEventListener('click', function(e){
     e.stopPropagation();
-    var konfirmasi5 = confirm('Anda yakin ingin menghapus pengumuman ini?');
-    if(konfirmasi5 == true){
+    let konfirmasi = confirm('Anda yakin ingin menghapus konfigurasi ini?');
+    if(konfirmasi == true){
     e.preventDefault();
     let hapusini = biayaAdmin1.getAttribute('data-id');
     let hapusini1 = bunga1.getAttribute('data-id');
@@ -728,22 +745,5 @@ document.querySelector(".your_class").addEventListener("keypress", function (evt
 });
 
 
-document.onkeydown = function(e) {
-  if(event.keyCode == 123) {
-     return false;
-  }
-  if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-     return false;
-  }
-  if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-     return false;
-  }
-  if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-     return false;
-  }
-  if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-     return false;
-  }
-}
 
 //document.addEventListener('contextmenu', event => event.preventDefault());

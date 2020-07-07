@@ -10,6 +10,7 @@ img{
      -ms-user-select: none; 
      user-select: none;
 }
+
 .logo-galaxy{
      z-index: 1;
      display: inline-block;
@@ -37,14 +38,12 @@ img{
      width: auto;
      position: relative;
      overflow: auto;
-
 }
 
 .ukuran{
      width:200px;
      color:black;
      background-color: #f5f5f5;
-
 }
 
 
@@ -134,7 +133,7 @@ div.card-header{
 }
 
 .halaman{
-    margin-top:10px;
+    margin-top: 3px;
     margin-left: 10px;
     margin-right: 10px;
     height:auto;
