@@ -185,33 +185,6 @@ const isiPromo = document.querySelector('#isipromo');
 
 
 function renderPromo(doc){
-var months = new Array();
-  months[0] = "Januari";
-  months[1] = "Februari";
-  months[2] = "Maret";
-  months[3] = "April";
-  months[4] = "Mei";
-  months[5] = "Juni";
-  months[6] = "Juli";
-  months[7] = "Agustus";
-  months[8] = "September";
-  months[9] = "Oktober";
-  months[10] = "November";
-  months[11] = "Desember";
-
-  var date = new Date();
-  var month = months[date.getMonth()];
-  var year = date.getFullYear();
-  var bulan = month + ' ' + year;
-if(isiPromo.childNodes.length === 0){
-isiPromo.innerHTML = `
-<div class="jumbotron jumbotron-fluid" id="note-promo">
-  <div class="container">
-    <h1 class="display-4">Hallo Admin Galaxy Camera Sekalian!</h1>
-    <p class="lead">Untuk saat ini tidak ada informasi mengenai promo bulanan brand terbaru pada bulan ${bulan}, jangan lupa untuk mengecek kembali dan menambahkan promo bulanan brand terbaru dan jika ada kesalahan dalam penambahan, pengisian ataupun penghapusan data, silahkan melakukan refresh untuk menghindarinya.</p>
-  </div>
-</div>`
-    }else{
     document.querySelector('#note-promo').style.display = "none";
     let div = document.createElement('div');
     let brandPromo = doc.data().brandPromo;
@@ -262,9 +235,9 @@ isiPromo.innerHTML = `
     });
 
 
-    }
-
 }
+
+
 
 const createForm2 = document.querySelector('#tambah-promo');
 
