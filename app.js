@@ -185,7 +185,6 @@ const isiPromo = document.querySelector('#isipromo');
 
 
 function renderPromo(doc){
-    document.querySelector('#note-promo').style.display = "none";
     let div = document.createElement('div');
     let brandPromo = doc.data().brandPromo;
     let keteranganPromo = doc.data().keteranganPromo;
