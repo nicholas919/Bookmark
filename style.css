@@ -655,15 +655,3 @@ fieldset{
   margin-bottom: 0px !important;
 }
 
-.btn.active.focus,
-.btn.active:focus,
-.btn.focus,
-.btn.focus:active,
-.btn:active:focus,
-.btn:focus {
-  outline: 0 !important;
-  outline-offset: 0  !important;
-  background-image: none  !important;
-  -webkit-box-shadow: none !important;
-  box-shadow: none  !important;
-}
