@@ -106,7 +106,7 @@ db.collection('catatan').onSnapshot(snapshot =>{
         }
     })
 })
-
+window.onload = function(){
 db.collection('catatan').onSnapshot(snapshot =>{
 if(isiCatatan.childNodes.length == 0){
     document.querySelector('#jumlahcatatan').innerText = '';
@@ -115,7 +115,7 @@ if(isiCatatan.childNodes.length == 0){
     document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
 }
 })
-
+}
 const isiCatatan = document.querySelector('#isicatatan');
 
 
@@ -190,7 +190,7 @@ db.collection('promo').onSnapshot(snapshot =>{
     })
 })
 
-
+window.onload = function(){
 db.collection('promo').onSnapshot(snapshot =>{
 if(isiPromo.childNodes.length == 0){
     document.querySelector('#jumlahpromo').innerText = '';
@@ -199,7 +199,7 @@ if(isiPromo.childNodes.length == 0){
     document.querySelector('#jumlahpromo').innerText = badgeJumlahPromo;
 }
 })
-
+}
 const isiPromo = document.querySelector('#isipromo');
 
 
@@ -277,7 +277,7 @@ createForm2.addEventListener('submit', (e) => {
 })
 
 //////////////////////Informasi////////////////////////
-
+window.onload = function(){
 db.collection('catatan').onSnapshot(snapshot =>{
     if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
     document.querySelector('#jumlahinformasi').innerText = '';
@@ -286,7 +286,9 @@ db.collection('catatan').onSnapshot(snapshot =>{
     document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
     }
 })
+}
 
+window.onload = function(){
 db.collection('promo').onSnapshot(snapshot =>{
     if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
     document.querySelector('#jumlahinformasi').innerText = '';
@@ -295,7 +297,7 @@ db.collection('promo').onSnapshot(snapshot =>{
     document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
     }
 })
-
+}
 
 //////////////////////Marquee////////////////////////
 
