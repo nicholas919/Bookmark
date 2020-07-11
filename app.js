@@ -309,7 +309,7 @@ db.collection('marquee').onSnapshot(snapshot =>{
             document.querySelector('#reset-marquee').classList.remove('disabled');
             document.querySelector('#edit-marquee').classList.add('disabled');
         }else if (change.type == 'removed'){
-            document.querySelectorAll('[data-id=' + change.doc.id + ']').forEach(e =>
+            document.querySelectorAll('div[data-id=' + change.doc.id + ']').forEach(e =>
             e.parentNode.removeChild(e));
             document.querySelector('#reset-marquee').classList.add('disabled');
             document.querySelector('#edit-marquee').classList.remove('disabled');
@@ -349,6 +349,7 @@ function renderMarquee(doc){
     e.preventDefault();
     let id = isiMarquee.getAttribute('data-id');
     db.collection('marquee').doc(id).delete();
+    window.location.reload();
         }
     })
 
@@ -489,7 +490,7 @@ db.collection('kalkulator').onSnapshot(snapshot =>{
             document.querySelector('#reset').classList.remove('disabled');
             document.querySelector('#edit-kalkulator').classList.add('disabled');
         } else if (change.type == 'removed'){
-            document.querySelectorAll('[data-id=' + change.doc.id + ']').forEach(e =>
+            document.querySelectorAll('div[data-id=' + change.doc.id + ']').forEach(e =>
             e.parentNode.removeChild(e));
             document.querySelector('#reset').classList.add('disabled');
             document.querySelector('#edit-kalkulator').classList.remove('disabled');
@@ -728,6 +729,190 @@ if(password1.value == pin1){
 
 })
 
+//////////////////////Tugas////////////////////////
+
+db.collection('tugas').onSnapshot(snapshot =>{
+    let changes = snapshot.docChanges();
+    changes.forEach(change =>{
+        if(change.type == 'added'){
+            renderTugas(change.doc);
+        } else if (change.type == 'removed'){
+            document.querySelectorAll('div[data-id=' + change.doc.id + ']').forEach(e =>
+            e.parentNode.removeChild(e))
+        } 
+    })
+})
+
+db.collection('tugas').onSnapshot(snapshot =>{
+if(isiTugas.childNodes.length == 0){
+    document.querySelector('#jumlahtugas').innerText = '';
+}else{
+    let badgeJumlahTugas = isiTugas.childNodes.length;
+    document.querySelector('#jumlahtugas').innerText = badgeJumlahTugas;
+}
+})
+
+db.collection('tugas').onSnapshot(snapshot =>{
+if(isiTugasCompleted.childNodes.length == 0){
+    document.querySelector('#jumlahselesai').innerText = '';
+}else{
+    let badgeJumlahTugasCompleted = isiTugasCompleted.childNodes.length;
+    document.querySelector('#jumlahselesai').innerText = badgeJumlahTugasCompleted;
+}
+})
+
+const isiTugas = document.querySelector('#daftar-tugas-pending');
+const isiTugasCompleted = document.querySelector('#daftar-tugas-selesai');
+
+function renderTugas(doc){
+    let div = document.createElement('div');
+    div.classList.add('tugas-pending');
+    div.setAttribute('data-id', doc.id);
+    let deskripsiTugas = doc.data().deskripsiTugas;
+    let tanggalPembuatan = doc.data().tanggalPembuatan;
+    let div1 = document.createElement('div');
+    div1.classList.add('tugas-selesai');
+    div1.setAttribute('data-id', doc.id);
+    let deskripsiTugas1 = doc.data().deskripsiTugas1;
+    let tanggalPembuatan1 = doc.data().tanggalPembuatan1;
+    let tanggalPenyelesaian = doc.data().tanggalPenyelesaian;
+    if(deskripsiTugas1 != undefined && tanggalPembuatan1 != undefined){
+    div1.innerHTML = `
+    <div class="deskripsi-tugas-selesai"><div class="keterangan-tugas-selesai">Dibuat pada <span id="tanggal${doc.id}">${tanggalPembuatan1}</span> - <span id="deskripsi${doc.id}">${deskripsiTugas1}</span></div>
+    <small id="penyelesaian${doc.id}" class="penyelesaian">Diselesaikan pada ${tanggalPenyelesaian} </small></div>
+    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
+    <i id="hapustugasselesai${doc.id}" class='fas fa-trash-alt hapustugasselesai'></i>
+    `
+    isiTugasCompleted.appendChild(div1);
+
+    let hapus = document.querySelector('#hapustugasselesai' + doc.id);
+    hapus.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin menghapus ini?');
+    if(konfirmasi == true){
+    let id = e.target.parentElement.getAttribute('data-id');
+    db.collection('tugas').doc(id).delete();
+    }   
+  })
+
+    $(document).ready(function() {
+    db.collection('tugas').onSnapshot(snapshot =>{
+    var items = $('#daftar-tugas-selesai > .tugas-selesai').get();
+    items.sort(function(a, b) {
+    var keyA = $(a).text();
+    var keyB = $(b).text();
+    if (keyA < keyB) return -1;
+    if (keyA > keyB) return 1;
+    return 0;
+    })
+    var daftarTugasSelesai = $('#daftar-tugas-selesai');
+    $.each(items, function(i, div) {
+    daftarTugasSelesai.append(div);
+  })
+  })
+})
+
+}
+    if(deskripsiTugas != undefined && tanggalPembuatan != undefined){
+    div.innerHTML = `
+        <div class="deskripsi-tugas">Dibuat pada <span id="tanggal${doc.id}">${tanggalPembuatan}</span> - <span id="deskripsi${doc.id}">${deskripsiTugas}</span></div>
+        <i id="selesaikan${doc.id}" class='fas fa-check selesaikantugas'></i>
+        <i id="hapus${doc.id}" class='fas fa-trash-alt hapustugas'></i>
+    `
+    isiTugas.appendChild(div);
+
+    let selesaikan = document.querySelector('#selesaikan' + doc.id);
+    selesaikan.addEventListener('click', function (e){
+    let today4 = new Date();
+    let dd4 = String(today4.getDate()).padStart(2, '0');
+    let mm4 = String(today4.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy4 = today4.getFullYear();
+    let hours4 = ('0' + today4.getHours()).slice(-2);
+    let minutes4 = ('0' + today4.getMinutes()).slice(-2);
+    tanggal4 = mm4 + '/' + dd4 + '/' + yyyy4;
+    jam4 = hours4 + ":" + minutes4;
+    e.stopPropagation();
+    db.collection('tugas').add({
+        tanggalPembuatan1: document.querySelector('#tanggal' + doc.id).textContent,
+        deskripsiTugas1: document.querySelector('#deskripsi' + doc.id).textContent,
+        tanggalPenyelesaian: tanggal4 + ', '+ jam4
+    }).then(() => {
+        let id = e.target.parentElement.getAttribute('data-id');
+        db.collection('tugas').doc(id).delete();
+    })
+})
+
+    let hapus = document.querySelector('#hapus' + doc.id);
+    hapus.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin menghapus tugas ini?');
+    if(konfirmasi == true){
+    let id = e.target.parentElement.getAttribute('data-id');
+    db.collection('tugas').doc(id).delete();
+    }   
+  })
+
+$(document).ready(function() {
+db.collection('tugas').onSnapshot(snapshot =>{
+    var items = $('#daftar-tugas-pending > .tugas-pending').get();
+    items.sort(function(a, b) {
+    var keyA = $(a).text();
+    var keyB = $(b).text();
+    if (keyA < keyB) return -1;
+    if (keyA > keyB) return 1;
+    return 0;
+    })
+    var daftarTugasPending = $('#daftar-tugas-pending');
+    $.each(items, function(i, div) {
+    daftarTugasPending.append(div);
+  })
+  })
+})
+
+}
+
+
+}
+
+const createForm7 = document.querySelector('#form-tugas');
+createForm7.addEventListener('submit', (e) => {
+    let today3 = new Date();
+    let dd3 = String(today3.getDate()).padStart(2, '0');
+    let mm3 = String(today3.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy3 = today3.getFullYear();
+    let hours3 = ('0' + today3.getHours()).slice(-2);
+    let minutes3 = ('0' + today3.getMinutes()).slice(-2);
+    tanggal3 = mm3 + '/' + dd3 + '/' + yyyy3;
+    jam3 = hours3 + ":" + minutes3;
+    e.preventDefault();
+    db.collection('tugas').add({
+        deskripsiTugas: createForm7['tugas'].value.replace(/\n\r?/g, '<br/>'),
+        tanggalPembuatan: tanggal3 + ', '+ jam3
+    }).then(() => {
+        document.querySelector('#form-tugas').reset();
+    })
+})
+
+document.querySelector('#judul-pending-task').addEventListener('click', function(){
+if(document.querySelector('#judul-pending-task').classList.contains('collapsed') == true){
+    document.querySelector('.pending').classList.remove('fa-angle-down');
+    document.querySelector('.pending').classList.add('fa-angle-up');
+}else{
+    document.querySelector('.pending').classList.add('fa-angle-down');
+    document.querySelector('.pending').classList.remove('fa-angle-up');
+}
+})
+
+document.querySelector('#judul-completed-task').addEventListener('click', function(){
+if(document.querySelector('#judul-completed-task').classList.contains('collapsed') == true){
+    document.querySelector('.completed').classList.remove('fa-angle-down');
+    document.querySelector('.completed').classList.add('fa-angle-up');
+}else{
+    document.querySelector('.completed').classList.add('fa-angle-down');
+    document.querySelector('.completed').classList.remove('fa-angle-up');
+}
+})
+
 
 
 function auto_grow(element){
@@ -743,7 +928,6 @@ document.querySelector(".your_class").addEventListener("keypress", function (evt
         evt.preventDefault();
     }
 });
-
 
 
 //document.addEventListener('contextmenu', event => event.preventDefault());

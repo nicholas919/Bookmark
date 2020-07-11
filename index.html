@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
   <link rel="icon" type="text/css" href="bookmark-alt-flat.png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-firestore.js"></script>
 </head>
@@ -18,7 +19,7 @@
 
 
 <div class="navigasi-kiri nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-  <img class="logo-galaxy" src="logo.png" style="mix-blend-mode: multiply;opacity: 1;">
+  <a href="https://galaxycamera.id/en/" target="_blank"><img class="logo-galaxy" src="logo.png" style="mix-blend-mode: multiply;opacity: 1;"></a>
 <div id="accordion">
   <div class="daftar-menu">
 <hr style="margin:0;">
@@ -42,11 +43,15 @@
 <hr style="margin:0;">
     
     </div>
-    <a class="tab-halaman btn text-left menu" id="tab-cust" data-toggle="pill" href="#halaman-cust" role="tab" aria-controls="halaman-cust" aria-selected="true"><span class="daftar2menu"></span><i class="fa fa-address-book"></i> Penawaran/Indent <span id="jumlahcust" class="badge badge-danger"></span></a>
+    <a class="tab-halaman btn text-left menu" id="tab-cust" data-toggle="pill" href="#halaman-cust" role="tab" aria-controls="halaman-cust" aria-selected="true"><span class="daftar2menu"><i class="fa fa-address-book"></i> Penawaran/Indent <span id="jumlahcust" class="badge badge-danger"></span></span></a>
 
 <hr style="margin:0;">
 
     <a class="tab-halaman btn text-left menu" id="tab-kalkulator" data-toggle="pill" href="#halaman-kalkulator" role="tab" aria-controls="halaman-kalkulator" aria-selected="true"><span class="daftar2menu"> <i class='fas fa-calculator'></i> Kalkulator HCI</span></a>
+
+<hr style="margin:0;">
+
+    <a class="tab-halaman btn text-left menu" id="tab-tugas" data-toggle="pill" href="#halaman-tugas" role="tab" aria-controls="halaman-tugas" aria-selected="true"><span class="daftar2menu"> <i class='fas fa-clipboard-list'></i> List Tugas <span id="jumlahtugas" class="badge badge-danger"></span> <span id="jumlahselesai" class="badge badge-success"></span></span></a>
 
 <hr style="margin:0;">
 
@@ -56,7 +61,7 @@
     </div>
   </div>
 
-<small style="position: absolute;bottom: 0;left: 0;margin-left: 10px;margin-right: 10px;">Bookmark V1.0.3</small>
+<small style="position: absolute;bottom: 0;left: 0;margin-left: 10px;margin-right: 10px;">Bookmark V1.0.4</small>
 </div>
 
 
@@ -666,13 +671,27 @@
        </div>
      </div>
 
-
+<div class="halaman tab-pane fade" id="halaman-tugas" role="tabpanel" aria-labelledby="tab-tugas">
+  <div id="to-do-list">
+    <div id="judul-atas-tugas">List Tugas</div>
+        <form id="form-tugas">
+          <div class="form-row">
+            <input type="text" autocomplete="off" placeholder="Tambahkan Konten Tugas Disini" class="col-11 form-control" id="tugas" required>
+            <button class="btn btn-primary" id="tambah-tugas" type="submit" class="form-control">Tambah</button>
+          </div>
+        </form>
+  </div>
+      <div id="judul-pending-task" class="btn btn-link" data-toggle="collapse" data-target="#daftar-tugas-pending" aria-expanded="true" aria-controls="daftar-tugas-pending"><i class="fa fa-clock-o"></i> Pending Task <i class='pending fas fa-angle-down'></i></div>
+        <div id="daftar-tugas-pending" class="collapse show"></div>
+      <div id="judul-completed-task" class="btn btn-link" data-toggle="collapse" data-target="#daftar-tugas-selesai" aria-expanded="false" aria-controls="daftar-tugas-selesai"><i class='fas fa-clipboard-check'></i> Completed Task <i class='completed fas fa-angle-down'></i></div>
+        <div id="daftar-tugas-selesai" class="collapse"></div>
+</div>
 
 </div>
 
 
 
-<audio id="audio" style="display: none;" src="https://firebasestorage.googleapis.com/v0/b/bookmark-61950.appspot.com/o/15726_download_iphone_sms_original_ringtone_iphone_sms_ringtones.mp3?alt=media&token=ce15e5a1-a569-444b-9ea0-576bd677a48a"></audio>
+<audio id="audio" style="display: none;" src="https://firebasestorage.googleapis.com/v0/b/bookmark-61950.appspot.com/o/notification_sound.mp3?alt=media&token=e0361dc1-aeb4-42ac-8665-3d41d6cb3cc3"></audio>
 
 <script>
   var firebaseConfig = {

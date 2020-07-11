@@ -202,7 +202,7 @@ nav.navbar{
   overflow: hidden;
   z-index: 1;
   padding: 0px 0px 8px 12px;
-  margin-bottom: 8px;
+  margin-bottom: 8px !important;
 }
 
 #isipengumuman{
@@ -656,3 +656,254 @@ fieldset{
   margin-bottom: 0px !important;
 }
 
+#to-do-list{
+  background-image: linear-gradient(#039dfc,#67bcf0);
+}
+
+#judul-atas-tugas{
+  display: block;
+  text-align: center;
+  color:white;
+  font-size: 28px;
+  font-weight: bold;
+  padding-top: 30px;
+}
+
+#tugas{
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border: none;
+  margin-left: 8px;
+  padding-left: 15px;
+}
+
+#form-tugas{
+  padding:5px 30px 20px;
+  margin-left: 5px;
+  margin-right:5px;
+
+}
+
+#tambah-tugas{
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+#judul-pending-task, #judul-completed-task{
+  padding:8px 20px 8px;
+  color:white;
+  font-weight: bold;
+  cursor: pointer;
+  display: block;
+  border-radius: 0;
+  text-decoration: none;
+  text-align: left;
+}
+
+#judul-completed-task{
+  background-image: linear-gradient(#13d12f,#36d94e);
+}
+
+#judul-pending-task{
+  background-image: linear-gradient(#eb4034,#f2685e);
+}
+
+.fa-angle-down, .fa-angle-up{
+  float:right;
+}
+
+.fa-angle-down::before, .fa-angle-up::before{
+  vertical-align: -webkit-baseline-middle !important;
+}
+
+.tugas-pending{
+  padding: 8px 20px;
+  display: grid;
+  grid-template-columns: auto 50px 50px;
+}
+
+.tugas-pending:nth-child(odd){
+  background-color: #f5f5f5;  
+}
+
+.tugas-pending:nth-child(even){
+  background-color: #e8e8e8;  
+}
+
+.hapustugas{
+  color:#ff3030 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  display: flex !important;
+  font-size: 18px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.deskripsi-tugas{
+  padding:15px;
+}
+
+.selesaikantugas{
+  align-items: center !important;
+  justify-content: center !important;
+  display: flex !important;
+  color:#33f222 !important;
+  text-align: center;
+  cursor: pointer;
+}
+
+.hapustugas:hover{
+  border:1px solid #ff3030 !important;
+  background-color: #ff3030 !important;
+  padding:12px 13px;
+  border-radius: 10px;
+  color:white !important;
+}
+
+.hapustugas:active{
+  background-color: white !important;
+  color:#ff3030 !important;
+}
+
+
+.selesaikantugas:hover{
+  border:1px solid #33f222 !important;
+  background-color: #33f222 !important;
+  padding:12px;
+  border-radius: 10px;
+  color:white !important;
+}
+
+.selesaikantugas:active{
+  background-color:white !important;
+  color:#33f222 !important;
+}
+
+.deskripsi-tugas-selesai{
+  padding:15px;
+}
+
+.tugas-selesai{
+  padding: 8px 20px;
+  display: grid;
+  grid-template-columns: auto 60px 60px;
+}
+
+.tugas-selesai:nth-child(odd){
+  background-color: #f5f5f5;  
+}
+
+.tugas-selesai:nth-child(even){
+  background-color: #e8e8e8;  
+}
+
+.penyelesaian{
+  color:grey;
+}
+
+.checkmark__circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: #039dfc;
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 2;
+  stroke: #fff;
+  stroke-miterlimit: 10;
+  margin: 10%;
+  box-shadow: inset 0px 0px 0px #039dfc;
+  animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+  margin:auto;
+}
+
+.checkmark__check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes scale {
+  0%, 100% {
+    transform: none;
+  }
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}
+@keyframes fill {
+  100% {
+    box-shadow: inset 0px 0px 0px 30px #039dfc;
+  }
+}
+
+.tugas-selesai:hover{
+  background-color: #91ff93;
+}
+
+.checkbox-hapus-tugas{
+  align-items: center !important;
+  justify-content: center !important;
+  display: block !important;
+  margin:auto !important;
+}
+
+.hapustugasselesai{
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  margin: auto;
+  display: flex !important;
+  font-size: 18px;
+  text-align: center;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  border-radius: 50%;
+  border:1px solid #ff3030;
+  color:white !important;
+  background-color: #ff3030;
+}
+
+.hapustugasselesai:hover{
+  color:#ff3030 !important;
+  background-color: white;
+  animation: besar 0.1s ease forwards;
+}
+
+.hapustugasselesai:active{
+  color:white !important;
+  background-color: #ff3030;
+  animation: kecil 0.1s ease forwards;
+}
+
+@keyframes besar{
+  0%{font-size:18px;}
+  25%{font-size:19.5px;}
+  50%{font-size:21px;}
+  75%{font-size:22.5px;}
+  100%{font-size:24px;}
+}
+
+@keyframes kecil{
+  0%{font-size:24px;}
+  25%{font-size:22px;}
+  50%{font-size:20px;}
+  75%{font-size:18px;}
+  100%{font-size:16px;}
+}
