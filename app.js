@@ -890,6 +890,7 @@ createForm7.addEventListener('submit', (e) => {
         tanggalPembuatan: tanggal3 + ', '+ jam3
     }).then(() => {
         document.querySelector('#form-tugas').reset();
+        document.querySelector('#audio').play();
     })
 })
 
