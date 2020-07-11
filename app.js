@@ -63,20 +63,18 @@ if(isiPengumuman.childNodes.length === 0){
 
 
 const createForm = document.querySelector('#tambah-pengumuman');
-var today = new Date();
-var dd = String(today.getDate()).padStart(2, '0');
-var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy = today.getFullYear();
-var hours = ('0' + today.getHours()).slice(-2);
-var minutes = ('0' + today.getMinutes()).slice(-2);
-tanggal = mm + '/' + dd + '/' + yyyy;
-jam = hours + ":" + minutes;
-
 
 
 createForm.addEventListener('submit', (e) => {
     e.preventDefault();
-
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+    let hours = ('0' + today.getHours()).slice(-2);
+    let minutes = ('0' + today.getMinutes()).slice(-2);
+    tanggal = mm + '/' + dd + '/' + yyyy;
+    jam = hours + ":" + minutes;
     db.collection('pengumuman').add({
         judul: createForm['judul'].value.toUpperCase(),
         keterangan: createForm['keterangan'].value.replace(/\n\r?/g, '<br/>'),
@@ -153,18 +151,17 @@ function renderCatatan(doc){
         
 
 const createForm1 = document.querySelector('#tambah-catatan');
-var today1 = new Date();
-var dd1 = String(today1.getDate()).padStart(2, '0');
-var mm1 = String(today1.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy1 = today1.getFullYear();
-var hours1 = ('0' + today1.getHours()).slice(-2);
-var minutes1 = ('0' + today1.getMinutes()).slice(-2);
-tanggal1 = mm1 + '/' + dd1 + '/' + yyyy1;
-jam1 = hours1 + ":" + minutes1;
 
 createForm1.addEventListener('submit', (e) => {
     e.preventDefault();
-
+    let today1 = new Date();
+    let dd1 = String(today1.getDate()).padStart(2, '0');
+    let mm1 = String(today1.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy1 = today1.getFullYear();
+    let hours1 = ('0' + today1.getHours()).slice(-2);
+    let minutes1 = ('0' + today1.getMinutes()).slice(-2);
+    tanggal1 = mm1 + '/' + dd1 + '/' + yyyy1;
+    jam1 = hours1 + ":" + minutes1;
     db.collection('catatan').add({
         keteranganCatatan: createForm1['keterangancatatan'].value.replace(/\n\r?/g, '<br/>'),
         tanggalCatatan: tanggal1 + ', '+ jam1,
