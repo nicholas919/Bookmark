@@ -681,8 +681,8 @@ fieldset{
   padding:5px 30px 20px;
   margin-left: 5px;
   margin-right:5px;
-  display: grid !important;
-  grid-template-columns: auto 80px !important;
+  display: grid;
+  grid-template-columns: auto 80px;
 }
 
 #tambah-tugas{
