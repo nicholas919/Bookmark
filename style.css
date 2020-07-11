@@ -161,6 +161,30 @@ a#navbarDropdown{
     margin-right:40px;
 }
 
+@media only screen and (max-width: 1300px) {
+.navbar-nav > li{
+    margin-left: 0px !important;
+    margin-right:20px !important;
+  }
+
+.navbar-nav.navbar-kedua > li{
+    margin-left: 0px !important;
+    margin-right:15px !important;
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+.navbar-nav > li{
+    margin-left: 0px !important;
+    margin-right:20px !important;
+  }
+
+.navbar-nav.navbar-kedua > li{
+    margin-left: 0px !important;
+    margin-right:15px !important;
+  }
+}
+
 .navbar-nav.navbar-kedua > li{
     margin-left: 35px;
     margin-right:35px;
