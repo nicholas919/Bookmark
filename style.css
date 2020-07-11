@@ -677,11 +677,12 @@ fieldset{
   padding-left: 15px;
 }
 
-#form-tugas{
+.form-tugas{
   padding:5px 30px 20px;
   margin-left: 5px;
   margin-right:5px;
-
+  display: grid !important;
+  grid-template-columns: auto 80px !important;
 }
 
 #tambah-tugas{
@@ -906,4 +907,8 @@ fieldset{
   50%{font-size:20px;}
   75%{font-size:18px;}
   100%{font-size:16px;}
+}
+
+#tugas .form-control{
+  width: auto !important;
 }
