@@ -191,8 +191,17 @@ function renderCatatan(doc){
                 document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
                 }
             })
+    let hapus1 = document.querySelector('a#hapusya' + doc.id);
+    hapus1.addEventListener('click', function(e){
+    e.stopPropagation();
+    var konfirmasi1 = confirm('Anda yakin ingin menghapus catatan ini?');
+    if(konfirmasi1 == true){
+    let id = e.target.parentElement.getAttribute('data-id');
+    db.collection('catatan').doc(id).delete();
+        }  
+      })
+        })
     })
-})
 
 
     let hapus1 = document.querySelector('a#hapusya' + doc.id);
@@ -202,10 +211,12 @@ function renderCatatan(doc){
     if(konfirmasi1 == true){
     let id = e.target.parentElement.getAttribute('data-id');
     db.collection('catatan').doc(id).delete();
-    }  
-  });
-}
-        
+        }  
+      })
+
+
+} 
+       
 
 const createForm1 = document.querySelector('#tambah-catatan');
 var today1 = new Date();
@@ -230,13 +241,13 @@ createForm1.addEventListener('submit', (e) => {
     })
 })
 
-db.collection('catatan').onSnapshot(snapshot =>{
-if(isiCatatan.childNodes.length == 0){
-    document.querySelector('#jumlahcatatan').innerText = '';
-}else{
-    let badgeJumlahCatatan = isiCatatan.childNodes.length;
-    document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
-}
+    db.collection('catatan').onSnapshot(snapshot =>{
+    if(isiCatatan.childNodes.length == 0){
+        document.querySelector('#jumlahcatatan').innerText = '';
+    }else{
+        let badgeJumlahCatatan = isiCatatan.childNodes.length;
+        document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
+        }
 })
 
 //////////////////////Promo////////////////////////
