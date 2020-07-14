@@ -345,7 +345,7 @@ li{
     color: #0ff;
 }
 
-#keterangan-catatan{
+.keterangan-catatan{
     border-left:2px solid #5b5c5b;
     border-bottom:2px solid #5b5c5b;
     border-right:2px solid #5b5c5b;
@@ -361,17 +361,17 @@ li{
 
 .hapusya{
     cursor: pointer;
-    border-left:2px solid #5b5c5b;
+    border-left:1px solid #5b5c5b;
     border-bottom:2px solid #5b5c5b;
     border-right:2px solid #5b5c5b;
     background-color: #f74a4a;
-    display: block;
+    display: inline-block;
     text-align: center;
     color: white !important;
-    border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     padding:5px 0px;
     font-weight: bold;
+    width: 50%;
 }
 
 .hapusya:hover{
@@ -382,7 +382,31 @@ li{
 .hapusya:active{
     background-color: #f74a4a;
     color:white !important;
+}
 
+.editya{
+    cursor: pointer;
+    border-left:2px solid #5b5c5b;
+    border-bottom:2px solid #5b5c5b;
+    border-right:1px solid #5b5c5b;
+    background-color: #ffbb00;
+    display: inline-block;
+    text-align: center;
+    color: white !important;
+    border-bottom-left-radius: 15px;
+    padding:5px 0px;
+    font-weight: bold;
+    width: 50%;
+}
+
+.editya:hover{
+    background-color: white;
+    color:#ffbb00 !important;
+}
+
+.editya:active{
+    background-color: #ffbb00;
+    color:white !important;
 }
 
 a.hapuspromo{
@@ -936,3 +960,4 @@ fieldset{
 #tugas .form-control{
   width: auto !important;
 }
+

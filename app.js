@@ -1,7 +1,4 @@
 //////////////////////Pengumuman////////////////////////
-
-
-
 db.collection('pengumuman').onSnapshot(snapshot =>{
     let changes = snapshot.docChanges();
     changes.forEach(change =>{
@@ -63,18 +60,20 @@ if(isiPengumuman.childNodes.length === 0){
 
 
 const createForm = document.querySelector('#tambah-pengumuman');
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+var hours = ('0' + today.getHours()).slice(-2);
+var minutes = ('0' + today.getMinutes()).slice(-2);
+tanggal = mm + '/' + dd + '/' + yyyy;
+jam = hours + ":" + minutes;
+
 
 
 createForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    let today = new Date();
-    let dd = String(today.getDate()).padStart(2, '0');
-    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    let yyyy = today.getFullYear();
-    let hours = ('0' + today.getHours()).slice(-2);
-    let minutes = ('0' + today.getMinutes()).slice(-2);
-    tanggal = mm + '/' + dd + '/' + yyyy;
-    jam = hours + ":" + minutes;
+
     db.collection('pengumuman').add({
         judul: createForm['judul'].value.toUpperCase(),
         keterangan: createForm['keterangan'].value.replace(/\n\r?/g, '<br/>'),
@@ -101,7 +100,122 @@ db.collection('catatan').onSnapshot(snapshot =>{
         } else if (change.type == 'removed'){
             let div = isiCatatan.querySelector('[data-id=' + change.doc.id + ']');
             isiCatatan.removeChild(div);
+        } else {
+            renderCatatan(change.doc);
         }
+    })
+})
+
+
+const isiCatatan = document.querySelector('#isicatatan');
+const editCatatan = document.querySelector('#editcatatan')
+
+function renderCatatan(doc){
+    let div = document.createElement('div');
+    let edit = document.createElement('div');
+    let keteranganCatatan = doc.data().keteranganCatatan;
+    let tanggalCatatan = doc.data().tanggalCatatan;
+    let creatorCatatan = doc.data().creatorCatatan;
+    div.setAttribute('data-id', doc.id);
+    div.innerHTML =`
+    <div class="daftar-catatan">
+    <div class="bg-dark judul-catatan">
+    <div class="judul-daftar-catatan">Catatan @${creatorCatatan}</div>
+    <small class="text-light">Dibuat pada ${tanggalCatatan}</small></div>
+    <div class="keterangan-catatan">${keteranganCatatan}</div>
+    </div>
+    <a id="editya${doc.id}" class="editya" data-toggle="modal" data-target="#modaleditcatatan${doc.id}"><i class='fas fa-edit'></i> Edit</a><a id="hapusya${doc.id}" class="hapusya"><i class='fas fa-trash-alt'></i> Hapus</a>
+    <div style="margin-bottom:10px;"></div>
+    `
+    edit.innerHTML =`
+    <div class="modal fade" id="modaleditcatatan${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Mengubah Catatan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="form-edit-catatan${doc.id}">
+                <div class="form-group">
+                  <label class="col-form-label">Nama Penulis</label>
+                  <input type="text" value="${creatorCatatan}" class="form-control" id="editcreatorcatatan${doc.id}" autocomplete="off" placeholder="Cantumkan Nama Anda" minlength="4" required>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Keterangan</label>
+                  <textarea oninput="auto_grow(this)" class="form-control edit-keterangan" id="editketerangancatatan${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" minlength="10" onfocus="auto_grow(this)" required>${keteranganCatatan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            </div>
+          </div>
+       </div>
+     </div>
+    `
+    isiCatatan.appendChild(div);
+    editCatatan.appendChild(edit);
+
+    let formEditCatatan = document.querySelector('#form-edit-catatan' + doc.id);
+    formEditCatatan.addEventListener('submit', (e) => {
+        e.preventDefault();
+    let updateCreatorCatatan = document.querySelector('#editcreatorcatatan' + doc.id).value;
+    let updateKeteranganCatatan = document.querySelector('#editketerangancatatan' + doc.id).value;
+
+    db.collection('catatan').doc(doc.id).update({
+    creatorCatatan : updateCreatorCatatan,
+    keteranganCatatan : updateKeteranganCatatan.replace(/\n\r?/g, '<br/>')
+    }).then(() => {
+        $('#modaleditcatatan' + doc.id).modal('hide');
+        let div = isiCatatan.querySelector('[data-id=' + doc.id + ']');
+        isiCatatan.removeChild(div);
+        db.collection('catatan').onSnapshot(snapshot =>{
+        if(isiCatatan.childNodes.length == 0){
+            document.querySelector('#jumlahcatatan').innerText = '';
+        }else{
+            let badgeJumlahCatatan = isiCatatan.childNodes.length;
+            document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
+        }
+})
+    })
+})
+
+    let hapus1 = document.querySelector('a#hapusya' + doc.id);
+    hapus1.addEventListener('click', function(e){
+    e.stopPropagation();
+    var konfirmasi1 = confirm('Anda yakin ingin menghapus catatan ini?');
+    if(konfirmasi1 == true){
+    let id = e.target.parentElement.getAttribute('data-id');
+    db.collection('catatan').doc(id).delete();
+    }  
+  });
+}
+        
+
+const createForm1 = document.querySelector('#tambah-catatan');
+var today1 = new Date();
+var dd1 = String(today1.getDate()).padStart(2, '0');
+var mm1 = String(today1.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy1 = today1.getFullYear();
+var hours1 = ('0' + today1.getHours()).slice(-2);
+var minutes1 = ('0' + today1.getMinutes()).slice(-2);
+tanggal1 = mm1 + '/' + dd1 + '/' + yyyy1;
+jam1 = hours1 + ":" + minutes1;
+
+createForm1.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    db.collection('catatan').add({
+        keteranganCatatan: createForm1['keterangancatatan'].value.replace(/\n\r?/g, '<br/>'),
+        tanggalCatatan: tanggal1 + ', '+ jam1,
+        creatorCatatan: createForm1['creatorcatatan'].value
+    }).then(() => {
+        $('#modalcatatan').modal('hide');
+        document.querySelector('#tambah-catatan').reset();
     })
 })
 
@@ -113,65 +227,6 @@ if(isiCatatan.childNodes.length == 0){
     document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
 }
 })
-
-const isiCatatan = document.querySelector('#isicatatan');
-
-
-function renderCatatan(doc){
-    let div = document.createElement('div');
-    let keteranganCatatan = doc.data().keteranganCatatan;
-    let tanggalCatatan = doc.data().tanggalCatatan;
-    let creatorCatatan = doc.data().creatorCatatan;
-    div.setAttribute('data-id', doc.id);
-    div.innerHTML=`
-    <div class="daftar-catatan">
-    <div class="bg-dark judul-catatan">
-    <div class="judul-daftar-catatan">Catatan @${creatorCatatan}</div>
-    <small class="text-light">Dibuat pada ${tanggalCatatan}</small></div>
-    <div id="keterangan-catatan">${keteranganCatatan}</div>
-    </div>
-    <a id="hapusya${doc.id}" class="hapusya"><i class='fas fa-trash-alt'></i> Hapus</a>
-    <div style="margin-bottom:10px;"></div>
-    `
-    isiCatatan.appendChild(div);
-
-
-
-    let hapus1 = document.querySelector('a#hapusya' + doc.id);
-    hapus1.addEventListener('click', function(e){
-    e.stopPropagation();
-    var konfirmasi1 = confirm('Anda yakin ingin menghapus catatan ini?');
-    if(konfirmasi1 == true){
-    let id = e.target.parentElement.getAttribute('data-id');
-    db.collection('catatan').doc(id).delete();
-    }
-      
-  });
-}
-        
-
-const createForm1 = document.querySelector('#tambah-catatan');
-
-createForm1.addEventListener('submit', (e) => {
-    e.preventDefault();
-    let today1 = new Date();
-    let dd1 = String(today1.getDate()).padStart(2, '0');
-    let mm1 = String(today1.getMonth() + 1).padStart(2, '0'); //January is 0!
-    let yyyy1 = today1.getFullYear();
-    let hours1 = ('0' + today1.getHours()).slice(-2);
-    let minutes1 = ('0' + today1.getMinutes()).slice(-2);
-    tanggal1 = mm1 + '/' + dd1 + '/' + yyyy1;
-    jam1 = hours1 + ":" + minutes1;
-    db.collection('catatan').add({
-        keteranganCatatan: createForm1['keterangancatatan'].value.replace(/\n\r?/g, '<br/>'),
-        tanggalCatatan: tanggal1 + ', '+ jam1,
-        creatorCatatan: createForm1['creatorcatatan'].value
-    }).then(() => {
-        $('#modalcatatan').modal('hide')
-        document.querySelector('#tambah-catatan').reset();
-    })
-})
-
 
 //////////////////////Promo////////////////////////
 
