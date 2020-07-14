@@ -4,7 +4,7 @@
   <title>Bookmark</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link media="all" rel="stylesheet" type="text/css" href="style.css">
   <link href="https://fonts.googleapis.com/css?family=Righteous&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -54,6 +54,10 @@
 <hr style="margin:0;">
 
     <a class="tab-halaman btn text-left menu" id="tab-tugas" data-toggle="pill" href="#halaman-tugas" role="tab" aria-controls="halaman-tugas" aria-selected="true"><span class="daftar2menu"> <i class='fas fa-clipboard-list'></i> List Tugas <span id="jumlahtugas" class="badge badge-danger"></span> <span id="jumlahselesai" class="badge badge-success"></span></span></a>
+
+<hr style="margin:0;">
+
+    <a class="tab-halaman btn text-left menu" id="tab-cetak" data-toggle="pill" href="#halaman-cetak" role="tab" aria-controls="halaman-cetak" aria-selected="true"><span class="daftar2menu"> <i class="fa fa-print"></i> Cetak Label</span></a>
 
 <hr style="margin:0;">
 
@@ -687,6 +691,54 @@
         <div id="daftar-tugas-pending" class="collapse show"></div>
       <div id="judul-completed-task" class="btn btn-link" data-toggle="collapse" data-target="#daftar-tugas-selesai" aria-expanded="false" aria-controls="daftar-tugas-selesai"><i class='fas fa-clipboard-check'></i> Completed Task <i class='completed fas fa-angle-down'></i></div>
         <div id="daftar-tugas-selesai" class="collapse"></div>
+</div>
+
+<div class="halaman tab-pane fade" id="halaman-cetak" role="tabpanel" aria-labelledby="tab-cetak">
+  <div id="isi-halaman-cetak">
+    <form id="form-cetak">
+      <h3 id="judul-form-cetak">Cetak Label Pengiriman</h3>
+      <div id="keterangan-form-cetak">Diharapkan agar periksa ulang kembali kolom yang sudah diisi pada form untuk menghindari kesalahan dalam pengetikan.</div>
+  <div class="row">
+    <div class="form-group col-4">
+      <label>Nama Customer</label>
+    <input type="text" class="form-control" id="nama-shipping-customer" autocomplete="off" required>
+    </div>
+
+    <div class="form-group col-4">
+      <label>No HP Customer</label>
+    <input type="number" class="form-control your_class" id="kontak-shipping-customer" autocomplete="off" autocomplete="off" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "13" required>
+    </div>
+
+    <div class="form-group col-4">
+      <label>Ekspedisi</label>
+    <select class="form-control" id="ekspedisi-shipping-customer">
+        <option value="" disabled selected hidden>-</option>
+        <option>JNE Reg</option>
+        <option>JNE Yes</option>
+        <option>GoSend Instant</option>
+        <option>GoSend Sameday</option>
+        <option>Grab Instant</option>
+        <option>Grab Sameday</option>
+        <option>JNT</option>
+        <option>SiCepat</option>
+        </select>
+    </div>
+
+  </div>
+    <div class="form-group">
+      <label>Alamat Customer</label>
+    <textarea oninput="auto_grow(this)" class="form-control" id="alamat-shipping-customer" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:100px;" autocomplete="off" onfocus="auto_grow(this)" required></textarea>
+    </div>
+
+<button type="submit" class="btn btn-warning mx-auto d-block" style="width:100%;color:white;font-weight: bold;">Tambah</button>
+
+    </form>
+
+<button id="tombol-print" onclick="printDiv('preview-print')" class="btn btn-success mx-auto d-block" style="width: 100%;margin-top:8px;color:white;font-weight: bold;">Print</button>
+
+  </div>
+  
+    <div class="preview-print" id="preview-print"></div>
 </div>
 
 </div>

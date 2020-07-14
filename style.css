@@ -961,3 +961,129 @@ fieldset{
   width: auto !important;
 }
 
+#isi-halaman-cetak{
+  background-image: linear-gradient(#39459b,#51b9f5);
+  padding: 15px;
+}
+
+#form-cetak{
+  color:white;
+}
+
+
+#judul-form-cetak, #keterangan-form-cetak{
+  text-align: center !important;
+}
+
+#judul-form-cetak{
+  margin: 8px;
+  font-weight: bold;
+  font-family: righteous;
+}
+
+#keterangan-form-cetak{
+  margin-bottom: 20px;
+}
+
+.preview-print{
+  margin-top: 8px;
+  background-color: #f5f5f5;
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.potongan-kertas:nth-child(odd){
+  border-bottom:1px dashed black;
+  border-right: 1px dashed black; 
+}
+
+.potongan-kertas:nth-child(even){
+  border-bottom:1px dashed black;
+}
+
+.potongan-kertas{
+  page-break-before: always;
+  page-break-inside: avoid;
+}
+
+.header-cetak{
+  display: grid;
+  grid-template-columns: 60px 15px auto;
+  border-bottom: 2px solid black;
+  padding:3px 18px;
+}
+
+.penjual{
+  font-weight: bold;
+}
+
+.nama-penjual{
+  font-weight: bold;
+}
+
+.ship-to{
+  display: grid;
+  grid-template-columns: 80px 15px auto;
+  padding:30px 40px;
+}
+
+.nama-pembeli{
+  font-weight: bold;
+}
+
+.ekspedisi-terpilih{
+  font-weight: bold;
+}
+
+.keterangan-footer{
+  text-align: center;
+  font-weight: bold;
+  border-top: 2px solid black;
+  padding: 4px;
+}
+
+.super-header-cetak{
+  display: grid;
+  grid-template-columns: 189px auto;
+  border-bottom: 1px dashed black;
+}
+
+.logo-cetak{
+  padding:10px 16px 4px;
+}
+
+.label-pengiriman{
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.nama-logo{
+  color:red;
+}
+
+
+@media print {
+body{
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  }
+
+.potongan-kertas:nth-child(9n+0){
+  margin-top:107px; 
+}
+
+.potongan-kertas:nth-child(10n+0){
+  margin-top:107px; 
+}
+
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}

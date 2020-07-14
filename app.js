@@ -1,3 +1,10 @@
+function printDiv(divName){
+            var printContents = document.querySelector('.preview-print').innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+}
 //////////////////////Pengumuman////////////////////////
 db.collection('pengumuman').onSnapshot(snapshot =>{
     let changes = snapshot.docChanges();
@@ -987,6 +994,51 @@ if(document.querySelector('#judul-completed-task').classList.contains('collapsed
 }
 })
 
+const isiPreview = document.querySelector('#preview-print')
+const createForm8 = document.querySelector('#form-cetak');
+createForm8.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let namaCust = document.querySelector('#nama-shipping-customer').value;
+    let kontakCust = document.querySelector('#kontak-shipping-customer').value;
+    let ekspedisiCust = document.querySelector('#ekspedisi-shipping-customer').value;
+    let alamatCust = document.querySelector('#alamat-shipping-customer').value.replace(/\n\r?/g, '<br/>');
+    let div = document.createElement('div');
+    div.classList.add('potongan-kertas');
+
+    div.innerHTML = `
+        <div class="super-header-cetak">
+          <img src="logo.png" class="logo-cetak">
+          <div class="label-pengiriman">Label Pengiriman</div>          
+        </div>
+        <div class="header-cetak">
+            <div class="penjual">From</div>
+            <div>:</div>
+            <div>
+              <div class="nama-penjual"><span class="nama-logo">GALAXYCAMERA.ID</span></div>
+              <div class="alamat-penjual">Mall Metropolis Townsquare, Lantai Dasar Blok GC1 No.7, Cikokol, Tangerang</div>
+              <div class="kontak-penjual">082111311131</div>
+            </div>
+          </div>
+        <div class="body-cetak">
+          <div class="ship-to">
+            <div>Ship to</div>
+            <div>:</div>
+            <div>
+              <div class="nama-pembeli">${namaCust}</div>
+              <div class="alamat-pembeli">${alamatCust}</div>
+              <div class="kontak-pembeli">${kontakCust}</div>
+            </div>
+            <div>Ekspedisi</div>
+            <div>:</div>
+              <div class="ekspedisi-terpilih">${ekspedisiCust}</div>
+          </div>
+      </div>
+      <div class="footer-cetak">
+        <div class="keterangan-footer">Terima Kasih Sudah Berbelanja di <span class="nama-logo">GALAXYCAMERA.ID</span></div>
+      </div>`
+
+      isiPreview.appendChild(div);
+})
 
 
 function auto_grow(element){
@@ -1005,3 +1057,4 @@ document.querySelector(".your_class").addEventListener("keypress", function (evt
 
 
 //document.addEventListener('contextmenu', event => event.preventDefault());
+
