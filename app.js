@@ -97,6 +97,8 @@ db.collection('catatan').onSnapshot(snapshot =>{
     changes.forEach(change =>{
         if(change.type == 'added'){
             renderCatatan(change.doc);
+            let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
+        document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
         } else if (change.type == 'removed'){
             let div = isiCatatan.querySelector('[data-id=' + change.doc.id + ']');
             isiCatatan.removeChild(div);
@@ -173,16 +175,25 @@ function renderCatatan(doc){
         $('#modaleditcatatan' + doc.id).modal('hide');
         let div = isiCatatan.querySelector('[data-id=' + doc.id + ']');
         isiCatatan.removeChild(div);
-        db.collection('catatan').onSnapshot(snapshot =>{
-        if(isiCatatan.childNodes.length == 0){
-            document.querySelector('#jumlahcatatan').innerText = '';
-        }else{
-            let badgeJumlahCatatan = isiCatatan.childNodes.length;
-            document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
-        }
-})
+            db.collection('catatan').onSnapshot(snapshot =>{
+            if(isiCatatan.childNodes.length == 0){
+                document.querySelector('#jumlahcatatan').innerText = '';
+            }else{
+                let badgeJumlahCatatan = isiCatatan.childNodes.length;
+                document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
+            }
+        })
+            db.collection('catatan').onSnapshot(snapshot =>{
+                if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
+                document.querySelector('#jumlahinformasi').innerText = '';
+            }else{
+                let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
+                document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
+                }
+            })
     })
 })
+
 
     let hapus1 = document.querySelector('a#hapusya' + doc.id);
     hapus1.addEventListener('click', function(e){
