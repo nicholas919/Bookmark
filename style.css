@@ -512,21 +512,22 @@ button.card-header{
 .card{
     padding:0px !important;
     margin-bottom:0px !important;
+    border:0 !important;
 }
 
 a.hapus-promo{
     cursor: pointer;
-    border:2px solid #5b5c5b;
+    border-left:1px solid #5b5c5b;
+    border-bottom:2px solid #5b5c5b;
+    border-right:2px solid #5b5c5b;
     background-color: #f74a4a;
-    display: block;
+    display: inline-block;
     text-align: center;
     color: white !important;
-    border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     padding:5px 0px;
     font-weight: bold;
-    margin:0px 1px;
-    margin-bottom: 8px;
+    width: 50%;
 }
 
 .hapus-promo:hover{

@@ -104,13 +104,9 @@ db.collection('catatan').onSnapshot(snapshot =>{
     changes.forEach(change =>{
         if(change.type == 'added'){
             renderCatatan(change.doc);
-            let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
-        document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
         } else if (change.type == 'removed'){
             let div = isiCatatan.querySelector('[data-id=' + change.doc.id + ']');
             isiCatatan.removeChild(div);
-        } else {
-            renderCatatan(change.doc);
         }
     })
 })
@@ -267,24 +263,22 @@ db.collection('promo').onSnapshot(snapshot =>{
         } else if (change.type == 'removed'){
             let div = isiPromo.querySelector('[data-id=' + change.doc.id + ']');
             isiPromo.removeChild(div);
-        } 
+        } else {
+            renderPromo(change.doc);
+        }
     })
 })
 
 
-db.collection('promo').onSnapshot(snapshot =>{
-if(isiPromo.childNodes.length == 0){
-    document.querySelector('#jumlahpromo').innerText = '';
-}else{
-    let badgeJumlahPromo = isiPromo.childNodes.length;
-    document.querySelector('#jumlahpromo').innerText = badgeJumlahPromo;
-}
-})
+
+
 const isiPromo = document.querySelector('#isipromo');
+const editPromo = document.querySelector('#editpromo');
 
 
 function renderPromo(doc){
     let div = document.createElement('div');
+    let edit = document.createElement('div');
     let brandPromo = doc.data().brandPromo;
     let keteranganPromo = doc.data().keteranganPromo;
     let bulanPromo = doc.data().bulanPromo;
@@ -296,6 +290,7 @@ function renderPromo(doc){
     let yyyy2 = today2.getFullYear();
     tanggal2 = yyyy2 + '-' + mm2 + '-' + dd2;
     div.setAttribute('data-id', doc.id);
+    div.style.margin = "0px 0px 8px";
     div.innerHTML=`
 <div class="card">
         <button class="btn btn-link card-header bg-dark" type="button" data-toggle="collapse" data-target="#collapse${doc.id}" aria-expanded="true" aria-controls="collapse${doc.id}">
@@ -309,11 +304,117 @@ function renderPromo(doc){
       </div>
     </div>
 </div>
-<a class="hapus-promo" id="hapus-promo${doc.id}"><i class='fas fa-trash-alt'></i> Hapus</a>
+<a id="editya${doc.id}" class="editya" data-toggle="modal" data-target="#modaleditpromo${doc.id}"><i class='fas fa-edit'></i> Edit</a><a class="hapus-promo" id="hapus-promo${doc.id}"><i class='fas fa-trash-alt'></i> Hapus</a>
     `
+    edit.innerHTML =`
+<div class="modal fade" id="modaleditpromo${doc.id}" tabindex="-1" role="dialog" aria-labelledby="modaleditpromo" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelmodalpromo">Mengubah Promo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="form-edit-promo${doc.id}">
+                <div class="form-group">
+                  <label class="col-form-label">Brand</label>
+                  <input type="text" class="form-control" id="editbrandpromo${doc.id}" value="${brandPromo}" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Keterangan</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="editketeranganpromo${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required>${keteranganPromo.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                </div>
+            <div class="row">
+                <div class="form-group col">
+                  <label class="col-form-label">Promo Bulanan<small></small></label>
+                  <select class="form-control" id="editbulanpromo${doc.id}" required>
+                    <option value="" disabled selected hidden>-</option>
+                    <option class="opsi">Januari</option>
+                    <option class="opsi">Februari</option>
+                    <option class="opsi">Maret</option>
+                    <option class="opsi">April</option>
+                    <option class="opsi">Mei</option>
+                    <option class="opsi">Juni</option>
+                    <option class="opsi">Juli</option>
+                    <option class="opsi">Agustus</option>
+                    <option class="opsi">September</option>
+                    <option class="opsi">Oktober</option>
+                    <option class="opsi">November</option>
+                    <option class="opsi">Desember</option>
+                  </select>
+               </div>
+                <div class="form-group col-4">
+                  <label class="col-form-label">Started Date</label>
+                  <input type="date" class="form-control" id="edittanggalmulaipromo${doc.id}" autocomplete="off" value="${tanggalMulaiPromo}" data-date-format="DD MMMM YYYY" required>
+                </div>
+                <div class="form-group col-4">
+                  <label class="col-form-label">Expiration Date</label>
+                  <input type="date" class="form-control" id="edittanggalakhirpromo${doc.id}" autocomplete="off" value="${tanggalAkhirPromo}" data-date-format="DD MMMM YYYY" required>
+                </div>
+            </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            </div>
+          </div>
+       </div>
+     </div>`
 
-
+    
     isiPromo.appendChild(div);
+    editPromo.appendChild(edit);
+
+    let formEditPromo = document.querySelector('#form-edit-promo' + doc.id);
+    formEditPromo.addEventListener('submit', (e) => {
+        e.preventDefault();
+    let updateBrandPromo = document.querySelector('#editbrandpromo' + doc.id).value;
+    let updateKeteranganPromo = document.querySelector('#editketeranganpromo' + doc.id).value;
+    let updateBulanPromo = document.querySelector('#editbulanpromo' + doc.id).value;
+    let updateTanggalMulaiPromo = document.querySelector('#edittanggalmulaipromo' + doc.id).value;
+    let updateTanggalAkhirPromo = document.querySelector('#edittanggalakhirpromo' + doc.id).value;
+
+    db.collection('promo').doc(doc.id).update({
+        brandPromo : updateBrandPromo,
+        keteranganPromo : updateKeteranganPromo.replace(/\n\r?/g, '<br/>'),
+        bulanPromo : updateBulanPromo,
+        tanggalMulaiPromo : updateTanggalMulaiPromo,
+        tanggalAkhirPromo : updateTanggalAkhirPromo
+    }).then(() => {
+        $('#modaleditpromo' + doc.id).modal('hide');
+        let div = isiPromo.querySelector('[data-id=' + doc.id + ']');
+        isiPromo.removeChild(div);
+        db.collection('promo').onSnapshot(snapshot =>{
+        if(isiPromo.childNodes.length == 0){
+            document.querySelector('#jumlahpromo').innerText = '';
+        }else{
+            let badgeJumlahPromo = isiPromo.childNodes.length;
+            document.querySelector('#jumlahpromo').innerText = badgeJumlahPromo;
+        }
+        })
+
+        db.collection('promo').onSnapshot(snapshot =>{
+            if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
+            document.querySelector('#jumlahinformasi').innerText = '';
+        }else{
+            let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
+            document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
+            }
+        })
+        let hapus2 = document.querySelector('a#hapus-promo' + doc.id);
+        hapus2.addEventListener('click', function(e){
+        e.stopPropagation();
+        var konfirmasi2 = confirm('Anda yakin ingin menghapus promo ini?');
+        if(konfirmasi2 == true){
+        let id = e.target.parentElement.getAttribute('data-id');
+        db.collection('promo').doc(id).delete();
+            }
+        })
+    })
+})
 
     db.collection('promo').onSnapshot(snapshot =>{
         if(tanggalAkhirPromo == tanggal2){
@@ -330,7 +431,7 @@ function renderPromo(doc){
     let id = e.target.parentElement.getAttribute('data-id');
     db.collection('promo').doc(id).delete();
         }
-    });
+    })
 
 
 }
@@ -356,6 +457,14 @@ createForm2.addEventListener('submit', (e) => {
     })
 })
 
+db.collection('promo').onSnapshot(snapshot =>{
+if(isiPromo.childNodes.length == 0){
+    document.querySelector('#jumlahpromo').innerText = '';
+}else{
+    let badgeJumlahPromo = isiPromo.childNodes.length;
+    document.querySelector('#jumlahpromo').innerText = badgeJumlahPromo;
+    }
+})
 //////////////////////Informasi////////////////////////
 
 db.collection('catatan').onSnapshot(snapshot =>{
