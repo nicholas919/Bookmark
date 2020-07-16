@@ -73,7 +73,7 @@ var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 var yyyy = today.getFullYear();
 var hours = ('0' + today.getHours()).slice(-2);
 var minutes = ('0' + today.getMinutes()).slice(-2);
-tanggal = mm + '/' + dd + '/' + yyyy;
+tanggal = dd + '/' + mm + '/' + yyyy;
 jam = hours + ":" + minutes;
 
 
@@ -197,7 +197,7 @@ function renderCatatan(doc){
     let hapus1 = document.querySelector('a#hapusya' + doc.id);
     hapus1.addEventListener('click', function(e){
     e.stopPropagation();
-    var konfirmasi1 = confirm('Anda yakin ingin menghapus catatan ini?');
+    let konfirmasi1 = confirm('Anda yakin ingin menghapus catatan ini?');
     if(konfirmasi1 == true){
     let id = e.target.parentElement.getAttribute('data-id');
     db.collection('catatan').doc(id).delete();
@@ -207,11 +207,11 @@ function renderCatatan(doc){
     })
 
 
-    let hapus1 = document.querySelector('a#hapusya' + doc.id);
-    hapus1.addEventListener('click', function(e){
+    let hapus0 = document.querySelector('a#hapusya' + doc.id);
+    hapus0.addEventListener('click', function(e){
     e.stopPropagation();
-    var konfirmasi1 = confirm('Anda yakin ingin menghapus catatan ini?');
-    if(konfirmasi1 == true){
+    let konfirmasi0 = confirm('Anda yakin ingin menghapus catatan ini?');
+    if(konfirmasi0 == true){
     let id = e.target.parentElement.getAttribute('data-id');
     db.collection('catatan').doc(id).delete();
         }  
@@ -228,7 +228,7 @@ var mm1 = String(today1.getMonth() + 1).padStart(2, '0'); //January is 0!
 var yyyy1 = today1.getFullYear();
 var hours1 = ('0' + today1.getHours()).slice(-2);
 var minutes1 = ('0' + today1.getMinutes()).slice(-2);
-tanggal1 = mm1 + '/' + dd1 + '/' + yyyy1;
+tanggal1 = dd1 + '/' + mm1 + '/' + yyyy1;
 jam1 = hours1 + ":" + minutes1;
 
 createForm1.addEventListener('submit', (e) => {
@@ -284,6 +284,13 @@ function renderPromo(doc){
     let bulanPromo = doc.data().bulanPromo;
     let tanggalMulaiPromo = doc.data().tanggalMulaiPromo;
     let tanggalAkhirPromo = doc.data().tanggalAkhirPromo;
+    let month = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
+    let mulai = new Date(tanggalMulaiPromo);
+    let akhir = new Date(tanggalAkhirPromo);
+    mulai.setDate(mulai.getDate()+7);
+    akhir.setDate(akhir.getDate()-7);
+    let bulanmulai = month[mulai.getMonth()];
+    let bulanakhir = month[mulai.getMonth()];
     let today2 = new Date();
     let dd2 = String(today2.getDate()).padStart(2, '0');
     let mm2 = String(today2.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -291,7 +298,9 @@ function renderPromo(doc){
     tanggal2 = yyyy2 + '-' + mm2 + '-' + dd2;
     div.setAttribute('data-id', doc.id);
     div.style.margin = "0px 0px 8px";
-    div.innerHTML=`
+    if(bulanmulai == bulanakhir){
+        let bulanPromo = bulanmulai;
+    div.innerHTML= `
 <div class="card">
         <button class="btn btn-link card-header bg-dark" type="button" data-toggle="collapse" data-target="#collapse${doc.id}" aria-expanded="true" aria-controls="collapse${doc.id}">
           Promo ${brandPromo} Bulan ${bulanPromo} <span class="expired expired${doc.id}">Expired</span>
@@ -306,6 +315,7 @@ function renderPromo(doc){
 </div>
 <a id="editya${doc.id}" class="editya" data-toggle="modal" data-target="#modaleditpromo${doc.id}"><i class='fas fa-edit'></i> Edit</a><a class="hapus-promo" id="hapus-promo${doc.id}"><i class='fas fa-trash-alt'></i> Hapus</a>
     `
+
     edit.innerHTML =`
 <div class="modal fade" id="modaleditpromo${doc.id}" tabindex="-1" role="dialog" aria-labelledby="modaleditpromo" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -327,29 +337,11 @@ function renderPromo(doc){
                   <textarea oninput="auto_grow(this)" class="form-control" id="editketeranganpromo${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required>${keteranganPromo.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
                 </div>
             <div class="row">
-                <div class="form-group col">
-                  <label class="col-form-label">Promo Bulanan<small></small></label>
-                  <select class="form-control" id="editbulanpromo${doc.id}" required>
-                    <option value="" disabled selected hidden>-</option>
-                    <option class="opsi">Januari</option>
-                    <option class="opsi">Februari</option>
-                    <option class="opsi">Maret</option>
-                    <option class="opsi">April</option>
-                    <option class="opsi">Mei</option>
-                    <option class="opsi">Juni</option>
-                    <option class="opsi">Juli</option>
-                    <option class="opsi">Agustus</option>
-                    <option class="opsi">September</option>
-                    <option class="opsi">Oktober</option>
-                    <option class="opsi">November</option>
-                    <option class="opsi">Desember</option>
-                  </select>
-               </div>
-                <div class="form-group col-4">
+                <div class="form-group col-6">
                   <label class="col-form-label">Started Date</label>
                   <input type="date" class="form-control" id="edittanggalmulaipromo${doc.id}" autocomplete="off" value="${tanggalMulaiPromo}" data-date-format="DD MMMM YYYY" required>
                 </div>
-                <div class="form-group col-4">
+                <div class="form-group col-6">
                   <label class="col-form-label">Expiration Date</label>
                   <input type="date" class="form-control" id="edittanggalakhirpromo${doc.id}" autocomplete="off" value="${tanggalAkhirPromo}" data-date-format="DD MMMM YYYY" required>
                 </div>
@@ -367,20 +359,18 @@ function renderPromo(doc){
     
     isiPromo.appendChild(div);
     editPromo.appendChild(edit);
-
+}
     let formEditPromo = document.querySelector('#form-edit-promo' + doc.id);
     formEditPromo.addEventListener('submit', (e) => {
         e.preventDefault();
     let updateBrandPromo = document.querySelector('#editbrandpromo' + doc.id).value;
     let updateKeteranganPromo = document.querySelector('#editketeranganpromo' + doc.id).value;
-    let updateBulanPromo = document.querySelector('#editbulanpromo' + doc.id).value;
     let updateTanggalMulaiPromo = document.querySelector('#edittanggalmulaipromo' + doc.id).value;
     let updateTanggalAkhirPromo = document.querySelector('#edittanggalakhirpromo' + doc.id).value;
 
     db.collection('promo').doc(doc.id).update({
         brandPromo : updateBrandPromo,
         keteranganPromo : updateKeteranganPromo.replace(/\n\r?/g, '<br/>'),
-        bulanPromo : updateBulanPromo,
         tanggalMulaiPromo : updateTanggalMulaiPromo,
         tanggalAkhirPromo : updateTanggalAkhirPromo
     }).then(() => {
@@ -404,13 +394,15 @@ function renderPromo(doc){
             document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
             }
         })
-        let hapus2 = document.querySelector('a#hapus-promo' + doc.id);
-        hapus2.addEventListener('click', function(e){
+
+        let hapus3 = document.querySelector('#hapus-promo' + doc.id);
+        hapus3.addEventListener('click', function(e){
         e.stopPropagation();
-        var konfirmasi2 = confirm('Anda yakin ingin menghapus promo ini?');
+        let konfirmasi2 = confirm('Anda yakin ingin menghapus promo ini?');
         if(konfirmasi2 == true){
         let id = e.target.parentElement.getAttribute('data-id');
         db.collection('promo').doc(id).delete();
+
             }
         })
     })
@@ -423,11 +415,11 @@ function renderPromo(doc){
       })
 
 
-    let hapus2 = document.querySelector('a#hapus-promo' + doc.id);
+    let hapus2 = document.querySelector('#hapus-promo' + doc.id);
     hapus2.addEventListener('click', function(e){
     e.stopPropagation();
-    var konfirmasi2 = confirm('Anda yakin ingin menghapus promo ini?');
-    if(konfirmasi2 == true){
+    let konfirmasi3 = confirm('Anda yakin ingin menghapus promo ini?');
+    if(konfirmasi3 == true){
     let id = e.target.parentElement.getAttribute('data-id');
     db.collection('promo').doc(id).delete();
         }
@@ -446,14 +438,11 @@ createForm2.addEventListener('submit', (e) => {
     db.collection('promo').add({
         brandPromo: createForm2['brandpromo'].value,
         keteranganPromo: createForm2['keteranganpromo'].value.replace(/\n\r?/g, '<br/>'),
-        bulanPromo : createForm2['bulanpromo'].value,
         tanggalMulaiPromo : createForm2['tanggalmulaipromo'].value,
         tanggalAkhirPromo : createForm2['tanggalakhirpromo'].value
     }).then(() => {
         $('#modalpromo').modal('hide')
         document.querySelector('#tambah-promo').reset();
-        const selectbox = document.querySelector('#bulanpromo');
-        selectbox.selectedIndex = null;
     })
 })
 
