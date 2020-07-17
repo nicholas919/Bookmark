@@ -1,10 +1,12 @@
-function printDiv(divName){
+document.querySelector('#tombol-print').addEventListener('click',function(e){
+            e.preventDefault();
             var printContents = document.querySelector('.preview-print').innerHTML;
             var originalContents = document.body.innerHTML;
             document.body.innerHTML = printContents;
             window.print();
             document.body.innerHTML = originalContents;
-}
+})
+
 //////////////////////Pengumuman////////////////////////
 db.collection('pengumuman').onSnapshot(snapshot =>{
     let changes = snapshot.docChanges();
@@ -12,7 +14,7 @@ db.collection('pengumuman').onSnapshot(snapshot =>{
         if(change.type == 'added'){
             renderPengumuman(change.doc);
         } else if (change.type == 'removed'){
-            let div = isiPengumuman.querySelector('[data-id=' + change.doc.id + ']');
+            let div = isiPengumuman.querySelector('[data-id="' + change.doc.id + '"]');
             isiPengumuman.removeChild(div);
             document.querySelector('#edit').disabled = false;
             document.querySelector('#peringatan').style.display = "block";
@@ -105,7 +107,7 @@ db.collection('catatan').onSnapshot(snapshot =>{
         if(change.type == 'added'){
             renderCatatan(change.doc);
         } else if (change.type == 'removed'){
-            let div = isiCatatan.querySelector('[data-id=' + change.doc.id + ']');
+            let div = isiCatatan.querySelector('[data-id="' + change.doc.id + '"]');
             isiCatatan.removeChild(div);
         }
     })
@@ -261,7 +263,7 @@ db.collection('promo').onSnapshot(snapshot =>{
         if(change.type == 'added'){
             renderPromo(change.doc);
         } else if (change.type == 'removed'){
-            let div = isiPromo.querySelector('[data-id=' + change.doc.id + ']');
+            let div = isiPromo.querySelector('[data-id="' + change.doc.id + '"]');
             isiPromo.removeChild(div);
         } else {
             renderPromo(change.doc);
@@ -488,7 +490,7 @@ db.collection('marquee').onSnapshot(snapshot =>{
             document.querySelector('#reset-marquee').classList.remove('disabled');
             document.querySelector('#edit-marquee').classList.add('disabled');
         }else if (change.type == 'removed'){
-            document.querySelectorAll('div[data-id=' + change.doc.id + ']').forEach(e =>
+            document.querySelectorAll('[data-id="' + change.doc.id + '"]').forEach(e =>
             e.parentNode.removeChild(e));
             document.querySelector('#reset-marquee').classList.add('disabled');
             document.querySelector('#edit-marquee').classList.remove('disabled');
@@ -563,7 +565,7 @@ db.collection('customer').onSnapshot(snapshot =>{
         if(change.type == 'added'){
             renderCustomer(change.doc);
         } else if (change.type == 'removed'){
-            let div = isiCustomer.querySelector('[data-id=' + change.doc.id + ']');
+            let div = isiCustomer.querySelector('[data-id="' + change.doc.id + '"]');
             isiCustomer.removeChild(div);
         }
     })
@@ -669,7 +671,7 @@ db.collection('kalkulator').onSnapshot(snapshot =>{
             document.querySelector('#reset').classList.remove('disabled');
             document.querySelector('#edit-kalkulator').classList.add('disabled');
         } else if (change.type == 'removed'){
-            document.querySelectorAll('div[data-id=' + change.doc.id + ']').forEach(e =>
+            document.querySelectorAll('[data-id="' + change.doc.id + '"]').forEach(e =>
             e.parentNode.removeChild(e));
             document.querySelector('#reset').classList.add('disabled');
             document.querySelector('#edit-kalkulator').classList.remove('disabled');
@@ -916,7 +918,7 @@ db.collection('tugas').onSnapshot(snapshot =>{
         if(change.type == 'added'){
             renderTugas(change.doc);
         } else if (change.type == 'removed'){
-            document.querySelectorAll('div[data-id=' + change.doc.id + ']').forEach(e =>
+            document.querySelectorAll('div[data-id="' + change.doc.id + '"]').forEach(e =>
             e.parentNode.removeChild(e))
         } 
     })
