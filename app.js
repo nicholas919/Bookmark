@@ -533,8 +533,7 @@ function renderMarquee(doc){
     window.location.reload();
         }
     })
-
-    }
+}
 
 const createForm3 = document.querySelector('#tambah-marquee');
 const pin = Math.floor(Math.random()*5000) + 1000;
