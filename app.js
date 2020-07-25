@@ -18,7 +18,7 @@ db.collection('pengumuman').onSnapshot(snapshot =>{
             isiPengumuman.removeChild(div);
             document.querySelector('#edit').disabled = false;
             document.querySelector('#peringatan').style.display = "block";
-        }
+        } 
     })
 })
 
@@ -109,6 +109,8 @@ db.collection('catatan').onSnapshot(snapshot =>{
         } else if (change.type == 'removed'){
             let div = isiCatatan.querySelector('[data-id="' + change.doc.id + '"]');
             isiCatatan.removeChild(div);
+        } else if(change.type == 'modified'){
+            renderEditCatatan(change.doc);
         }
     })
 })
@@ -127,9 +129,9 @@ function renderCatatan(doc){
     div.innerHTML =`
     <div class="daftar-catatan">
     <div class="bg-dark judul-catatan">
-    <div class="judul-daftar-catatan">Catatan @${creatorCatatan}</div>
+    <div class="judul-daftar-catatan">Catatan @<span id="creator-catatan${doc.id}">${creatorCatatan}</span></div>
     <small class="text-light">Dibuat pada ${tanggalCatatan}</small></div>
-    <div class="keterangan-catatan">${keteranganCatatan}</div>
+    <div id="keterangan-catatan${doc.id}" class="keterangan-catatan">${keteranganCatatan}</div>
     </div>
     <a id="editya${doc.id}" class="editya" data-toggle="modal" data-target="#modaleditcatatan${doc.id}"><i class='fas fa-edit'></i> Edit</a><a id="hapusya${doc.id}" class="hapusya"><i class='fas fa-trash-alt'></i> Hapus</a>
     <div style="margin-bottom:10px;"></div>
@@ -164,8 +166,21 @@ function renderCatatan(doc){
        </div>
      </div>
     `
-    isiCatatan.appendChild(div);
+
+    isiCatatan.insertBefore(div,isiCatatan.childNodes[0])
     editCatatan.appendChild(edit);
+
+        if(isiCatatan.childNodes.length == 0){
+            document.querySelector('#jumlahcatatan').innerText = '';
+        }else if(isiCatatan.childNodes.length != 0){
+            let badgeJumlahCatatan = isiCatatan.childNodes.length;
+            document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
+        }else if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
+            document.querySelector('#jumlahinformasi').innerText = '';
+        }else{
+            let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
+            document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
+            }
 
     let formEditCatatan = document.querySelector('#form-edit-catatan' + doc.id);
     formEditCatatan.addEventListener('submit', (e) => {
@@ -178,67 +193,55 @@ function renderCatatan(doc){
     keteranganCatatan : updateKeteranganCatatan.replace(/\n\r?/g, '<br/>')
     }).then(() => {
         $('#modaleditcatatan' + doc.id).modal('hide');
-        let div = isiCatatan.querySelector('[data-id=' + doc.id + ']');
-        isiCatatan.removeChild(div);
-            db.collection('catatan').onSnapshot(snapshot =>{
-            if(isiCatatan.childNodes.length == 0){
-                document.querySelector('#jumlahcatatan').innerText = '';
-            }else{
-                let badgeJumlahCatatan = isiCatatan.childNodes.length;
-                document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
-            }
-        })
-            db.collection('catatan').onSnapshot(snapshot =>{
-                if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
-                document.querySelector('#jumlahinformasi').innerText = '';
-            }else{
-                let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
-                document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
-                }
-            })
-    let hapus1 = document.querySelector('a#hapusya' + doc.id);
-    hapus1.addEventListener('click', function(e){
-    e.stopPropagation();
-    let konfirmasi1 = confirm('Anda yakin ingin menghapus catatan ini?');
-    if(konfirmasi1 == true){
-    let id = e.target.parentElement.getAttribute('data-id');
-    db.collection('catatan').doc(id).delete();
-        }  
-      })
         })
     })
 
-
-    let hapus0 = document.querySelector('a#hapusya' + doc.id);
-    hapus0.addEventListener('click', function(e){
-    e.stopPropagation();
-    let konfirmasi0 = confirm('Anda yakin ingin menghapus catatan ini?');
-    if(konfirmasi0 == true){
-    let id = e.target.parentElement.getAttribute('data-id');
-    db.collection('catatan').doc(id).delete();
-        }  
-      })
-
-
+        let hapus = document.querySelector('a#hapusya' + doc.id);
+        hapus.addEventListener('click', function(e){
+        e.stopPropagation();
+        let konfirmasi = confirm('Anda yakin ingin menghapus promo ini?');
+        if(konfirmasi == true){
+        let id = e.target.parentElement.getAttribute('data-id');
+        db.collection('catatan').doc(id).delete();
+        if(isiCatatan.childNodes.length == 0){
+            document.querySelector('#jumlahcatatan').innerText = '';
+        }else if(isiCatatan.childNodes.length != 0){
+            let badgeJumlahCatatan = isiCatatan.childNodes.length;
+            document.querySelector('#jumlahcatatan').innerText = badgeJumlahCatatan;
+        }else if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
+            document.querySelector('#jumlahinformasi').innerText = '';
+        }else{
+            let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
+            document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
+            }
+    }
+ })
 } 
+
+
+function renderEditCatatan(doc){
+    let keteranganCatatan = doc.data().keteranganCatatan;
+    let creatorCatatan = doc.data().creatorCatatan;
+    document.querySelector('#keterangan-catatan' + doc.id).innerHTML = keteranganCatatan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
+    document.querySelector('#creator-catatan' + doc.id).innerHTML = creatorCatatan;
+}
        
 
 const createForm1 = document.querySelector('#tambah-catatan');
-var today1 = new Date();
-var dd1 = String(today1.getDate()).padStart(2, '0');
-var mm1 = String(today1.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy1 = today1.getFullYear();
-var hours1 = ('0' + today1.getHours()).slice(-2);
-var minutes1 = ('0' + today1.getMinutes()).slice(-2);
-tanggal1 = dd1 + '/' + mm1 + '/' + yyyy1;
-jam1 = hours1 + ":" + minutes1;
 
 createForm1.addEventListener('submit', (e) => {
     e.preventDefault();
-
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+    let hours = ('0' + today.getHours()).slice(-2);
+    let minutes = ('0' + today.getMinutes()).slice(-2);
+    tanggal = dd + '/' + mm + '/' + yyyy;
+    jam = hours + ":" + minutes;
     db.collection('catatan').add({
         keteranganCatatan: createForm1['keterangancatatan'].value.replace(/\n\r?/g, '<br/>'),
-        tanggalCatatan: tanggal1 + ', '+ jam1,
+        tanggalCatatan: tanggal + ', '+ jam,
         creatorCatatan: createForm1['creatorcatatan'].value
     }).then(() => {
         $('#modalcatatan').modal('hide');
@@ -265,8 +268,8 @@ db.collection('promo').onSnapshot(snapshot =>{
         } else if (change.type == 'removed'){
             let div = isiPromo.querySelector('[data-id="' + change.doc.id + '"]');
             isiPromo.removeChild(div);
-        } else {
-            renderPromo(change.doc);
+        } else if(change.type == 'modified'){
+            renderEditPromo(change.doc);
         }
     })
 })
@@ -281,37 +284,28 @@ const editPromo = document.querySelector('#editpromo');
 function renderPromo(doc){
     let div = document.createElement('div');
     let edit = document.createElement('div');
+    let bulanPromo = doc.data().bulanPromo;
     let brandPromo = doc.data().brandPromo;
     let keteranganPromo = doc.data().keteranganPromo;
-    let bulanPromo = doc.data().bulanPromo;
     let tanggalMulaiPromo = doc.data().tanggalMulaiPromo;
     let tanggalAkhirPromo = doc.data().tanggalAkhirPromo;
-    let month = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
-    let mulai = new Date(tanggalMulaiPromo);
-    let akhir = new Date(tanggalAkhirPromo);
-    mulai.setDate(mulai.getDate()+7);
-    akhir.setDate(akhir.getDate()-7);
-    let bulanmulai = month[mulai.getMonth()];
-    let bulanakhir = month[mulai.getMonth()];
-    let today2 = new Date();
-    let dd2 = String(today2.getDate()).padStart(2, '0');
-    let mm2 = String(today2.getMonth() + 1).padStart(2, '0'); //January is 0!
-    let yyyy2 = today2.getFullYear();
-    tanggal2 = yyyy2 + '-' + mm2 + '-' + dd2;
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+    tanggal = yyyy + '-' + mm + '-' + dd;
     div.setAttribute('data-id', doc.id);
     div.style.margin = "0px 0px 8px";
-    if(bulanmulai == bulanakhir){
-        let bulanPromo = bulanmulai;
     div.innerHTML= `
 <div class="card">
         <button class="btn btn-link card-header bg-dark" type="button" data-toggle="collapse" data-target="#collapse${doc.id}" aria-expanded="true" aria-controls="collapse${doc.id}">
-          Promo ${brandPromo} Bulan ${bulanPromo} <span class="expired expired${doc.id}">Expired</span>
+          Promo <span id="brand-promo${doc.id}">${brandPromo}</span> Bulan <span id="bulan-promo${doc.id}">${bulanPromo}</span> <span class="expired" id="expired${doc.id}">Expired</span>
         </button>
     <div id="collapse${doc.id}" class="collapse">
       <div class="keterangan-promo card-body">
-    ${keteranganPromo}<br>
+    <span id="keterangan-promo${doc.id}">${keteranganPromo}</span><br>
     <div class="notes">Notes : Format YYYY/MM/DD</div>
-    <div class="notes">${tanggalMulaiPromo} s.d  ${tanggalAkhirPromo}</div>
+    <div class="notes"><span id="tanggal-mulai-promo${doc.id}">${tanggalMulaiPromo}</span> s.d  <span id="tanggal-akhir-promo${doc.id}">${tanggalAkhirPromo}</span></div>
       </div>
     </div>
 </div>
@@ -359,9 +353,22 @@ function renderPromo(doc){
      </div>`
 
     
-    isiPromo.appendChild(div);
+    isiPromo.insertBefore(div,isiPromo.childNodes[0])
     editPromo.appendChild(edit);
-}
+
+        if(isiPromo.childNodes.length == 0){
+            document.querySelector('#jumlahpromo').innerText = '';
+        }else if(isiPromo.childNodes.length != 0){
+            let badgeJumlahPromo = isiPromo.childNodes.length;
+            document.querySelector('#jumlahpromo').innerText = badgeJumlahPromo;
+        }else if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
+            document.querySelector('#jumlahinformasi').innerText = '';
+        }else{
+            let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
+            document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
+            }
+
+
     let formEditPromo = document.querySelector('#form-edit-promo' + doc.id);
     formEditPromo.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -369,83 +376,106 @@ function renderPromo(doc){
     let updateKeteranganPromo = document.querySelector('#editketeranganpromo' + doc.id).value;
     let updateTanggalMulaiPromo = document.querySelector('#edittanggalmulaipromo' + doc.id).value;
     let updateTanggalAkhirPromo = document.querySelector('#edittanggalakhirpromo' + doc.id).value;
-
+    let month = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
+    let mulai = new Date(updateTanggalMulaiPromo);
+    let akhir = new Date(updateTanggalAkhirPromo);
+    mulai.setDate(mulai.getDate()+7);
+    akhir.setDate(akhir.getDate()-7);
+    let bulanmulai = month[mulai.getMonth()];
+    let bulanakhir = month[akhir.getMonth()];
+    if(bulanmulai == bulanakhir){
+    let bulanPromo = bulanmulai;
     db.collection('promo').doc(doc.id).update({
+        bulanPromo: bulanPromo,
         brandPromo : updateBrandPromo,
         keteranganPromo : updateKeteranganPromo.replace(/\n\r?/g, '<br/>'),
         tanggalMulaiPromo : updateTanggalMulaiPromo,
         tanggalAkhirPromo : updateTanggalAkhirPromo
     }).then(() => {
-        $('#modaleditpromo' + doc.id).modal('hide');
-        let div = isiPromo.querySelector('[data-id=' + doc.id + ']');
-        isiPromo.removeChild(div);
-        db.collection('promo').onSnapshot(snapshot =>{
+        document.querySelector('#tambah-promo').reset();
+        })
+    } else {
+        alert('Pastikan promo brand tersebut berlaku sekitar 1 bulan, jika promo brand tersebut diperpanjang maka dimohon untuk diedit ulang kembali periode tanggalnya.');
+    }
+})
+
+        let hapus = document.querySelector('#hapus-promo' + doc.id);
+        hapus.addEventListener('click', function(e){
+        e.stopPropagation();
+        let konfirmasi = confirm('Anda yakin ingin menghapus promo ini?');
+        if(konfirmasi == true){
+        let id = e.target.parentElement.getAttribute('data-id');
+        db.collection('promo').doc(id).delete();
         if(isiPromo.childNodes.length == 0){
             document.querySelector('#jumlahpromo').innerText = '';
-        }else{
+        }else if(isiPromo.childNodes.length != 0){
             let badgeJumlahPromo = isiPromo.childNodes.length;
             document.querySelector('#jumlahpromo').innerText = badgeJumlahPromo;
-        }
-        })
-
-        db.collection('promo').onSnapshot(snapshot =>{
-            if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
+        }else if(isiCatatan.childNodes.length == 0 && isiPromo.childNodes.length == 0){
             document.querySelector('#jumlahinformasi').innerText = '';
         }else{
             let badgeJumlahInformasi = isiCatatan.childNodes.length + isiPromo.childNodes.length;
             document.querySelector('#jumlahinformasi').innerText = badgeJumlahInformasi;
             }
-        })
-
-        let hapus3 = document.querySelector('#hapus-promo' + doc.id);
-        hapus3.addEventListener('click', function(e){
-        e.stopPropagation();
-        let konfirmasi2 = confirm('Anda yakin ingin menghapus promo ini?');
-        if(konfirmasi2 == true){
-        let id = e.target.parentElement.getAttribute('data-id');
-        db.collection('promo').doc(id).delete();
-
-            }
-        })
-    })
-})
-
-    db.collection('promo').onSnapshot(snapshot =>{
-        if(tanggalAkhirPromo == tanggal2){
-        document.querySelector('.expired' + doc.id).style.display = 'block';
-        }
-      })
-
-
-    let hapus2 = document.querySelector('#hapus-promo' + doc.id);
-    hapus2.addEventListener('click', function(e){
-    e.stopPropagation();
-    let konfirmasi3 = confirm('Anda yakin ingin menghapus promo ini?');
-    if(konfirmasi3 == true){
-    let id = e.target.parentElement.getAttribute('data-id');
-    db.collection('promo').doc(id).delete();
         }
     })
 
+
+    if(tanggalAkhirPromo == tanggal){
+    document.querySelector('#expired' + doc.id).style.display = 'block';
+        }
 
 }
 
-
+function renderEditPromo(doc){
+    let bulanPromo = doc.data().bulanPromo;
+    let brandPromo = doc.data().brandPromo;
+    let keteranganPromo = doc.data().keteranganPromo;
+    let tanggalMulaiPromo = doc.data().tanggalMulaiPromo;
+    let tanggalAkhirPromo = doc.data().tanggalAkhirPromo;
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+    tanggal = yyyy + '-' + mm + '-' + dd;
+    document.querySelector('#bulan-promo' + doc.id).innerHTML = bulanPromo;
+    document.querySelector('#brand-promo' + doc.id).innerHTML = brandPromo;
+    document.querySelector('#keterangan-promo' + doc.id).innerHTML = keteranganPromo.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
+    document.querySelector('#tanggal-mulai-promo' + doc.id).innerHTML = tanggalMulaiPromo;
+    document.querySelector('#tanggal-akhir-promo' + doc.id).innerHTML = tanggalAkhirPromo;
+    if(tanggalAkhirPromo == tanggal){
+    document.querySelector('#expired' + doc.id).style.display = 'block';
+        }
+}
 
 const createForm2 = document.querySelector('#tambah-promo');
 
 createForm2.addEventListener('submit', (e) => {
     e.preventDefault();
-
+    let tanggalMulaiPromo = document.querySelector('#tanggalmulaipromo').value;
+    let tanggalAkhirPromo = document.querySelector('#tanggalakhirpromo').value;
+    let month = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
+    let mulai = new Date(tanggalMulaiPromo);
+    let akhir = new Date(tanggalAkhirPromo);
+    mulai.setDate(mulai.getDate()+7);
+    akhir.setDate(akhir.getDate()-7);
+    let bulanmulai = month[mulai.getMonth()];
+    let bulanakhir = month[akhir.getMonth()];
+if(bulanmulai == bulanakhir){
+    let bulanPromo = bulanmulai;
     db.collection('promo').add({
+        bulanPromo: bulanPromo,
         brandPromo: createForm2['brandpromo'].value,
         keteranganPromo: createForm2['keteranganpromo'].value.replace(/\n\r?/g, '<br/>'),
         tanggalMulaiPromo : createForm2['tanggalmulaipromo'].value,
         tanggalAkhirPromo : createForm2['tanggalakhirpromo'].value
     }).then(() => {
-        $('#modalpromo').modal('hide')
+        $('#modalpromo').modal('hide');
         document.querySelector('#tambah-promo').reset();
-    })
+        })
+    } else {
+        alert('Pastikan promo brand tersebut berlaku sekitar 1 bulan');
+    }
 })
 
 db.collection('promo').onSnapshot(snapshot =>{
@@ -566,75 +596,195 @@ db.collection('customer').onSnapshot(snapshot =>{
         } else if (change.type == 'removed'){
             let div = isiCustomer.querySelector('[data-id="' + change.doc.id + '"]');
             isiCustomer.removeChild(div);
+        } else if(change.type == 'modified'){
+            renderEditCustomer(change.doc);
         }
     })
 })
 
-db.collection('customer').onSnapshot(snapshot =>{
-if(isiCustomer.childNodes.length == 0){
-    document.querySelector('#jumlahcust').innerText = '';
-}else{
-    let badgeJumlahCust = isiCustomer.childNodes.length;
-    document.querySelector('#jumlahcust').innerText = badgeJumlahCust;
-}
-})
+
 
 const isiCustomer = document.querySelector('#isicust');
-
+const editCust = document.querySelector('#editcust');
 
 function renderCustomer(doc){
     let div = document.createElement('div');
+    let edit = document.createElement('div');
     div.setAttribute('data-id', doc.id);
     let namaCust = doc.data().namaCust;
     let kontakCust = doc.data().kontakCust;
     let daftarProduk = doc.data().daftarProduk;
     let sifatTransaksi = doc.data().sifatTransaksi;
-    let sifatCust = doc.data().sifatCust;
     let emailCust = doc.data().emailCust;
     div.innerHTML=`
     <div class="card">
         <button class="btn btn-link card-header bg-dark" type="button" data-toggle="collapse" data-target="#collapse${doc.id}" aria-expanded="true" aria-controls="collapse${doc.id}">
-          <div>${sifatTransaksi} Produk a.n ${namaCust} <span class="badge badge-danger baru">${sifatCust}</span></div>
-          <div>Produk yang dicari : ${daftarProduk}</div>
+          <div class="judul-keterangan-cust">
+          <div><span id="sifat-transaksi${doc.id}">${sifatTransaksi}</span> Produk</div>
+          <div>:</div>
+          <div id="daftar-produk${doc.id}">${daftarProduk}</div>
+          </div>
         </button>
     <div id="collapse${doc.id}" class="collapse">
-      <div class="keterangan-promo card-body">
-    <div class="row">
-    <div class="col-4">Nama Customer : ${namaCust}</div>
-    <div class="col-4">Kontak Customer : ${kontakCust}</div>
-    <div class="col">Email Customer : <span id="email${doc.id}">${emailCust}</span></div>
-    </div>
-    <div class="row">
-    <div class="col" style="text-align:center;">
-    <div>Produk yang dicari :</div>
-    <div>${daftarProduk}</div>
-    </div>
-       </div>
+      <div class="card-body keterangan-cust">
+    <div class="isi-keterangan-cust">
+    <div>Nama Customer</div>
+    <div>:</div>
+    <div id="nama-cust-body${doc.id}">${namaCust}</div>
+    <div>Kontak Customer</div>
+    <div>:</div> 
+    <div id="kontak-cust${doc.id}">${kontakCust}</div>
+    <div>Email Customer</div>
+    <div>:</div>
+    <div id="email-cust${doc.id}">${emailCust}</div>
+    <div>Produk yang dicari</div>
+    <div>:</div>
+    <div id="daftar-produk-body${doc.id}">${daftarProduk}</div>
+        </div>
       </div>
     </div>
 </div>
-<a class="hapus-cust" id="hapus-cust${doc.id}"><i class='fas fa-trash-alt'></i> Hapus</a>
+<a id="editya${doc.id}" class="editya" data-toggle="modal" data-target="#modaleditcust${doc.id}"><i class='fas fa-edit'></i> Edit</a><a class="hapusya" style="margin-bottom:8px;" id="hapus-cust${doc.id}"><i class='fas fa-trash-alt'></i> Hapus</a>
+    `
+    edit.innerHTML=`
+<div class="modal fade" id="modaleditcust${doc.id}" tabindex="-1" role="dialog" aria-labelledby="modalcust" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelmodalcust">Menambahkan Data Customer Terbaru</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="form-edit-cust${doc.id}">
+            <div class="row">
+                <div class="form-group col-6">
+                  <label class="col-form-label">Nama Customer</label>
+                  <input type="text" value="${namaCust}" class="form-control" id="editnamacust${doc.id}" autocomplete="off" placeholder="Cantumkan Nama Customer" required>
+                </div>
+                <div class="form-group col">
+                  <label class="col-form-label">Kontak Customer</label>
+                  <input type="number" value="${kontakCust}" class="form-control your_class" id="editkontakcust${doc.id}" autocomplete="off" placeholder="e.g. 081234567890" autocomplete="off" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+    maxlength = "13" required>
+                </div>
+             </div>
+                <div class="form-group">
+                  <label class="col-form-label">Daftar Produk</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="editdaftarproduk${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required>${daftarProduk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                </div>
+              <div class="row">
+                <div class="form-group col-6">
+                  <label class="col-form-label">Email Customer<small> (Notes : Tidak wajib untuk diisi)</small></label>
+                  <input type="email" value="${emailCust}" class="form-control" id="editemailcust${doc.id}" placeholder="google@example.com" autocomplete="off">
+                </div>
+                <div class="form-group col-6">
+                  <label class="col-form-label">Penawaran/Indent</label>
+                  <select class="form-control" id="editsifattransaksi${doc.id}" required>
+                    <option value="" disabled selected hidden>-</option>
+                    <option>Penawaran</option>
+                    <option>Indent</option>
+                  </select>
+                </div>
+              </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            </div>
+          </div>
+       </div>
+     </div>
     `
     isiCustomer.appendChild(div);
+    editCust.appendChild(edit);
 
-    if(document.querySelector('span#email' + doc.id).childNodes.length == 0){
-        document.querySelector('span#email' + doc.id).innerHTML = "Tidak ada";
+if(emailCust == ""){
+    document.querySelector('#email-cust' + doc.id).innerText = "Tidak ada";
+}
+
+if(isiCustomer.childNodes.length == 0){
+    document.querySelector('#jumlahcust').innerText = '';
+}else{
+    let badgeJumlahCustomer = isiCustomer.childNodes.length;
+    document.querySelector('#jumlahcust').innerText = badgeJumlahCustomer;
+}
+
+
+let selectSifatTransaksi = document.querySelector('#editsifattransaksi' + doc.id);
+let optionSifatTransaksi;
+for(let x = 0; x<selectSifatTransaksi.options.length; x++){
+    optionSifatTransaksi = selectSifatTransaksi.options[x];
+    if(optionSifatTransaksi.value == sifatTransaksi){
+        optionSifatTransaksi.setAttribute('selected', 'selected');
+        }
     }
 
-    let hapus4 = document.querySelector('a#hapus-cust' + doc.id);
-    hapus4.addEventListener('click', function(e){
+let formEditCustomer = document.querySelector('#form-edit-cust' + doc.id);
+    formEditCustomer.addEventListener('submit', (e) => {
+        e.preventDefault();
+    let updateNamaCust = document.querySelector('#editnamacust' + doc.id).value;
+    let updateKontakCust = document.querySelector('#editkontakcust' + doc.id).value;
+    let updateDaftarProduk = document.querySelector('#editdaftarproduk' + doc.id).value;
+    let updateSifatTransaksi = document.querySelector('#editsifattransaksi' + doc.id).value;
+    let updateEmailCust = document.querySelector('#editemailcust' + doc.id).value;
+    db.collection('customer').doc(doc.id).update({
+    namaCust: updateNamaCust,
+    kontakCust: updateKontakCust,
+    daftarProduk : updateDaftarProduk.replace(/\n\r?/g, '<br/>'),
+    sifatTransaksi: updateSifatTransaksi,
+    emailCust : updateEmailCust
+    }).then(() => {
+        $('#modaleditcust' + doc.id).modal('hide');
+        })
+    })
+
+
+    let hapus = document.querySelector('#hapus-cust' + doc.id);
+    hapus.addEventListener('click', function(e){
     e.stopPropagation();
-    var konfirmasi4 = confirm('Anda yakin ingin menghapus data ini?');
-    if(konfirmasi4 == true){
+    let konfirmasi = confirm('Anda yakin ingin menghapus data ini?');
+    if(konfirmasi == true){
     let id = e.target.parentElement.getAttribute('data-id');
     db.collection('customer').doc(id).delete();
-
-
+    if(isiCustomer.childNodes.length == 0){
+    document.querySelector('#jumlahcust').innerText = '';
+    }else{
+    let badgeJumlahCustomer = isiCustomer.childNodes.length;
+    document.querySelector('#jumlahcust').innerText = badgeJumlahCustomer;
         }
-    });
+     }
+  })
+}
 
-  }
+function renderEditCustomer(doc){
+    let namaCust = doc.data().namaCust;
+    let kontakCust = doc.data().kontakCust;
+    let daftarProduk = doc.data().daftarProduk;
+    let sifatTransaksi = doc.data().sifatTransaksi;
+    let emailCust = doc.data().emailCust;
+    document.querySelector('#nama-cust-body' + doc.id).innerHTML = namaCust;
+    document.querySelector('#kontak-cust' + doc.id).innerHTML = kontakCust;
+    document.querySelector('#daftar-produk' + doc.id).innerHTML = daftarProduk;
+    document.querySelector('#daftar-produk-body' + doc.id).innerHTML = daftarProduk;
+    document.querySelector('#sifat-transaksi' + doc.id).innerText = sifatTransaksi;
+    document.querySelector('#email-cust' + doc.id).innerHTML = emailCust;
 
+let selectSifatTransaksi = document.querySelector('#editsifattransaksi' + doc.id);
+let optionSifatTransaksi;
+for(let x = 0; x<selectSifatTransaksi.options.length; x++){
+    optionSifatTransaksi = selectSifatTransaksi.options[x];
+    if(optionSifatTransaksi.value == sifatTransaksi){
+        optionSifatTransaksi.setAttribute('selected', 'selected');
+        }
+    }
+
+    if(emailCust == ""){
+    document.querySelector('#email-cust' + doc.id).innerText = "Tidak ada";
+}
+
+}
 
 
 const createForm4 = document.querySelector('#tambah-cust');
@@ -646,16 +796,13 @@ createForm4.addEventListener('submit', (e) => {
         namaCust: createForm4['namacust'].value,
         kontakCust: createForm4['kontakcust'].value,
         daftarProduk : createForm4['daftarproduk'].value.replace(/\n\r?/g, '<br/>'),
-        sifatCust: createForm4['sifatcust'].value,
         sifatTransaksi: createForm4['sifattransaksi'].value,
         emailCust : createForm4['emailcust'].value
     }).then(() => {
         $('#modalcust').modal('hide')
-        const selectbox = document.querySelector('#sifatcust');
-        const selectbox1 = document.querySelector('#sifattransaksi');
+        const selectbox = document.querySelector('#sifattransaksi');
         document.querySelector('#tambah-cust').reset();
         selectbox.selectedIndex = null;
-        selectbox1.selectedIndex = null;
 
     })
 })

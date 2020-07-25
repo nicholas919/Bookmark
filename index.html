@@ -71,7 +71,7 @@
     </div>
   </div>
 
-<small style="position: absolute;bottom: 0;left: 0;margin-left: 10px;margin-right: 10px;">Bookmark V1.0.5</small>
+<small style="position: absolute;bottom: 0;left: 0;margin-left: 10px;margin-right: 10px;">Bookmark V1.0.6</small>
 </div>
 
 
@@ -433,6 +433,7 @@
 
 </div>
 <div id="isicust"></div>
+<div id="editcust"></div>
 <div style="margin-top: 70px;"></div>
 <a id="tambahcust" data-toggle="modal" data-target="#modalcust">+</a>
 
@@ -463,18 +464,11 @@
                   <textarea oninput="auto_grow(this)" class="form-control" id="daftarproduk" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required></textarea>
                 </div>
               <div class="row">
-                <div class="form-group col-5">
+                <div class="form-group col-6">
                   <label class="col-form-label">Email Customer<small> (Notes : Tidak wajib untuk diisi)</small></label>
                   <input type="email" class="form-control" id="emailcust" placeholder="google@example.com" autocomplete="off">
                 </div>
-                <div class="form-group col-4">
-                  <label class="col-form-label">Sifat <small>(Note: Tidak wajib untuk diisi)</small></label>
-                  <select class="form-control" id="sifatcust">
-                    <option value="" disabled selected hidden>-</option>
-                    <option>Penting</option>
-                  </select>
-                </div>
-                <div class="form-group col-3">
+                <div class="form-group col-6">
                   <label class="col-form-label">Penawaran/Indent</label>
                   <select class="form-control" id="sifattransaksi" required>
                     <option value="" disabled selected hidden>-</option>

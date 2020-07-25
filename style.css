@@ -445,6 +445,27 @@ a.hapuspromo{
     border-bottom-left-radius: 15px;
 }
 
+.keterangan-cust{
+    border-left:2px solid #5b5c5b;
+    border-bottom:2px solid #5b5c5b;
+    border-right:2px solid #5b5c5b;
+    padding:10px;
+    background-color: white;
+    background-color: #f2f2f2;
+    border-bottom-left-radius: 15px;
+}
+
+.isi-keterangan-cust{
+    display: grid;
+    grid-template-columns: 150px 10px auto;
+    justify-content: center;
+}
+
+.judul-keterangan-cust{
+    display: grid;
+    grid-template-columns: 140px 10px auto auto;
+}
+
 button.daftar-promo{
     padding-right: 0px !important;
     padding-left:40px !important;
@@ -623,30 +644,6 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }
 
-.hapus-cust{
-    cursor: pointer;
-    border:2px solid #5b5c5b;
-    background-color: #f74a4a;
-    display: block;
-    text-align: center;
-    color: white !important;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    padding:5px 0px;
-    font-weight: bold;
-    margin:0px 1px;
-    margin-bottom: 8px;
-}
-
-.hapus-cust:hover{
-    color:#DC3545 !important;
-    background-color: white;
-}
-
-.hapus-cust:active{
-    color:white !important;
-    background-color: #DC3545;
-}
 
 .form-check{
     padding-left:30px !important;
