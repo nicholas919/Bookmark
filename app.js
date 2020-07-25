@@ -330,7 +330,7 @@ function renderPromo(doc){
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Keterangan</label>
-                  <textarea oninput="auto_grow(this)" class="form-control" id="editketeranganpromo${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required>${keteranganPromo.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                  <textarea oninput="auto_grow(this)" onfocus="auto_grow(this)" class="form-control" id="editketeranganpromo${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required>${keteranganPromo.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
                 </div>
             <div class="row">
                 <div class="form-group col-6">
@@ -671,7 +671,7 @@ function renderCustomer(doc){
              </div>
                 <div class="form-group">
                   <label class="col-form-label">Daftar Produk</label>
-                  <textarea oninput="auto_grow(this)" class="form-control" id="editdaftarproduk${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required>${daftarProduk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                  <textarea oninput="auto_grow(this)" onfocus="auto_grow(this)" class="form-control" id="editdaftarproduk${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required>${daftarProduk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
                 </div>
               <div class="row">
                 <div class="form-group col-6">
@@ -1385,11 +1385,11 @@ function renderTransaksi(doc){
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Produk</label>
-                  <textarea oninput="auto_grow(this)" class="form-control" id="produk-transaksi-update${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${produk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                  <textarea oninput="auto_grow(this)" onfocus="auto_grow(this)" class="form-control" id="produk-transaksi-update${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${produk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Keterangan Transaksi</label>
-                  <textarea oninput="auto_grow(this)" class="form-control" id="keterangan-transaksi-update${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${keterangan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                  <textarea oninput="auto_grow(this)" onfocus="auto_grow(this)" class="form-control" id="keterangan-transaksi-update${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${keterangan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
                 </div>
                 <div class="modal-footer">
                       <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
