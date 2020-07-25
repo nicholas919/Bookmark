@@ -594,7 +594,8 @@ function renderCustomer(doc){
     div.innerHTML=`
     <div class="card">
         <button class="btn btn-link card-header bg-dark" type="button" data-toggle="collapse" data-target="#collapse${doc.id}" aria-expanded="true" aria-controls="collapse${doc.id}">
-          ${sifatTransaksi} Produk a.n ${namaCust} <span class="badge badge-danger baru">${sifatCust}</span>
+          <div>${sifatTransaksi} Produk a.n ${namaCust} <span class="badge badge-danger baru">${sifatCust}</span></div>
+          <div>Produk yang dicari : ${daftarProduk}</div>
         </button>
     <div id="collapse${doc.id}" class="collapse">
       <div class="keterangan-promo card-body">
@@ -1140,6 +1141,233 @@ createForm8.addEventListener('submit', (e) => {
 })
 
 
+    db.collection('transaksi').onSnapshot(snapshot =>{
+        let changes = snapshot.docChanges();
+        changes.forEach(change =>{
+            if(change.type == 'added'){
+                renderTransaksi(change.doc);
+            }else if (change.type == 'removed'){
+                let div = document.querySelector('[data-id="' + change.doc.id + '"]');
+                isiTransaksi.removeChild(div);
+            } else if(change.type == 'modified'){
+                renderUpdateTransaksi(change.doc);
+            }
+        })
+    })
+
+const isiTransaksi = document.querySelector('#list-transaksi')
+const modalTransaksi = document.querySelector('#list-modal-transaksi')
+
+function renderTransaksi(doc){
+    let tr = document.createElement('tr');
+    let transaksi = document.createElement('div');
+    let tanggal = doc.data().tanggal;
+    console.log(tanggal)
+    let kalkulasiTanggal = new Date(tanggal);
+    let dd = String(kalkulasiTanggal.getDate()).padStart(2, '0');
+    let mm = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = kalkulasiTanggal.getFullYear();
+    tanggal = dd + '/' + mm + '/' + yyyy;
+    let tampilantanggal = yyyy + '-' + mm + '-' + dd
+    let customer = doc.data().customer;
+    let nominal = doc.data().nominal;
+    let produk = doc.data().produk;
+    let keterangan = doc.data().keterangan;
+    tr.setAttribute('data-id', doc.id);
+    tr.setAttribute('data-toggle', 'modal');
+    tr.setAttribute('data-target', '#modalupdatetransaksi' + doc.id);
+    tr.setAttribute('id','peserta' + doc.id);
+    tr.classList.add('dokumentasi-transaksi' + doc.id, 'transaksi');
+    tr.innerHTML = `
+    <td style="font-weight:bold;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
+    <td id="customer-table${doc.id}">${customer}</td>
+    <td id="nominal-table${doc.id}">${"Rp." + Number(nominal).toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }) + ",00"}</td>
+    <td id="produk-table${doc.id}">${produk}</td>
+    <td id="keterangan-table${doc.id}">${keterangan}</td>
+    `
+    transaksi.innerHTML = `
+<div class="modal fade" id="modalupdatetransaksi${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pengaturan Peserta</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+        <div id="data-transaksi">
+        <div id="info-transaksi">
+        <div>Tanggal Transaksi</div>
+        <div>:</div>
+        <div style="font-weight:bold;" id="tanggal-transaksi${doc.id}">${tanggal}</div>
+        <div>Nama Customer</div>
+        <div>:</div>        
+        <div id="customer-transaksi${doc.id}">${customer}</div>
+        <div>Nominal Transaksi</div>
+        <div>:</div> 
+        <div id="nominal-transaksi${doc.id}">${"Rp." + Number(nominal).toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }) + ",00"}</div>
+        <div>Produk</div>
+        <div>:</div> 
+        <div id="produk-transaksi${doc.id}">${produk}</div>
+        <div>Keterangan Transaksi</div>
+        <div>:</div> 
+        <div id="keterangan-transaksi${doc.id}">${keterangan}</div>
+        </div>
+        <div id="edit${doc.id}" class="btn btn-warning edittransaksi">Edit Data Transaksi</div>
+        <div id="hapus${doc.id}" class="btn btn-danger hapustransaksi">Hapus Data Transaksi</div>
+        </div>
+          <form id="modal-transaksi${doc.id}" class="modal-transaksi">
+            <div class="form-group">
+                  <label class="col-form-label">Tanggal Transaksi <small>(Note :Tanggal transaksi akan otomatis mengikuti tanggal perubahan jika kolom dikosongkan)</small></label>
+                  <input type="date" value="${tampilantanggal}" class="form-control" id="tanggal-transaksi-update${doc.id}" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Nama Customer</label>
+                  <input type="text" value="${customer}" class="form-control your_class" id="customer-transaksi-update${doc.id}" autocomplete="off" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Nominal Transaksi</label>
+                  <input type="number" value="${nominal}" class="form-control your_class" id="nominal-transaksi-update${doc.id}" autocomplete="off" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Produk</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="produk-transaksi-update${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${produk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Keterangan Transaksi</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="keterangan-transaksi-update${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${keterangan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            <div class="garis"></div>
+            </div>
+          </div>
+       </div>
+     </div>
+    `
+
+isiTransaksi.insertBefore(tr,isiTransaksi.childNodes[0]);
+modalTransaksi.appendChild(transaksi);
+
+    let edit = document.querySelector('#edit' + doc.id);
+    edit.addEventListener('click', function(e){
+        e.preventDefault();
+        let formEdit = document.querySelector('#modal-transaksi' + doc.id);
+        formEdit.style.display = "block";
+        formEdit.addEventListener('submit', function(e){
+            e.preventDefault();
+            let tanggalUpdate = document.querySelector('#tanggal-transaksi-update' + doc.id).value;
+            let customerUpdate = document.querySelector('#customer-transaksi-update' + doc.id).value;
+            let nominalUpdate = document.querySelector('#nominal-transaksi-update' + doc.id).value;
+            let produkUpdate = document.querySelector('#produk-transaksi-update' + doc.id).value;
+            let keteranganUpdate = document.querySelector('#keterangan-transaksi-update' + doc.id).value;
+if(tanggalUpdate == 0){
+    tanggalUpdate = new Date().getTime();
+}
+            db.collection('transaksi').doc(doc.id).update({
+                tanggal : tanggalUpdate,
+                customer : customerUpdate,
+                nominal : nominalUpdate,
+                produk : produkUpdate.replace(/\n\r?/g, '<br/>'),
+                keterangan : keteranganUpdate.replace(/\n\r?/g, '<br/>')
+            }).then(() => {
+                formEdit.style.display = "none";
+            })
+        })
+    })
+
+    let hapus = document.querySelector('#hapus' + doc.id);
+    hapus.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin menghapus data transaksi ini?');
+    if(konfirmasi == true){
+    let id = document.querySelector('.dokumentasi-transaksi' + doc.id).getAttribute('data-id');
+    db.collection('transaksi').doc(id).delete();
+    $('#modalupdatetransaksi' + doc.id).modal('hide');
+        }
+    })
+
+}
+
+function renderUpdateTransaksi(doc){
+    let tanggal = doc.data().tanggal;
+    let kalkulasiTanggal = new Date(tanggal);
+    let dd = String(kalkulasiTanggal.getDate()).padStart(2, '0');
+    let mm = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = kalkulasiTanggal.getFullYear();
+    tanggal = dd + '/' + mm + '/' + yyyy;   
+    let customer = doc.data().customer;
+    let nominal = doc.data().nominal;
+    let produk = doc.data().produk;
+    let keterangan = doc.data().keterangan;
+    document.querySelector('#tanggal-table' + doc.id).innerText = tanggal;
+    document.querySelector('#tanggal-transaksi' + doc.id).innerText = tanggal;
+    document.querySelector('#customer-table' + doc.id).innerText = customer;
+    document.querySelector('#customer-transaksi' + doc.id).innerText = customer;
+    document.querySelector('#nominal-table' + doc.id).innerText = "Rp." + Number(nominal).toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }) + ",00";
+    document.querySelector('#nominal-transaksi' + doc.id).innerText = "Rp." + Number(nominal).toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }) + ",00";
+    document.querySelector('#produk-table' + doc.id).innerText = produk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
+    document.querySelector('#produk-transaksi' + doc.id).innerText = produk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
+    document.querySelector('#keterangan-table' + doc.id).innerText = keterangan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
+    document.querySelector('#keterangan-transaksi' + doc.id).innerText = keterangan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
+    
+
+}
+
+
+const createForm9 = document.querySelector('#tambah-transaksi');
+createForm9.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if(document.querySelector('#tanggal-transaksi').value == 0){
+    let tanggal = new Date().getTime();
+    if(document.querySelector('#nominal-transaksi').value == 0){
+        alert("Pastikan anda mengisi kolom nominal transaksi")
+    } else {
+    db.collection('transaksi').add({
+        tanggal: tanggal,
+        customer: createForm9['customer-transaksi'].value,
+        nominal: createForm9['nominal-transaksi'].value,
+        produk: createForm9['produk-transaksi'].value.replace(/\n\r?/g, '<br/>'),
+        keterangan: createForm9['keterangan-transaksi'].value.replace(/\n\r?/g, '<br/>')
+    }).then(() => {
+        $('#modaltransaksi').modal('hide');
+        document.querySelector('#tambah-transaksi').reset();
+    })
+   }
+  } else {
+    if(document.querySelector('#nominal-transaksi').value == 0){
+        alert("Pastikan anda mengisi kolom nominal transaksi")
+    } else {
+    db.collection('transaksi').add({
+        tanggal: createForm9['tanggal-transaksi'].value,
+        customer: createForm9['customer-transaksi'].value,
+        nominal: createForm9['nominal-transaksi'].value,
+        produk: createForm9['produk-transaksi'].value.replace(/\n\r?/g, '<br/>'),
+        keterangan: createForm9['keterangan-transaksi'].value.replace(/\n\r?/g, '<br/>')
+    }).then(() => {
+        $('#modaltransaksi').modal('hide');
+        document.querySelector('#tambah-transaksi').reset();
+    })
+   }
+  }
+})
+
 function auto_grow(element){
     element.style.height = "5px";
     element.style.height = (element.scrollHeight)+"px";
@@ -1153,6 +1381,8 @@ document.querySelector(".your_class").addEventListener("keypress", function (evt
         evt.preventDefault();
     }
 });
+
+
 
 
 //document.addEventListener('contextmenu', event => event.preventDefault());

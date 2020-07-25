@@ -493,6 +493,32 @@ button.card-header{
     color:white;
 }
 
+#tambahtransaksi{
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    display: block;
+    position: fixed;
+    bottom: 0px;
+    right:0;
+    left:0;
+    margin-left: 200px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    padding:5px 0px;
+    font-size: 30px;
+}
+
+#tambahtransaksi:hover{
+    background-color: white;
+    color:#007bff;
+}
+
+#tambahtransaksi:active{
+    background-color: #007bff;
+    color:white;
+}
+
 .expired{
     color:white;
     background-color:#DC3545;
@@ -1087,4 +1113,44 @@ body{
 @page {
   size: A4;
   margin: 0;
+}
+
+
+#data-transaksi{
+  border-bottom: 1px solid rgba(0,0,0,.2);
+}
+
+#info-transaksi{
+  display: grid;
+  grid-template-columns: 150px 15px auto;
+  justify-content: center;
+  padding-bottom: 12px;
+}
+
+
+.hapustransaksi, .edittransaksi{
+  margin:4px 0px 8px 0px;
+  display: block !important;
+  color:white !important;
+}
+
+.modal-transaksi{
+  display: none;
+}
+
+.transaksi{
+  cursor: pointer;
+}
+
+.tanggal-table{
+  text-align: center;
+}
+
+table td, table th{
+  border:2px solid #dee2e6;
+}
+
+table thead th{
+  text-align: center;
+  border:2px solid #dee2e6;
 }

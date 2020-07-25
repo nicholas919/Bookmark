@@ -61,6 +61,10 @@
 
 <hr style="margin:0;">
 
+    <a class="tab-halaman btn text-left menu" id="tab-transaksi-pt" data-toggle="pill" href="#halaman-transaksi-pt" role="tab" aria-controls="halaman-transaksi-pt" aria-selected="true"><span class="daftar2menu"> <i class='fas fa-comments-dollar'></i> Transaksi Berjalan</span></a>
+
+<hr style="margin:0;">
+
     <a class="btn text-left menu" id="tab-sheet" target="_blank" href="https://docs.google.com/spreadsheets/u/0/"><span class="daftar2menu"> <i class='fas fa-book-reader'></i> Sheet</span></a>
   </div>
 
@@ -723,6 +727,69 @@
   
     <div class="preview-print" id="preview-print"></div>
 </div>
+
+<div class="halaman tab-pane fade" id="halaman-transaksi-pt" role="tabpanel" aria-labelledby="tab-transaksi-pt">
+
+<a id="tambahtransaksi" data-toggle="modal" data-target="#modaltransaksi">+</a>
+
+<div class="modal fade" id="modaltransaksi" tabindex="-1" role="dialog" aria-labelledby="modalkalkulator" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="labelmodalkalkulator">Menambahkan Transaksi Terbaru</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-transaksi">
+                <div class="form-group">
+                  <label class="col-form-label">Tanggal Transaksi <small>(Note :Tanggal transaksi akan otomatis mengikuti tanggal hari ini jika kolom dikosongkan)</small></label>
+                  <input type="date" class="form-control" id="tanggal-transaksi" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Nama Customer</label>
+                  <input type="text" class="form-control your_class" id="customer-transaksi" autocomplete="off" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Nominal Transaksi</label>
+                  <input type="number" class="form-control your_class" id="nominal-transaksi" autocomplete="off" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Produk</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="produk-transaksi" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Keterangan Transaksi</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="keterangan-transaksi" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off"></textarea>
+                </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <table class="table table-striped">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Tanggal</th>
+      <th scope="col">Nama Customer</th>
+      <th scope="col">Nominal Transaksi</th>
+      <th scope="col">Produk</th>
+      <th scope="col">Keterangan Transaksi</th>
+    </tr>
+  </thead>
+  <tbody id="list-transaksi"></tbody>
+</table>
+
+  <div id="list-modal-transaksi"></div>
+</div>
+
+
 
 </div>
 
