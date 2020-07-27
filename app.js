@@ -199,7 +199,7 @@ function renderCatatan(doc){
         let hapus = document.querySelector('a#hapusya' + doc.id);
         hapus.addEventListener('click', function(e){
         e.stopPropagation();
-        let konfirmasi = confirm('Anda yakin ingin menghapus promo ini?');
+        let konfirmasi = confirm('Anda yakin ingin menghapus catatan ini?');
         if(konfirmasi == true){
         let id = e.target.parentElement.getAttribute('data-id');
         db.collection('catatan').doc(id).delete();
