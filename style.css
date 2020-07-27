@@ -1149,3 +1149,7 @@ table thead th{
   text-align: center;
   border:2px solid #dee2e6;
 }
+
+table{
+  margin-bottom: 150px;
+}
