@@ -16,73 +16,158 @@ db.collection('pengumuman').onSnapshot(snapshot =>{
         } else if (change.type == 'removed'){
             let div = isiPengumuman.querySelector('[data-id="' + change.doc.id + '"]');
             isiPengumuman.removeChild(div);
-            document.querySelector('#edit').disabled = false;
-            document.querySelector('#peringatan').style.display = "block";
-        } 
+        } else if(change.type == 'modified'){
+            renderEditPengumuman(change.doc);
+        }
     })
 })
 
 
 const isiPengumuman = document.querySelector('#isipengumuman');
+const editPengumuman = document.querySelector('#editpengumuman');
 
 
 function renderPengumuman(doc){
-if(isiPengumuman.childNodes.length === 0){
-    isiPengumuman.innerHTML = `
-    <div id="peringatan">
-    <div id="judul-pengumuman" class="judulpengumuman">PENGUMUMAN</div>
-    <div id="keterangan-pengumuman" class="peringatan-keterangan">Untuk saat ini tidak ada pemberitahuan pengumuman</div>
-    </div>`
-}else{
-    document.querySelector('#peringatan').style.display = "none";
-    document.querySelector('#edit').disabled = true;
-    let div = document.createElement('div');
-    div.setAttribute('data-id', doc.id);
-    let judul = doc.data().judul;
-    let keterangan = doc.data().keterangan;
-    let tanggal = doc.data().tanggal;
-    let sifat = doc.data().sifat;
-    div.innerHTML=`
-    <div id="judul-pengumuman" class="judulpengumuman${doc.id}">${judul}</div><a id="hapus${doc.id}" class="hapus"><i class="fa fa-close"></i></a>
-    <small>Dibuat pada ${tanggal} <span class="badge badge-success baru">Baru</span> <span class="badge badge-danger baru">${sifat}</span></small>
-    <div class="pembuka-pengumuman">Dear Admin Galaxy Camera</div>
-    <div id="keterangan-pengumuman">${keterangan}</div>
-    <div id="terimakasih">Terima Kasih atas Perhatiannya</div>
+let div = document.createElement('div');
+let pengumuman = document.createElement('div');
+div.setAttribute('data-id', doc.id);
+let judul = doc.data().judul;
+let keterangan = doc.data().keterangan;
+let tanggal = doc.data().tanggal;
+let sifat = doc.data().sifat;
+div.classList.add('dokumentasi-pengumuman' + doc.id);
+div.innerHTML = `
+    <div class="jumbotron jumbotron-fluid" id="editya${doc.id}" data-toggle="modal" data-target="#modaleditpengumuman${doc.id}" style="cursor:pointer;margin-bottom:10px;background-image:url(image/jumbotron2.jpg);background-position:bottom;">
+      <div class="container">
+        <h1 class="display-4"><span id="judul-pengumuman${doc.id}" style="font-weight:bold;color:white;">${judul}</span> <span id="badge${doc.id}" class="badge badge-danger badge-penting" style="display:none;">Penting</span></h1>
+        <p class="lead" style="color:white;font-size:24px;">${tanggal}, <span id="keterangan-pengumuman${doc.id}">${keterangan}</span></p>
+      </div>
+    </div>
     `
-    isiPengumuman.appendChild(div);
+  
+pengumuman.innerHTML = `
+<div class="modal fade" id="modaleditpengumuman${doc.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Menambahkan Pengumuman Terbaru</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+        <div class="data-pengumuman">
+        <div id="judul-pengumuman-body${doc.id}" class="judul-pengumuman-body">${judul}</div>
+        <div class="keterangan-pengumuman-body">${tanggal}, <span id="keterangan-pengumuman-body${doc.id}">${keterangan}</span></div>
+        <div id="edit${doc.id}" class="btn btn-warning edittransaksi">Edit Data Transaksi</div>
+        <div id="hapus${doc.id}" class="btn btn-danger hapustransaksi">Hapus Data Transaksi</div>
+        </div>
+          <form id="form-edit-pengumuman${doc.id}" class="form-edit-pengumuman">
+                <div class="form-group">
+                  <label class="col-form-label">Judul</label>
+                  <input type="text" class="form-control" value="${judul}" id="editjudulpengumuman${doc.id}" minlength="10" maxlength="20" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Keterangan</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="editketeranganpengumuman${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required>${keterangan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Sifat <small>(Note: Tidak wajib untuk diisi)</small></label>
+                  <select class="form-control" id="editsifatpengumuman${doc.id}">
+                    <option value="" disabled selected hidden>-</option>
+                    <option>Penting</option>
+                  </select>
+                </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button id="submit" type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                  </form>
+                <div class="garis"></div>          
+            </div>
+          </div>
+       </div>
+     </div>
+`
 
-    
 
-    let hapus = document.querySelector('a#hapus' + doc.id);
+    isiPengumuman.insertBefore(div,isiPengumuman.childNodes[0])
+    editPengumuman.appendChild(pengumuman);
+
+    let selectSifatPengumuman = document.querySelector('#editsifatpengumuman' + doc.id);
+    let optionSifatPengumuman;
+    for(let x = 0; x<selectSifatPengumuman.options.length; x++){
+    optionSifatPengumuman = selectSifatPengumuman.options[x];
+    if(optionSifatPengumuman.value == sifat){
+        optionSifatPengumuman.setAttribute('selected', 'selected');
+        }
+    }
+
+    if(sifat == "Penting"){
+        document.querySelector('#badge' + doc.id).style.display = "inline-block";
+    }
+
+    let edit = document.querySelector('#edit' + doc.id);
+    edit.addEventListener('click', function(e){
+        e.preventDefault();
+        let formEdit = document.querySelector('#form-edit-pengumuman' + doc.id);
+        formEdit.style.display = "block";
+        formEdit.addEventListener('submit', function(e){
+            e.preventDefault();
+            let judulUpdate = document.querySelector('#editjudulpengumuman' + doc.id).value;
+            let sifatUpdate = document.querySelector('#editsifatpengumuman' + doc.id).value;
+            let keteranganUpdate = document.querySelector('#editketeranganpengumuman' + doc.id).value;
+            db.collection('pengumuman').doc(doc.id).update({
+                judul : judulUpdate,
+                sifat : sifatUpdate,
+                keterangan : keteranganUpdate.replace(/\n\r?/g, '<br/>')
+            }).then(() => {
+                formEdit.style.display = "none";
+            })
+        })
+    })
+
+    let hapus = document.querySelector('#hapus' + doc.id);
     hapus.addEventListener('click', function(e){
     e.stopPropagation();
     let konfirmasi = confirm('Anda yakin ingin menghapus pengumuman ini?');
     if(konfirmasi == true){
-    let id = e.target.parentElement.getAttribute('data-id');
+    let id = document.querySelector('.dokumentasi-pengumuman' + doc.id).getAttribute('data-id');
     db.collection('pengumuman').doc(id).delete();
-}
-   
-    });
-  }
+    $('#modaleditpengumuman' + doc.id).modal('hide');
+        }
+    })
 }
 
+function renderEditPengumuman(doc){
+    let judul = doc.data().judul;
+    let keterangan = doc.data().keterangan;
+    let sifat = doc.data().sifat;
+    document.querySelector('#judul-pengumuman' + doc.id).innerHTML = judul;
+    document.querySelector('#judul-pengumuman-body' + doc.id).innerHTML = judul;
+    document.querySelector('#keterangan-pengumuman' + doc.id).innerHTML = keterangan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
+    document.querySelector('#keterangan-pengumuman-body' + doc.id).innerHTML = keterangan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
+
+        if(sifat == "Penting"){
+        document.querySelector('#badge' + doc.id).style.display = "inline-block";
+        } else {
+        document.querySelector('#badge' + doc.id).style.display = "none";
+    }
+}
 
 
 const createForm = document.querySelector('#tambah-pengumuman');
-var today = new Date();
-var dd = String(today.getDate()).padStart(2, '0');
-var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy = today.getFullYear();
-var hours = ('0' + today.getHours()).slice(-2);
-var minutes = ('0' + today.getMinutes()).slice(-2);
-tanggal = dd + '/' + mm + '/' + yyyy;
-jam = hours + ":" + minutes;
-
-
 
 createForm.addEventListener('submit', (e) => {
     e.preventDefault();
-
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+    let hours = ('0' + today.getHours()).slice(-2);
+    let minutes = ('0' + today.getMinutes()).slice(-2);
+    tanggal = dd + '/' + mm + '/' + yyyy;
+    jam = hours + ":" + minutes;
     db.collection('pengumuman').add({
         judul: createForm['judul'].value.toUpperCase(),
         keterangan: createForm['keterangan'].value.replace(/\n\r?/g, '<br/>'),
@@ -160,11 +245,12 @@ function renderCatatan(doc){
                       <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
                       <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
-            </form>
+                </form>
+                <div class="garis"></div>
             </div>
-          </div>
-       </div>
-     </div>
+        </div>
+    </div>
+</div>
     `
 
     isiCatatan.insertBefore(div,isiCatatan.childNodes[0])
@@ -353,6 +439,7 @@ function renderPromo(doc){
      </div>`
 
     
+
     isiPromo.insertBefore(div,isiPromo.childNodes[0])
     editPromo.appendChild(edit);
 
@@ -616,11 +703,21 @@ function renderCustomer(doc){
     let daftarProduk = doc.data().daftarProduk;
     let sifatTransaksi = doc.data().sifatTransaksi;
     let emailCust = doc.data().emailCust;
+    let tanggalCust = new Date(doc.data().tanggalCust);
+    let dd = String(tanggalCust.getDate()).padStart(2, '0');
+    let mm = String(tanggalCust.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = tanggalCust.getFullYear();
+    let hours = ('0' + tanggalCust.getHours()).slice(-2);
+    let minutes = ('0' + tanggalCust.getMinutes()).slice(-2);
+    let tanggal = dd + '/' + mm + '/' + yyyy + ', ';
+    if(tanggal == "NaN/NaN/NaN, "){
+        tanggal = '';
+    }
     div.innerHTML=`
     <div class="card">
         <button class="btn btn-link card-header bg-dark" type="button" data-toggle="collapse" data-target="#collapse${doc.id}" aria-expanded="true" aria-controls="collapse${doc.id}">
-          <div class="judul-keterangan-cust">
-          <div><span id="sifat-transaksi${doc.id}">${sifatTransaksi}</span> Produk</div>
+          <div class="judul-keterangan-cust" id="judul-keterangan-cust${doc.id}">
+          <div><span id="sifat-transaksi${doc.id}">${tanggal} ${sifatTransaksi}</span> Produk</div>
           <div>:</div>
           <div id="daftar-produk${doc.id}">${daftarProduk}</div>
           </div>
@@ -711,6 +808,9 @@ if(isiCustomer.childNodes.length == 0){
     document.querySelector('#jumlahcust').innerText = badgeJumlahCustomer;
 }
 
+    if(tanggal == ''){
+        document.querySelector('#judul-keterangan-cust' + doc.id).style.gridTemplateColumns = "140px 10px auto"
+    }
 
 let selectSifatTransaksi = document.querySelector('#editsifattransaksi' + doc.id);
 let optionSifatTransaksi;
@@ -791,13 +891,14 @@ const createForm4 = document.querySelector('#tambah-cust');
 
 createForm4.addEventListener('submit', (e) => {
     e.preventDefault();
-
+    let tanggal = new Date().getTime();
     db.collection('customer').add({
         namaCust: createForm4['namacust'].value,
         kontakCust: createForm4['kontakcust'].value,
         daftarProduk : createForm4['daftarproduk'].value.replace(/\n\r?/g, '<br/>'),
         sifatTransaksi: createForm4['sifattransaksi'].value,
-        emailCust : createForm4['emailcust'].value
+        emailCust : createForm4['emailcust'].value,
+        tanggalCust : tanggal
     }).then(() => {
         $('#modalcust').modal('hide')
         const selectbox = document.querySelector('#sifattransaksi');
@@ -1346,8 +1447,8 @@ function renderTransaksi(doc){
         </button>
       </div>
         <div class="modal-body">
-        <div id="data-transaksi">
-        <div id="info-transaksi">
+        <div class="data-transaksi">
+        <div class="info-transaksi">
         <div>Tanggal Transaksi</div>
         <div>:</div>
         <div style="font-weight:bold;" id="tanggal-transaksi${doc.id}">${tanggal}</div>

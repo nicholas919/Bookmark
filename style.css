@@ -114,6 +114,7 @@ div.card-header{
 }
 
 
+
 .marquee{
      cursor: default;
      -webkit-touch-callout: none;
@@ -140,12 +141,6 @@ div.card-header{
     max-height:9000px;
 }
 
-#pengumuman{
-    background-color: #f9f9f9;
-    display: block;
-    width: auto;
-    height:auto;
-}
 
 a.dropdown-item{
     padding: 5px 4px;
@@ -210,46 +205,9 @@ nav.navbar{
     padding:0px;
 }
 
-#judul-pengumuman{
-    font-size: 30px;
-    text-align: center;
-    font-weight: bolder;
-    color:#ff2626;
-    padding-top:40px;
-}
-
-#pengumuman{
-  background-color: #f2f2f2;
-  border-radius: 5px;
-  border: 10px solid #adb2bd;
-  box-shadow: inset -1px 2px 2px #404040, 6px 6px 1px #404040;
-  overflow: hidden;
-  z-index: 1;
-  padding: 0px 0px 8px 12px;
-  margin-bottom: 8px !important;
-}
 
 #isipengumuman{
     margin-bottom: 50px;
-}
-
-#edit i{
-    font-size: 20px;
-    background-color: #adb2bd;
-    padding:10px;
-    float:right;
-    z-index: 0;
-    cursor: pointer;
-    border-bottom-left-radius: 10px;
-    box-shadow: inset -1px 2px 2px #404040, 2px 2px 1px #404040;
-}
-
-#edit i:hover{
-    color:white;
-}
-
-#edit i:active{
-    color:black;
 }
 
 a.hapus{
@@ -275,9 +233,24 @@ a.hapus:active{
     color:white !important;
 }
 
-.baru{
-    animation:animasi 2s infinite;
+.judul-pengumuman-body{
+  font-size: 24px;
+  text-align: center;
+  font-weight: bold;
+  color:red;
 }
+
+.keterangan-pengumuman-body{
+  margin-bottom: 10px;
+}
+
+.badge-baru, .badge-penting{
+    margin-right: 5px !important;
+    font-size: 18px !important;
+    animation:animasi 2s infinite;
+    vertical-align: super !important;
+}
+
 
 @keyframes animasi {
     0%{transform: translateY(-2px);}
@@ -299,6 +272,32 @@ ul.navbar-nav{
 
 li{
     list-style: none;
+}
+
+#tambahpengumuman{
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    display: block;
+    position: fixed;
+    bottom: 0px;
+    right:0;
+    left:0;
+    margin-left: 200px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    padding:5px 0px;
+    font-size: 30px;
+}
+
+#tambahpengumuman:hover{
+    background-color: white;
+    color:#007bff;
+}
+
+#tambahpengumuman:active{
+    background-color: #007bff;
+    color:white;
 }
 
 #tambahcatatan{
@@ -361,9 +360,7 @@ li{
 
 .hapusya{
     cursor: pointer;
-    border-left:1px solid #5b5c5b;
-    border-bottom:2px solid #5b5c5b;
-    border-right:2px solid #5b5c5b;
+    border:2px solid #f74a4a;
     background-color: #f74a4a;
     display: inline-block;
     text-align: center;
@@ -386,9 +383,7 @@ li{
 
 .editya{
     cursor: pointer;
-    border-left:2px solid #5b5c5b;
-    border-bottom:2px solid #5b5c5b;
-    border-right:1px solid #5b5c5b;
+    border:2px solid #ffbb00;
     background-color: #ffbb00;
     display: inline-block;
     text-align: center;
@@ -452,7 +447,6 @@ a.hapuspromo{
     padding:10px;
     background-color: white;
     background-color: #f2f2f2;
-    border-bottom-left-radius: 15px;
 }
 
 .isi-keterangan-cust{
@@ -463,7 +457,7 @@ a.hapuspromo{
 
 .judul-keterangan-cust{
     display: grid;
-    grid-template-columns: 140px 10px auto auto;
+    grid-template-columns: 220px 10px auto;
 }
 
 button.daftar-promo{
@@ -1112,12 +1106,16 @@ body{
   margin: 0;
 }
 
+.form-edit-pengumuman{
+  display: none;
+}
 
-#data-transaksi{
+.data-transaksi, .data-pengumuman{
   border-bottom: 1px solid rgba(0,0,0,.2);
 }
 
-#info-transaksi{
+
+.info-transaksi{
   display: grid;
   grid-template-columns: 150px 15px auto;
   justify-content: center;
