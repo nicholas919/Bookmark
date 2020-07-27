@@ -59,8 +59,8 @@ pengumuman.innerHTML = `
         <div class="data-pengumuman">
         <div id="judul-pengumuman-body${doc.id}" class="judul-pengumuman-body">${judul}</div>
         <div class="keterangan-pengumuman-body">${tanggal}, <span id="keterangan-pengumuman-body${doc.id}">${keterangan}</span></div>
-        <div id="edit${doc.id}" class="btn btn-warning edittransaksi">Edit Data Transaksi</div>
-        <div id="hapus${doc.id}" class="btn btn-danger hapustransaksi">Hapus Data Transaksi</div>
+        <div id="edit${doc.id}" class="btn btn-warning edittransaksi">Edit Data Pengumuman</div>
+        <div id="hapus${doc.id}" class="btn btn-danger hapustransaksi">Hapus Data Pengumuman</div>
         </div>
           <form id="form-edit-pengumuman${doc.id}" class="form-edit-pengumuman">
                 <div class="form-group">
