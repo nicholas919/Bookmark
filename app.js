@@ -1226,7 +1226,7 @@ function renderTugas(doc){
 
     $(document).ready(function() {
     db.collection('tugas').onSnapshot(snapshot =>{
-    var items = $('#daftar-tugas-selesai > .tugas-selesai').get();
+    let items = $('#daftar-tugas-selesai > .tugas-selesai').get();
     items.sort(function(a, b) {
     var keyA = $(a).text();
     var keyB = $(b).text();
@@ -1283,7 +1283,7 @@ function renderTugas(doc){
 
 $(document).ready(function() {
 db.collection('tugas').onSnapshot(snapshot =>{
-    var items = $('#daftar-tugas-pending > .tugas-pending').get();
+    let items = $('#daftar-tugas-pending > .tugas-pending').get();
     items.sort(function(a, b) {
     var keyA = $(a).text();
     var keyB = $(b).text();
@@ -1533,6 +1533,23 @@ if(tanggalUpdate == 0){
             })
         })
     })
+
+    $(document).ready(function() {
+    db.collection('transaksi').onSnapshot(snapshot =>{
+    let items = $('#list-transaksi > .transaksi').get();
+    items.sort(function(a, b) {
+    var keyA = $(a).text();
+    var keyB = $(b).text();
+    if (keyA < keyB) return 1;
+    if (keyA > keyB) return -1;
+    return 0;
+    })
+    var daftarTransaksi = $('#list-transaksi');
+    $.each(items, function(i, div) {
+    daftarTransaksi.append(div);
+  })
+  })
+})
 
     let hapus = document.querySelector('#hapus' + doc.id);
     hapus.addEventListener('click', function(e){
