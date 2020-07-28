@@ -344,9 +344,6 @@ li{
 }
 
 .keterangan-catatan{
-    border-left:2px solid #5b5c5b;
-    border-bottom:2px solid #5b5c5b;
-    border-right:2px solid #5b5c5b;
     padding:10px;
     background-color: white;
     background-color: #f2f2f2;
@@ -429,20 +426,8 @@ a.hapuspromo{
     color: #0ff;
 }
 
-#keterangan-promo{
-    border-left:2px solid #5b5c5b;
-    border-bottom:2px solid #5b5c5b;
-    border-right:2px solid #5b5c5b;
-    padding:10px;
-    background-color: white;
-    background-color: #f2f2f2;
-    border-bottom-left-radius: 15px;
-}
 
 .keterangan-cust{
-    border-left:2px solid #5b5c5b;
-    border-bottom:2px solid #5b5c5b;
-    border-right:2px solid #5b5c5b;
     padding:10px;
     background-color: white;
     background-color: #f2f2f2;
@@ -474,11 +459,9 @@ button.card-header{
 
 
 .keterangan-promo{
-    border-left:2px solid #5b5c5b;
-    border-bottom:2px solid #5b5c5b;
-    border-right:2px solid #5b5c5b;
     padding-left:50px !important;
     padding-right:50px !important;
+    background-color: #f2f2f2;
 }
 
 #tambahpromo{
@@ -555,20 +538,6 @@ button.card-header{
     border:0 !important;
 }
 
-a.hapus-promo{
-    cursor: pointer;
-    border-left:1px solid #5b5c5b;
-    border-bottom:2px solid #5b5c5b;
-    border-right:2px solid #5b5c5b;
-    background-color: #f74a4a;
-    display: inline-block;
-    text-align: center;
-    color: white !important;
-    border-bottom-right-radius: 15px;
-    padding:5px 0px;
-    font-weight: bold;
-    width: 50%;
-}
 
 .hapus-promo:hover{
     color:#DC3545 !important;

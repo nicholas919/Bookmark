@@ -395,7 +395,7 @@ function renderPromo(doc){
       </div>
     </div>
 </div>
-<a id="editya${doc.id}" class="editya" data-toggle="modal" data-target="#modaleditpromo${doc.id}"><i class='fas fa-edit'></i> Edit</a><a class="hapus-promo" id="hapus-promo${doc.id}"><i class='fas fa-trash-alt'></i> Hapus</a>
+<a id="editya${doc.id}" class="editya" data-toggle="modal" data-target="#modaleditpromo${doc.id}"><i class='fas fa-edit'></i> Edit</a><a class="hapusya" id="hapus-promo${doc.id}"><i class='fas fa-trash-alt'></i> Hapus</a>
     `
 
     edit.innerHTML =`
