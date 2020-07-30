@@ -1416,6 +1416,9 @@ function renderTransaksi(doc){
     let mm = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
     let yyyy = kalkulasiTanggal.getFullYear();
     tanggal = dd + '/' + mm + '/' + yyyy;
+    let sortir = tanggal.split('/');
+    let sortirTanggal = sortir[2] + sortir[1] + sortir[0]
+    tr.setAttribute('data-date', sortirTanggal);
     let tampilantanggal = yyyy + '-' + mm + '-' + dd
     let customer = doc.data().customer;
     let nominal = doc.data().nominal;
@@ -1538,8 +1541,8 @@ if(tanggalUpdate == 0){
     db.collection('transaksi').onSnapshot(snapshot =>{
     let items = $('#list-transaksi > .transaksi').get();
     items.sort(function(a, b) {
-    var keyA = $(a).text();
-    var keyB = $(b).text();
+    var keyA = $(a).data('date');
+    var keyB = $(b).data('date');
     if (keyA < keyB) return 1;
     if (keyA > keyB) return -1;
     return 0;
