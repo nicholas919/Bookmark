@@ -543,6 +543,32 @@ button.card-header{
     color:white;
 }
 
+#tambahachievement{
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    display: block;
+    position: fixed;
+    bottom: 0px;
+    right:0;
+    left:0;
+    margin-left: 200px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    padding:5px 0px;
+    font-size: 30px;
+}
+
+#tambahachievement:hover{
+    background-color: white;
+    color:#007bff;
+}
+
+#tambahachievement:active{
+    background-color: #007bff;
+    color:white;
+}
+
 .expired{
     color:white;
     background-color:#DC3545;
@@ -1105,11 +1131,11 @@ body{
   display: none;
 }
 
-.data-transaksi, .data-pengumuman, .data-barang-dicari{
+.data-transaksi, .data-pengumuman, .data-barang-dicari, .data-achievement{
   border-bottom: 1px solid rgba(0,0,0,.2);
 }
 
-.info-transaksi, .info-barang-dicari{
+.info-transaksi, .info-barang-dicari, .info-achievement{
   display: grid;
   grid-template-columns: 150px 15px auto;
   justify-content: center;
@@ -1117,13 +1143,13 @@ body{
 }
 
 
-.hapustransaksi, .edittransaksi, .hapusbarangdicari, .editbarangdicari{
+.hapustransaksi, .edittransaksi, .hapusbarangdicari, .editbarangdicari, .hapusachievement, .editachievement{
   margin:4px 0px 8px 0px;
   display: block !important;
   color:white !important;
 }
 
-.modal-transaksi, .modal-barang-dicari{
+.modal-transaksi, .modal-barang-dicari, .modal-achievement{
   display: none;
 }
 

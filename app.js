@@ -1430,7 +1430,7 @@ function renderTransaksi(doc){
     tr.setAttribute('data-id', doc.id);
     tr.setAttribute('data-toggle', 'modal');
     tr.setAttribute('data-target', '#modalupdatetransaksi' + doc.id);
-    tr.setAttribute('id','peserta' + doc.id);
+    tr.setAttribute('id','transaksi' + doc.id);
     tr.classList.add('dokumentasi-transaksi' + doc.id, 'transaksi');
     tr.innerHTML = `
     <td style="font-weight:bold;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
@@ -1576,7 +1576,11 @@ function renderUpdateTransaksi(doc){
     let dd = String(kalkulasiTanggal.getDate()).padStart(2, '0');
     let mm = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
     let yyyy = kalkulasiTanggal.getFullYear();
-    tanggal = dd + '/' + mm + '/' + yyyy;   
+    tanggal = dd + '/' + mm + '/' + yyyy;
+    let tr = document.querySelector('#transaksi' + doc.id);
+    let sortir = tanggal.split('/');
+    let sortirTanggal = sortir[2] + sortir[1] + sortir[0]
+    tr.setAttribute('data-date', sortirTanggal);   
     let customer = doc.data().customer;
     let nominal = doc.data().nominal;
     let produk = doc.data().produk;
@@ -1736,7 +1740,7 @@ function renderBarangDicari(doc){
      </div>
     `
 
-isiBarangDicari.insertBefore(tr,isiBarangDicari.childNodes[0]);
+isiBarangDicari.appendChild(tr);
 modalBarangDicari.appendChild(barangDicari);
 
     let selectPelapor = document.querySelector('#pelapor-update' + doc.id);
@@ -1827,6 +1831,199 @@ createForm10.addEventListener('submit', (e) => {
         document.querySelector('#tambah-barang-dicari').reset();
     })
 })
+
+
+
+
+
+    db.collection('achievement').onSnapshot(snapshot =>{
+        let changes = snapshot.docChanges();
+        changes.forEach(change =>{
+            if(change.type == 'added'){
+                renderAchievement(change.doc);
+            }else if (change.type == 'removed'){
+                let div = document.querySelector('[data-id="' + change.doc.id + '"]');
+                isiAchievement.removeChild(div);
+            } else if(change.type == 'modified'){
+                renderUpdateAchievement(change.doc);
+            }
+        })
+    })
+
+
+const isiAchievement = document.querySelector('#list-achievement')
+const modalAchievement = document.querySelector('#list-modal-achievement')
+
+function renderAchievement(doc){
+    let tr = document.createElement('tr');
+    let achievement = document.createElement('div');
+    let tanggal = doc.data().tanggal;
+    let kalkulasiTanggal = new Date(tanggal);
+    let dd = String(kalkulasiTanggal.getDate()).padStart(2, '0');
+    let month = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    let mm = month[kalkulasiTanggal.getMonth()];
+    let yyyy = kalkulasiTanggal.getFullYear();
+    tanggal = dd + ' ' + mm + ' ' + yyyy;
+    let mmKedua = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let tampilanTanggal = yyyy + '-' + mmKedua + '-' + dd
+    let sortirTanggal = tampilanTanggal.split('-');
+    tr.setAttribute('data-date', sortirTanggal);
+    let kontenAchievement = doc.data().kontenAchievement;
+    tr.setAttribute('data-id', doc.id);
+    tr.setAttribute('data-toggle', 'modal');
+    tr.setAttribute('data-target', '#modalupdateachievement' + doc.id);
+    tr.setAttribute('id','achievement' + doc.id);
+    tr.classList.add('dokumentasi-achievement' + doc.id, 'achievement');
+    tr.innerHTML = `
+    <td style="font-weight:bold;" id="tanggal-achievement-table${doc.id}" class="tanggal-table">${tanggal}</td>
+    <td id="konten-achievement-table${doc.id}">${kontenAchievement}</td>
+    `
+    achievement.innerHTML = `
+<div class="modal fade" id="modalupdateachievement${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pengaturan Achievement</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+        <div class="data-achievement">
+        <div class="info-achievement">
+        <div>Tanggal</div>
+        <div>:</div>
+        <div style="font-weight:bold;" id="tanggal-achievement${doc.id}">${tanggal}</div>
+        <div>Konten Achievement</div>
+        <div>:</div> 
+        <div id="konten-achievement${doc.id}">${kontenAchievement}</div>
+        </div>
+        <div id="edit${doc.id}" class="btn btn-warning editachievement">Edit Data Achievement</div>
+        <div id="hapus${doc.id}" class="btn btn-danger hapusachievement">Hapus Data Achievement</div>
+        </div>
+          <form id="modal-achievement${doc.id}" class="modal-achievement">
+                <div class="form-group">
+                  <label class="col-form-label">Tanggal Achievement <small>(Note :Tanggal achievement akan otomatis mengikuti tanggal hari ini jika kolom dikosongkan)</small></label>
+                  <input type="date" class="form-control" value="${tampilanTanggal}" id="tanggal-achievement-update${doc.id}" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Konten Achievement</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="konten-achievement-update${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${kontenAchievement.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            <div class="garis"></div>
+            </div>
+          </div>
+       </div>
+     </div>
+    `
+
+isiAchievement.appendChild(tr);
+modalAchievement.appendChild(achievement);
+
+let edit = document.querySelector('#edit' + doc.id);
+    edit.addEventListener('click', function(e){
+        e.preventDefault();
+        let formEdit = document.querySelector('#modal-achievement' + doc.id);
+        formEdit.style.display = "block";
+        formEdit.addEventListener('submit', function(e){
+            e.preventDefault();
+            let tanggalUpdate = document.querySelector('#tanggal-achievement-update' + doc.id).value;
+            let kontenAchievementUpdate = document.querySelector('#konten-achievement-update' + doc.id).value;
+if(tanggalUpdate == 0){
+    tanggalUpdate = new Date().getTime();
+}
+            db.collection('achievement').doc(doc.id).update({
+                tanggal : tanggalUpdate,
+                kontenAchievement : kontenAchievementUpdate
+            }).then(() => {
+                formEdit.style.display = "none";
+            })
+        })
+    })
+
+    $(document).ready(function() {
+    db.collection('achievement').onSnapshot(snapshot =>{
+    let items = $('#list-achievement > .achievement').get();
+    items.sort(function(a, b) {
+    var keyA = $(a).data('date');
+    var keyB = $(b).data('date');
+    if (keyA < keyB) return 1;
+    if (keyA > keyB) return -1;
+    return 0;
+    })
+    var daftarAchievement = $('#list-achievement');
+    $.each(items, function(i, div) {
+    daftarAchievement.append(div);
+  })
+  })
+})
+
+
+    let hapus = document.querySelector('#hapus' + doc.id);
+    hapus.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin menghapus data achievement ini?');
+    if(konfirmasi == true){
+    let id = document.querySelector('.dokumentasi-achievement' + doc.id).getAttribute('data-id');
+    db.collection('achievement').doc(id).delete();
+    $('#modalupdateachievement' + doc.id).modal('hide');
+        }
+    })
+
+}
+
+function renderUpdateAchievement(doc){
+    let tanggal = doc.data().tanggal;
+    let kalkulasiTanggal = new Date(tanggal);
+    let dd = String(kalkulasiTanggal.getDate()).padStart(2, '0');
+    let month = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    let mm = month[kalkulasiTanggal.getMonth()];
+    let yyyy = kalkulasiTanggal.getFullYear();
+    tanggal = dd + ' ' + mm + ' ' + yyyy;
+    let mmKedua = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let tampilanTanggal = yyyy + '-' + mmKedua + '-' + dd
+    let sortirTanggal = tampilanTanggal.split('-');
+    let tr = document.querySelector('#achievement' + doc.id);
+    tr.setAttribute('data-date', sortirTanggal);
+    let kontenAchievement = doc.data().kontenAchievement;
+    document.querySelector('#tanggal-achievement-table' + doc.id).innerText = tanggal;
+    document.querySelector('#tanggal-achievement' + doc.id).innerText = tanggal;
+    document.querySelector('#konten-achievement-table' + doc.id).innerText = kontenAchievement;
+    document.querySelector('#konten-achievement' + doc.id).innerText = kontenAchievement;
+
+}
+
+
+const createForm11 = document.querySelector('#tambah-achievement');
+createForm11.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if(document.querySelector('#tanggal-achievement').value == 0){
+    let tanggal = new Date().getTime();
+    db.collection('achievement').add({
+        tanggal: tanggal,
+        kontenAchievement: createForm11['konten-achievement'].value.replace(/\n\r?/g, '<br/>')
+    }).then(() => {
+        $('#modalachievement').modal('hide');
+        document.querySelector('#tambah-achievement').reset();
+    })
+  } else {
+    db.collection('achievement').add({
+        tanggal: createForm11['tanggal-achievement'].value,
+        kontenAchievement: createForm11['konten-achievement'].value.replace(/\n\r?/g, '<br/>')
+    }).then(() => {
+        $('#modalachievement').modal('hide');
+        document.querySelector('#tambah-achievement').reset();
+    })
+  }
+})
+
+
+
 
 function auto_grow(element){
     element.style.height = "5px";
