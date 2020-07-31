@@ -824,6 +824,7 @@ for(let x = 0; x<selectSifatTransaksi.options.length; x++){
 let formEditCustomer = document.querySelector('#form-edit-cust' + doc.id);
     formEditCustomer.addEventListener('submit', (e) => {
         e.preventDefault();
+    let updateTanggalCust = tanggal;
     let updateNamaCust = document.querySelector('#editnamacust' + doc.id).value;
     let updateKontakCust = document.querySelector('#editkontakcust' + doc.id).value;
     let updateDaftarProduk = document.querySelector('#editdaftarproduk' + doc.id).value;
@@ -834,7 +835,8 @@ let formEditCustomer = document.querySelector('#form-edit-cust' + doc.id);
     kontakCust: updateKontakCust,
     daftarProduk : updateDaftarProduk.replace(/\n\r?/g, '<br/>'),
     sifatTransaksi: updateSifatTransaksi,
-    emailCust : updateEmailCust
+    emailCust : updateEmailCust,
+    tanggalCust : updateTanggalCust
     }).then(() => {
         $('#modaleditcust' + doc.id).modal('hide');
         })
@@ -864,11 +866,12 @@ function renderEditCustomer(doc){
     let daftarProduk = doc.data().daftarProduk;
     let sifatTransaksi = doc.data().sifatTransaksi;
     let emailCust = doc.data().emailCust;
+    let tanggalCust = doc.data().tanggalCust;
     document.querySelector('#nama-cust-body' + doc.id).innerHTML = namaCust;
     document.querySelector('#kontak-cust' + doc.id).innerHTML = kontakCust;
     document.querySelector('#daftar-produk' + doc.id).innerHTML = daftarProduk;
     document.querySelector('#daftar-produk-body' + doc.id).innerHTML = daftarProduk;
-    document.querySelector('#sifat-transaksi' + doc.id).innerText = sifatTransaksi;
+    document.querySelector('#sifat-transaksi' + doc.id).innerText = tanggalCust + ' ' + sifatTransaksi;
     document.querySelector('#email-cust' + doc.id).innerHTML = emailCust;
 
 let selectSifatTransaksi = document.querySelector('#editsifattransaksi' + doc.id);
