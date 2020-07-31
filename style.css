@@ -516,6 +516,33 @@ button.card-header{
     color:white;
 }
 
+
+#tambahbarangdicari{
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    display: block;
+    position: fixed;
+    bottom: 0px;
+    right:0;
+    left:0;
+    margin-left: 200px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    padding:5px 0px;
+    font-size: 30px;
+}
+
+#tambahbarangdicari:hover{
+    background-color: white;
+    color:#007bff;
+}
+
+#tambahbarangdicari:active{
+    background-color: #007bff;
+    color:white;
+}
+
 .expired{
     color:white;
     background-color:#DC3545;
@@ -1078,12 +1105,11 @@ body{
   display: none;
 }
 
-.data-transaksi, .data-pengumuman{
+.data-transaksi, .data-pengumuman, .data-barang-dicari{
   border-bottom: 1px solid rgba(0,0,0,.2);
 }
 
-
-.info-transaksi{
+.info-transaksi, .info-barang-dicari{
   display: grid;
   grid-template-columns: 150px 15px auto;
   justify-content: center;
@@ -1091,17 +1117,17 @@ body{
 }
 
 
-.hapustransaksi, .edittransaksi{
+.hapustransaksi, .edittransaksi, .hapusbarangdicari, .editbarangdicari{
   margin:4px 0px 8px 0px;
   display: block !important;
   color:white !important;
 }
 
-.modal-transaksi{
+.modal-transaksi, .modal-barang-dicari{
   display: none;
 }
 
-.transaksi{
+.transaksi, .barangdicari{
   cursor: pointer;
 }
 

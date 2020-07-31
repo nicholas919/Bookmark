@@ -65,6 +65,10 @@
 
 <hr style="margin:0;">
 
+    <a class="tab-halaman btn text-left menu" id="tab-barang-dicari" data-toggle="pill" href="#halaman-barang-dicari" role="tab" aria-controls="halaman-barang-dicari" aria-selected="true"><span class="daftar2menu"> <i class='fas fa-search-dollar'></i> Produk yang dicari</span></a>
+
+<hr style="margin:0;">
+
     <a class="btn text-left menu" id="tab-sheet" target="_blank" href="https://docs.google.com/spreadsheets/u/0/"><span class="daftar2menu"> <i class='fas fa-book-reader'></i> Sheet</span></a>
   </div>
 
@@ -720,7 +724,7 @@
 </div>
 
 <div class="halaman tab-pane fade" id="halaman-transaksi-pt" role="tabpanel" aria-labelledby="tab-transaksi-pt">
-<div class="jumbotron jumbotron-fluid" id="marquee-pengaturan">
+<div class="jumbotron jumbotron-fluid">
 <div class="container">
     <h1 class="display-4"><i class='fas fa-comments-dollar'></i> Transaksi Berjalan</h1>
     <p class="lead">Tab ini dikhususkan untuk mencatat transaksi yang masuk pada Rekening PT.</p>
@@ -733,7 +737,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="labelmodalkalkulator">Menambahkan Transaksi Terbaru</h5>
+        <h5 class="modal-title">Menambahkan Transaksi Terbaru</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -786,7 +790,65 @@
   <div id="list-modal-transaksi"></div>
 </div>
 
+<div class="halaman tab-pane fade" id="halaman-barang-dicari" role="tabpanel" aria-labelledby="tab-barang-dicari">
 
+<div class="jumbotron jumbotron-fluid">
+<div class="container">
+    <h1 class="display-4"><i class='fas fa-search-dollar'></i> Produk yang dicari</h1>
+    <p class="lead">Tab ini dikhususkan untuk mencatat produk-produk belum tersedia terjual pada toko yang diminati oleh customer.</p>
+</div>
+</div>
+
+<a id="tambahbarangdicari" data-toggle="modal" data-target="#modalbarangdicari">+</a>
+
+<div class="modal fade" id="modalbarangdicari" tabindex="-1" role="dialog" aria-labelledby="modalkalkulator" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Menambahkan Data Produk yang dicari</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-barang-dicari">
+                <div class="form-group">
+                  <label>Pelapor</label>
+                <select class="form-control" id="pelapor" required>
+                    <option value="" disabled selected hidden>-</option>
+                    <option>Admin Galaxy</option>
+                    <option>Toko Tangerang</option>
+                    <option>Toko Depok</option>
+                    <option>Toko Jaksel</option>
+                    <option>Toko Senen</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Produk yang dicari</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="barang-dicari" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off"></textarea>
+                </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <table class="table table-striped">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col" style="width: 20%">Tanggal</th>
+      <th scope="col" style="width: 20%">Pelapor</th>
+      <th scope="col" style="width: 60%%">Produk yang dicari</th>
+    </tr>
+  </thead>
+  <tbody id="list-barang-dicari"></tbody>
+</table>
+
+  <div id="list-modal-barang-dicari"></div>
 
 </div>
 

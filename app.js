@@ -1532,8 +1532,8 @@ if(tanggalUpdate == 0){
                 tanggal : tanggalUpdate,
                 customer : customerUpdate,
                 nominal : nominalUpdate,
-                produk : produkUpdate.replace(/\n\r?/g, '<br/>'),
-                keterangan : keteranganUpdate.replace(/\n\r?/g, '<br/>')
+                produk : produkUpdate,
+                keterangan : keteranganUpdate
             }).then(() => {
                 formEdit.style.display = "none";
             })
@@ -1593,10 +1593,10 @@ function renderUpdateTransaksi(doc){
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00";
-    document.querySelector('#produk-table' + doc.id).innerText = produk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
-    document.querySelector('#produk-transaksi' + doc.id).innerText = produk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
-    document.querySelector('#keterangan-table' + doc.id).innerText = keterangan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
-    document.querySelector('#keterangan-transaksi' + doc.id).innerText = keterangan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;");
+    document.querySelector('#produk-table' + doc.id).innerText = produk;
+    document.querySelector('#produk-transaksi' + doc.id).innerText = produk;
+    document.querySelector('#keterangan-table' + doc.id).innerText = keterangan;
+    document.querySelector('#keterangan-transaksi' + doc.id).innerText = keterangan;
     
 
 }
@@ -1637,6 +1637,195 @@ createForm9.addEventListener('submit', (e) => {
     })
    }
   }
+})
+
+
+    db.collection('produk').onSnapshot(snapshot =>{
+        let changes = snapshot.docChanges();
+        changes.forEach(change =>{
+            if(change.type == 'added'){
+                renderBarangDicari(change.doc);
+            }else if (change.type == 'removed'){
+                let div = document.querySelector('[data-id="' + change.doc.id + '"]');
+                isiBarangDicari.removeChild(div);
+            } else if(change.type == 'modified'){
+                renderUpdateBarangDicari(change.doc);
+            }
+        })
+    })
+
+
+const isiBarangDicari = document.querySelector('#list-barang-dicari')
+const modalBarangDicari = document.querySelector('#list-modal-barang-dicari')
+
+function renderBarangDicari(doc){
+    let tr = document.createElement('tr');
+    let barangDicari = document.createElement('div');
+    let tanggal = doc.data().tanggal;
+    let kalkulasiTanggal = new Date(tanggal);
+    let dd = String(kalkulasiTanggal.getDate()).padStart(2, '0');
+    let mm = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = kalkulasiTanggal.getFullYear();
+    tanggal = dd + '/' + mm + '/' + yyyy;
+    let sortir = tanggal.split('/');
+    let sortirTanggal = sortir[2] + sortir[1] + sortir[0]
+    tr.setAttribute('data-date', sortirTanggal);
+    let produk = doc.data().produk;
+    let pelapor = doc.data().pelapor;
+    tr.setAttribute('data-id', doc.id);
+    tr.setAttribute('data-toggle', 'modal');
+    tr.setAttribute('data-target', '#modalupdatebarangdicari' + doc.id);
+    tr.setAttribute('id','barangdicari' + doc.id);
+    tr.classList.add('dokumentasi-barang-dicari' + doc.id, 'barangdicari');
+    tr.innerHTML = `
+    <td style="font-weight:bold;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
+    <td id="pelapor-table${doc.id}">${pelapor}</td>
+    <td id="produk-table${doc.id}">${produk}</td>
+    `
+    barangDicari.innerHTML = `
+<div class="modal fade" id="modalupdatebarangdicari${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pengaturan Data Produk yang dicari</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+        <div class="data-barang-dicari">
+        <div class="info-barang-dicari">
+        <div>Tanggal</div>
+        <div>:</div>
+        <div style="font-weight:bold;" id="tanggal-barang-dicari${doc.id}">${tanggal}</div>
+        <div>Pelapor</div>
+        <div>:</div>        
+        <div id="pelapor-barang-dicari${doc.id}">${pelapor}</div>
+        <div>Produk</div>
+        <div>:</div> 
+        <div id="produk-barang-dicari${doc.id}">${produk}</div>
+        </div>
+        <div id="edit${doc.id}" class="btn btn-warning editbarangdicari">Edit Data Produk yang dicari</div>
+        <div id="hapus${doc.id}" class="btn btn-danger hapusbarangdicari">Hapus Data Produk yang dicari</div>
+        </div>
+          <form id="modal-barang-dicari${doc.id}" class="modal-barang-dicari">
+                <div class="form-group">
+                  <label>Pelapor</label>
+                <select class="form-control" id="pelapor-update${doc.id}" required>
+                    <option value="" disabled selected hidden>-</option>
+                    <option>Admin Galaxy</option>
+                    <option>Toko Tangerang</option>
+                    <option>Toko Depok</option>
+                    <option>Toko Jaksel</option>
+                    <option>Toko Senen</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Produk yang dicari</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="barang-dicari-update${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${produk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+            <div class="garis"></div>
+            </div>
+          </div>
+       </div>
+     </div>
+    `
+
+isiBarangDicari.insertBefore(tr,isiBarangDicari.childNodes[0]);
+modalBarangDicari.appendChild(barangDicari);
+
+    let selectPelapor = document.querySelector('#pelapor-update' + doc.id);
+    let optionPelapor;
+    for(let x = 0; x<selectPelapor.options.length; x++){
+    optionPelapor = selectPelapor.options[x];
+    if(optionPelapor.value == pelapor){
+        optionPelapor.setAttribute('selected', 'selected');
+        }
+    }
+
+
+    let edit = document.querySelector('#edit' + doc.id);
+    edit.addEventListener('click', function(e){
+        e.preventDefault();
+        let formEdit = document.querySelector('#modal-barang-dicari' + doc.id);
+        formEdit.style.display = "block";
+        formEdit.addEventListener('submit', function(e){
+            e.preventDefault();
+            let tanggalUpdate = tanggal;
+            console.log(tanggal);
+            let pelaporUpdate = document.querySelector('#pelapor-update' + doc.id).value;
+            let produkUpdate = document.querySelector('#barang-dicari-update' + doc.id).value;
+            db.collection('produk').doc(doc.id).update({
+                tanggal : tanggalUpdate,
+                pelapor : pelaporUpdate,
+                produk : produkUpdate
+            }).then(() => {
+                formEdit.style.display = "none";
+            })
+        })
+    })
+
+    $(document).ready(function() {
+    db.collection('produk').onSnapshot(snapshot =>{
+    let items = $('#list-barang-dicari > .barangdicari').get();
+    items.sort(function(a, b) {
+    var keyA = $(a).data('date');
+    var keyB = $(b).data('date');
+    if (keyA < keyB) return 1;
+    if (keyA > keyB) return -1;
+    return 0;
+    })
+    var daftarBarangDicari = $('#list-barang-dicari');
+    $.each(items, function(i, div) {
+    daftarBarangDicari.append(div);
+  })
+  })
+})
+
+    let hapus = document.querySelector('#hapus' + doc.id);
+    hapus.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin menghapus data produk yang dicari ini?');
+    if(konfirmasi == true){
+    let id = document.querySelector('.dokumentasi-barang-dicari' + doc.id).getAttribute('data-id');
+    db.collection('produk').doc(id).delete();
+    $('#modalupdatebarangdicari' + doc.id).modal('hide');
+        }
+    })
+
+}
+
+function renderUpdateBarangDicari(doc){
+    let tanggal = doc.data().tanggal;
+    let pelapor = doc.data().pelapor;
+    let produk = doc.data().produk;
+    document.querySelector('#tanggal-table' + doc.id).innerText = tanggal;
+    document.querySelector('#tanggal-barang-dicari' + doc.id).innerText = tanggal;
+    document.querySelector('#pelapor-table' + doc.id).innerText = pelapor;
+    document.querySelector('#pelapor-barang-dicari' + doc.id).innerText = pelapor;
+    document.querySelector('#produk-table' + doc.id).innerText = produk;
+    document.querySelector('#produk-barang-dicari' + doc.id).innerText = produk;
+    
+}
+
+
+const createForm10 = document.querySelector('#tambah-barang-dicari');
+createForm10.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let tanggal = new Date().getTime();
+    db.collection('produk').add({
+        tanggal: tanggal,
+        pelapor: createForm10['pelapor'].value,
+        produk: createForm10['barang-dicari'].value.replace(/\n\r?/g, '<br/>')
+    }).then(() => {
+        $('#modalbarangdicari').modal('hide');
+        document.querySelector('#tambah-barang-dicari').reset();
+    })
 })
 
 function auto_grow(element){
