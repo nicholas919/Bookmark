@@ -1433,14 +1433,14 @@ function renderTransaksi(doc){
     tr.setAttribute('id','transaksi' + doc.id);
     tr.classList.add('dokumentasi-transaksi' + doc.id, 'transaksi');
     tr.innerHTML = `
-    <td style="font-weight:bold;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
-    <td id="customer-table${doc.id}">${customer}</td>
-    <td id="nominal-table${doc.id}">${"Rp." + Number(nominal).toLocaleString(undefined, {
+    <td style="font-weight:bold;vertical-align:middle;text-align:center;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
+    <td style="vertical-align:middle;text-align:center;" id="customer-table${doc.id}">${customer}</td>
+    <td style="vertical-align:middle;text-align:center;" id="nominal-table${doc.id}">${"Rp." + Number(nominal).toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00"}</td>
-    <td id="produk-table${doc.id}">${produk}</td>
-    <td id="keterangan-table${doc.id}">${keterangan}</td>
+    <td style="vertical-align:middle;" id="produk-table${doc.id}">${produk}</td>
+    <td style="vertical-align:middle;text-align:center;" id="keterangan-table${doc.id}">${keterangan}</td>
     `
     transaksi.innerHTML = `
 <div class="modal fade" id="modalupdatetransaksi${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1682,9 +1682,9 @@ function renderBarangDicari(doc){
     tr.setAttribute('id','barangdicari' + doc.id);
     tr.classList.add('dokumentasi-barang-dicari' + doc.id, 'barangdicari');
     tr.innerHTML = `
-    <td style="font-weight:bold;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
-    <td id="pelapor-table${doc.id}">${pelapor}</td>
-    <td id="produk-table${doc.id}">${produk}</td>
+    <td style="font-weight:bold;vertical-align:middle;text-align:center;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
+    <td style="vertical-align:middle;text-align:center;" id="pelapor-table${doc.id}">${pelapor}</td>
+    <td style="vertical-align:middle;" id="produk-table${doc.id}">${produk}</td>
     `
     barangDicari.innerHTML = `
 <div class="modal fade" id="modalupdatebarangdicari${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1875,8 +1875,8 @@ function renderAchievement(doc){
     tr.setAttribute('id','achievement' + doc.id);
     tr.classList.add('dokumentasi-achievement' + doc.id, 'achievement');
     tr.innerHTML = `
-    <td style="font-weight:bold;" id="tanggal-achievement-table${doc.id}" class="tanggal-table">${tanggal}</td>
-    <td id="konten-achievement-table${doc.id}">${kontenAchievement}</td>
+    <td style="font-weight:bold;vertical-align:middle;text-align:center; id="tanggal-achievement-table${doc.id}" class="tanggal-table">${tanggal}</td>
+    <td style="vertical-align:middle;" id="konten-achievement-table${doc.id}">${kontenAchievement}</td>
     `
     achievement.innerHTML = `
 <div class="modal fade" id="modalupdateachievement${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -2024,6 +2024,32 @@ createForm11.addEventListener('submit', (e) => {
 
 
 
+
+
+document.querySelector('#konversi-tabel-transaksi').addEventListener('click', () =>{
+let date = new Date();
+let dd = String(date.getDate()).padStart(2, '0');
+let mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
+let yyyy = date.getFullYear();
+date = dd + '_' + mm + '_' + yyyy;
+let filename = "Transaksi Berjalan " + date;
+let tab_text = "<table border='2px'>";
+let textRange;
+let j = 0;
+tab = document.getElementById('tabel-transaksi');
+
+for (j = 0; j < tab.rows.length; j++) {
+  tab_text = tab_text + tab.rows[j].innerHTML + "</tr>";
+}
+
+tab_text = tab_text + "</table>";
+let a = document.createElement('a');
+let data_type = 'data:application/vnd.ms-excel';
+a.href = data_type + ', ' + encodeURIComponent(tab_text);
+a.download = filename + '.xls';
+a.click();
+
+})
 
 function auto_grow(element){
     element.style.height = "5px";

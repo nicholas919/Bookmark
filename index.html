@@ -732,6 +732,7 @@
 <div class="container">
     <h1 class="display-4"><i class='fas fa-comments-dollar'></i> Transaksi Berjalan</h1>
     <p class="lead">Tab ini dikhususkan untuk mencatat transaksi yang masuk pada Rekening PT.</p>
+    <div class="btn btn-primary btn-lg pull-right lead" id="konversi-tabel-transaksi">File Excel <i class="fa fa-file-excel-o"></i></div>
 </div>
 </div>
 
@@ -778,14 +779,14 @@
       </div>
     </div>
 
-  <table class="table table-striped">
+  <table class="table table-striped" id="tabel-transaksi">
   <thead class="thead-light">
     <tr>
-      <th scope="col">Tanggal</th>
-      <th scope="col">Nama Customer</th>
-      <th scope="col">Nominal Transaksi</th>
-      <th scope="col">Produk</th>
-      <th scope="col">Keterangan Transaksi</th>
+      <th scope="col" style="text-align: center;vertical-align: middle;">Tanggal</th>
+      <th scope="col" style="text-align: center;vertical-align: middle;">Nama Customer</th>
+      <th scope="col" style="text-align: center;vertical-align: middle;">Nominal Transaksi</th>
+      <th scope="col" style="text-align: center;vertical-align: middle;">Produk</th>
+      <th scope="col" style="text-align: center;vertical-align: middle;">Keterangan Transaksi</th>
     </tr>
   </thead>
   <tbody id="list-transaksi"></tbody>
@@ -844,9 +845,9 @@
   <table class="table table-striped">
   <thead class="thead-light">
     <tr>
-      <th scope="col" style="width: 20%">Tanggal</th>
-      <th scope="col" style="width: 20%">Pelapor</th>
-      <th scope="col" style="width: 60%%">Produk yang dicari</th>
+      <th scope="col" style="width: 20%;text-align: center;vertical-align: middle;">Tanggal</th>
+      <th scope="col" style="width: 20%;text-align: center;vertical-align: middle;">Pelapor</th>
+      <th scope="col" style="width: 60%%;text-align: center;vertical-align: middle;">Produk yang dicari</th>
     </tr>
   </thead>
   <tbody id="list-barang-dicari"></tbody>
@@ -901,8 +902,8 @@
   <table class="table table-striped">
   <thead class="thead-light">
     <tr>
-      <th scope="col" style="width: 20%">Tanggal</th>
-      <th scope="col" style="width: 80%%">Konten Pencapaian</th>
+      <th scope="col" style="width: 20%;text-align: center;vertical-align: middle;">Tanggal</th>
+      <th scope="col" style="width: 80%%;text-align: center;vertical-align: middle;">Konten Pencapaian</th>
     </tr>
   </thead>
   <tbody id="list-achievement"></tbody>
