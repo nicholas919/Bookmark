@@ -1153,7 +1153,7 @@ body{
   display: none;
 }
 
-.transaksi, .barangdicari{
+.transaksi, .barangdicari, .achievement{
   cursor: pointer;
 }
 
