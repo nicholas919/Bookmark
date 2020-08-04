@@ -707,8 +707,6 @@ function renderCustomer(doc){
     let dd = String(tanggalCust.getDate()).padStart(2, '0');
     let mm = String(tanggalCust.getMonth() + 1).padStart(2, '0'); //January is 0!
     let yyyy = tanggalCust.getFullYear();
-    let hours = ('0' + tanggalCust.getHours()).slice(-2);
-    let minutes = ('0' + tanggalCust.getMinutes()).slice(-2);
     let tanggal = dd + '/' + mm + '/' + yyyy + ', ';
     if(tanggal == "NaN/NaN/NaN, "){
         tanggal = '';
@@ -2129,6 +2127,10 @@ function renderPerpindahan(doc){
     let kontenPerpindahan = doc.data().kontenPerpindahan;
     let tanggalPerpindahan = doc.data().tanggalPerpindahan;
     let tanggalPembuatan = doc.data().tanggalPembuatan;
+    let sortir = tanggalPembuatan.slice(0,10);
+    let sortirBaru = sortir.split('/');
+    let sortirTanggal = sortirBaru[2] + sortirBaru[1] + sortirBaru[0];
+    div.setAttribute('data-date', sortirTanggal);
     let tanggalPerpindahanBaru = new Date(tanggalPerpindahan);
     let dd = String(tanggalPerpindahanBaru.getDate()).padStart(2, '0');
     let mm = String(tanggalPerpindahanBaru.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -2189,6 +2191,23 @@ function renderPerpindahan(doc){
 
     modalPerpindahan.appendChild(perpindahan);
 
+
+    $(document).ready(function() {
+    db.collection('perpindahan').onSnapshot(snapshot =>{
+    let items = $('#daftar-perpindah-pending > .perpindahan-pending').get();
+    items.sort(function(a, b) {
+    let keyA = $(a).data('date');
+    let keyB = $(b).data('date');
+    if (keyA > keyB) return 1;
+    if (keyA < keyB) return -1;
+    return 0;
+    })
+    let daftarPerpindahan = $('#daftar-perpindahan-pending');
+    $.each(items, function(i, div) {
+    daftarPerpindahan.append(div);
+  })
+  })
+})
 
     let edit = document.querySelector('#edit' + doc.id);
     edit.addEventListener('click', function(e){
@@ -2256,6 +2275,10 @@ function renderPerpindahanSelesai(doc){
     let tanggalPembuatan = doc.data().tanggalPembuatanSelesai;
     let tanggalPenyelesaian = doc.data().tanggalPenyelesaian;
     let tanggalPerpindahanBaru = new Date(tanggalPerpindahan);
+    let sortir = tanggalPembuatan.slice(0,10);
+    let sortirBaru = sortir.split('/');
+    let sortirTanggal = sortirBaru[2] + sortirBaru[1] + sortirBaru[0];
+    div.setAttribute('data-date', sortirTanggal);
     let dd = String(tanggalPerpindahanBaru.getDate()).padStart(2, '0');
     let mm = String(tanggalPerpindahanBaru.getMonth() + 1).padStart(2, '0'); //January is 0!
     let yyyy = tanggalPerpindahanBaru.getFullYear();
@@ -2268,6 +2291,24 @@ function renderPerpindahanSelesai(doc){
     `
 
     isiPerpindahanCompleted.appendChild(div);
+
+    $(document).ready(function() {
+    db.collection('perpindahanSelesai').onSnapshot(snapshot =>{
+    let items = $('#daftar-perpindahan-selesai > .perpindahan-selesai').get();
+    items.sort(function(a, b) {
+    let keyA = $(a).data('date');
+    let keyB = $(b).data('date');
+    if (keyA < keyB) return 1;
+    if (keyA > keyB) return -1;
+    return 0;
+    })
+    let daftarPerpindahanSelesai = $('#daftar-perpindahan-selesai');
+    $.each(items, function(i, div) {
+    daftarPerpindahanSelesai.append(div);
+  })
+  })
+})
+
     let hapus = document.querySelector('#hapusperpindahanselesai' + doc.id);
     hapus.addEventListener('click', function(e){
     e.stopPropagation();
