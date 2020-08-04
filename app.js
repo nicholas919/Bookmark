@@ -2051,6 +2051,275 @@ a.click();
 
 })
 
+
+
+db.collection('perpindahan').onSnapshot(snapshot =>{
+    let changes = snapshot.docChanges();
+    changes.forEach(change =>{
+        if(change.type == 'added'){
+            renderPerpindahan(change.doc);
+        } else if (change.type == 'removed'){
+            let div = isiPerpindahan.querySelector('[data-id="' + change.doc.id + '"]');
+            isiPerpindahan.removeChild(div);
+        } else if(change.type == 'modified'){
+            renderUpdatePerpindahan(change.doc);
+        }
+    })
+})
+
+db.collection('perpindahanSelesai').onSnapshot(snapshot =>{
+    let changes = snapshot.docChanges();
+    changes.forEach(change =>{
+        if(change.type == 'added'){
+            renderPerpindahanSelesai(change.doc);
+        } else if (change.type == 'removed'){
+            let div = isiPerpindahanCompleted.querySelector('[data-id="' + change.doc.id + '"]');
+            isiPerpindahanCompleted.removeChild(div);
+        } 
+    })
+})
+
+
+db.collection('perpindahan').onSnapshot(snapshot =>{
+if(isiPerpindahan.childNodes.length == 0){
+    document.querySelector('#jumlahperpindahanpending').innerText = '';
+}else{
+    let badgeJumlahPerpindahanPending = isiPerpindahan.childNodes.length;
+    document.querySelector('#jumlahperpindahanpending').innerText = badgeJumlahPerpindahanPending;
+}
+})
+
+db.collection('perpindahanSelesai').onSnapshot(snapshot =>{
+if(isiPerpindahanCompleted.childNodes.length == 0){
+    document.querySelector('#jumlahperpindahanselesai').innerText = '';
+}else{
+    let badgeJumlahPerpindahanCompleted = isiPerpindahanCompleted.childNodes.length;
+    document.querySelector('#jumlahperpindahanselesai').innerText = badgeJumlahPerpindahanCompleted;
+}
+})
+
+
+const isiPerpindahan = document.querySelector('#daftar-perpindahan-pending');
+const isiPerpindahanCompleted = document.querySelector('#daftar-perpindahan-selesai');
+const modalPerpindahan = document.querySelector('#list-modal-perpindahan');
+function renderPerpindahan(doc){
+    let div = document.createElement('div');
+    let perpindahan = document.createElement('div');
+    div.classList.add('perpindahan-pending' + doc.id, 'perpindahan-pending');
+    div.setAttribute('data-id', doc.id);
+    div.setAttribute('data-toggle', 'modal');
+    div.setAttribute('data-target', '#modalperpindahan' + doc.id);
+    div.setAttribute('id','perpindahan' + doc.id);
+    let kontenPerpindahan = doc.data().kontenPerpindahan;
+    let tanggalPerpindahan = doc.data().tanggalPerpindahan;
+    let tanggalPembuatan = doc.data().tanggalPembuatan;
+    let tanggalPerpindahanBaru = new Date(tanggalPerpindahan);
+    let dd = String(tanggalPerpindahanBaru.getDate()).padStart(2, '0');
+    let mm = String(tanggalPerpindahanBaru.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = tanggalPerpindahanBaru.getFullYear();
+    let tampilanTanggal = yyyy + '-' + mm + '-' + dd;
+    tanggalPerpindahanBaru = dd + '/' + mm + '/' + yyyy;
+    div.innerHTML = `
+        <div class="deskripsi-perpindahan">Dibuat ${tanggalPembuatan} - Perpindahan Tanggal <span id="tanggalperpindahanbarang${doc.id}">${tanggalPerpindahanBaru}</span><br><span id="deskripsi${doc.id}">${kontenPerpindahan}</span></div>
+        <i id="selesaikan${doc.id}" class='fas fa-check selesaikanperpindahan'></i>
+        <i id="hapus${doc.id}" class='fas fa-trash-alt hapusperpindahan'></i>
+    `
+    isiPerpindahan.appendChild(div);
+
+    perpindahan.innerHTML = `
+    <div class="modal fade" id="modalperpindahan${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Penngaturan Data Perpindahan Barang</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="data-perpindahan">
+            <div class="info-perpindahan">
+            <div>Tanggal Pembuatan</div>
+            <div>:</div>
+            <div style="font-weight:bold;" id="tanggal-pembuatan-body${doc.id}">${tanggalPembuatan}</div>
+            <div>Tanggal Perpindahan</div>
+            <div>:</div>
+            <div style="font-weight:bold;" id="tanggal-perpindahan-body${doc.id}">${tanggalPerpindahanBaru}</div>
+            <div>Konten Perpindahan</div>
+            <div>:</div> 
+            <div id="konten-perpindahan-body${doc.id}">${kontenPerpindahan}</div>
+            </div>
+            <div id="edit${doc.id}" class="btn btn-warning edit editperpindahan">Edit Data Perpindahan Barang</div>
+          </div>
+              <form id="modal-perpindahan${doc.id}" class="modal-perpindahan">
+                    <div class="form-group">
+                      <label class="col-form-label">Tanggal Perpindahan</label>
+                      <input type="date" value="${tampilanTanggal}" class="form-control" id="tanggal-perpindahan${doc.id}" autocomplete="off" required>
+                    </div>
+                  <div class="form-group">
+                    <label>Konten Perpindahan</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="konten-perpindahan${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:100px;" autocomplete="off" onfocus="auto_grow(this)" required>${kontenPerpindahan.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                  </div>
+                    <div class="modal-footer">
+                          <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                          <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+                </div>
+              </div>
+           </div>
+         </div>
+    `
+
+    modalPerpindahan.appendChild(perpindahan);
+
+
+    let edit = document.querySelector('#edit' + doc.id);
+    edit.addEventListener('click', function(e){
+        e.preventDefault();
+        let formEdit = document.querySelector('#modal-perpindahan' + doc.id);
+        formEdit.style.display = "block";      
+        formEdit.addEventListener('submit', function(e){
+            e.preventDefault();
+            let kontenPerpindahanUpdate = document.querySelector('#konten-perpindahan' + doc.id).value.replace(/\n\r?/g, '<br/>');
+            let tanggalPerpindahanUpdate = document.querySelector('#tanggal-perpindahan' + doc.id).value;
+            db.collection('perpindahan').doc(doc.id).update({
+                kontenPerpindahan : kontenPerpindahanUpdate,
+                tanggalPerpindahan : tanggalPerpindahanUpdate
+            }).then(() =>{
+                formEdit.style.display = "none";
+            })
+        })
+    })
+
+    let selesaikan = document.querySelector('#selesaikan' + doc.id);
+    selesaikan.addEventListener('click', function (e){
+    e.stopPropagation();
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+    let hours = ('0' + today.getHours()).slice(-2);
+    let minutes = ('0' + today.getMinutes()).slice(-2);
+    let tanggal = dd + '/' + mm + '/' + yyyy;
+    let jam = hours + ":" + minutes;
+    let kontenPerpindahanUpdate = document.querySelector('#konten-perpindahan' + doc.id).value.replace(/\n\r?/g, '<br/>');
+    let tanggalPerpindahanUpdate = document.querySelector('#tanggal-perpindahan' + doc.id).value;
+    db.collection('perpindahanSelesai').add({
+        tanggalPembuatanSelesai: tanggalPembuatan,
+        kontenPerpindahanSelesai: kontenPerpindahanUpdate,
+        tanggalPenyelesaian: tanggal + ', ' + jam,
+        tanggalPerpindahanSelesai: tanggalPerpindahanUpdate
+    }).then(() => {
+        let id = document.querySelector('.perpindahan-pending' + doc.id).getAttribute('data-id');
+        db.collection('perpindahan').doc(id).delete();
+    })
+})
+
+
+
+    let hapus = document.querySelector('#hapus' + doc.id);
+    hapus.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin menghapus data perpindahan barang ini?');
+    if(konfirmasi == true){
+    let id = document.querySelector('.perpindahan-pending' + doc.id).getAttribute('data-id');
+    db.collection('perpindahan').doc(id).delete();
+    }   
+  })
+
+
+}
+
+function renderPerpindahanSelesai(doc){
+    let div = document.createElement('div');
+    div.classList.add('perpindahan-selesai' + doc.id, 'perpindahan-selesai');
+    div.setAttribute('data-id', doc.id);
+    let kontenPerpindahan = doc.data().kontenPerpindahanSelesai;
+    let tanggalPerpindahan = doc.data().tanggalPerpindahanSelesai;
+    let tanggalPembuatan = doc.data().tanggalPembuatanSelesai;
+    let tanggalPenyelesaian = doc.data().tanggalPenyelesaian;
+    let tanggalPerpindahanBaru = new Date(tanggalPerpindahan);
+    let dd = String(tanggalPerpindahanBaru.getDate()).padStart(2, '0');
+    let mm = String(tanggalPerpindahanBaru.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = tanggalPerpindahanBaru.getFullYear();
+    tanggalPerpindahanBaru = dd + '/' + mm + '/' + yyyy;
+    div.innerHTML = `
+    <div class="deskripsi-perpindahan-selesai"><div class="keterangan-tugas-selesai">Dibuat ${tanggalPembuatan} - Perpindahan Tanggal <span id="tanggalperpindahanbarang${doc.id}">${tanggalPerpindahanBaru}</span><br><span id="deskripsi${doc.id}">${kontenPerpindahan}</span></div>
+    <small id="penyelesaian${doc.id}" class="penyelesaian">Diselesaikan pada ${tanggalPenyelesaian} </small></div>
+    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
+    <i id="hapusperpindahanselesai${doc.id}" class='fas fa-trash-alt hapusperpindahanselesai'></i>
+    `
+
+    isiPerpindahanCompleted.appendChild(div);
+    let hapus = document.querySelector('#hapusperpindahanselesai' + doc.id);
+    hapus.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin menghapus data perpindahan barang(selesai) ini?');
+    if(konfirmasi == true){
+    let id = document.querySelector('.perpindahan-selesai' + doc.id).getAttribute('data-id');
+    db.collection('perpindahanSelesai').doc(id).delete();
+    }   
+  })
+
+}
+
+
+function renderUpdatePerpindahan(doc){
+    let kontenPerpindahan = doc.data().kontenPerpindahan;
+    let tanggalPerpindahan = doc.data().tanggalPerpindahan;
+    let tanggalPerpindahanBaru = new Date(tanggalPerpindahan);
+    let dd = String(tanggalPerpindahanBaru.getDate()).padStart(2, '0');
+    let mm = String(tanggalPerpindahanBaru.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = tanggalPerpindahanBaru.getFullYear();
+    tanggalPerpindahanBaru = dd + '/' + mm + '/' + yyyy;
+    document.querySelector('#tanggalperpindahanbarang' + doc.id).innerHTML = tanggalPerpindahanBaru;
+    document.querySelector('#deskripsi' + doc.id).innerHTML = kontenPerpindahan;
+    document.querySelector('#tanggal-perpindahan-body' + doc.id).innerHTML = tanggalPerpindahanBaru;
+    document.querySelector('#konten-perpindahan-body' + doc.id).innerHTML = kontenPerpindahan;
+}
+
+const createForm12 = document.querySelector('#tambah-perpindahan');
+createForm12.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+    let hours = ('0' + today.getHours()).slice(-2);
+    let minutes = ('0' + today.getMinutes()).slice(-2);
+    let tanggal = dd + '/' + mm + '/' + yyyy;
+    let jam = hours + ":" + minutes;
+    db.collection('perpindahan').add({
+        kontenPerpindahan: createForm12['konten-perpindahan'].value.replace(/\n\r?/g, '<br/>'),
+        tanggalPerpindahan: createForm12['tanggal-perpindahan'].value,
+        tanggalPembuatan: tanggal + ', ' + jam
+    }).then(() => {
+        document.querySelector('#tambah-perpindahan').reset();
+    })
+})
+
+document.querySelector('#judul-perpindahan-pending').addEventListener('click', function(){
+if(document.querySelector('#judul-perpindahan-pending').classList.contains('collapsed') == true){
+    document.querySelector('.pending.perpindahan').classList.remove('fa-angle-down');
+    document.querySelector('.pending.perpindahan').classList.add('fa-angle-up');
+}else{
+    document.querySelector('.pending.perpindahan').classList.add('fa-angle-down');
+    document.querySelector('.pending.perpindahan').classList.remove('fa-angle-up');
+}
+})
+
+document.querySelector('#judul-perpindahan-completed').addEventListener('click', function(){
+if(document.querySelector('#judul-perpindahan-completed').classList.contains('collapsed') == true){
+    document.querySelector('.completed.perpindahan').classList.remove('fa-angle-down');
+    document.querySelector('.completed.perpindahan').classList.add('fa-angle-up');
+}else{
+    document.querySelector('.completed.perpindahan').classList.add('fa-angle-down');
+    document.querySelector('.completed.perpindahan').classList.remove('fa-angle-up');
+}
+})
+
+
 function auto_grow(element){
     element.style.height = "5px";
     element.style.height = (element.scrollHeight)+"px";

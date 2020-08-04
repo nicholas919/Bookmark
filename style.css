@@ -747,7 +747,7 @@ fieldset{
   background-image: linear-gradient(#039dfc,#67bcf0);
 }
 
-#judul-atas-tugas{
+#judul-atas-tugas, #judul-atas-perpindahan{
   display: block;
   text-align: center;
   color:white;
@@ -756,7 +756,7 @@ fieldset{
   padding-top: 30px;
 }
 
-#tugas{
+#tugas, #perpindahan{
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
   border: none;
@@ -772,12 +772,23 @@ fieldset{
   grid-template-columns: auto 80px;
 }
 
-#tambah-tugas{
+.form-perpindahan{
+  padding:5px 30px 20px;
+  margin-left: 5px;
+  margin-right:5px;
+}
+
+#tambahperpindahan{
+  width: 100%;
+  display: block;
+}
+
+#tambah-tugas, #tambah-perpindahan{
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
 }
 
-#judul-pending-task, #judul-completed-task{
+#judul-pending-task, #judul-completed-task, #judul-perpindahan-pending, #judul-perpindahan-completed{
   padding:8px 20px 8px;
   color:white;
   font-weight: bold;
@@ -788,11 +799,11 @@ fieldset{
   text-align: left;
 }
 
-#judul-completed-task{
+#judul-completed-task, #judul-perpindahan-completed{
   background-image: linear-gradient(#13d12f,#36d94e);
 }
 
-#judul-pending-task{
+#judul-pending-task, #judul-perpindahan-pending{
   background-image: linear-gradient(#eb4034,#f2685e);
 }
 
@@ -804,21 +815,25 @@ fieldset{
   vertical-align: -webkit-baseline-middle !important;
 }
 
-.tugas-pending{
+.tugas-pending, .perpindahan-pending{
   padding: 8px 20px;
   display: grid;
   grid-template-columns: auto 50px 50px;
 }
 
-.tugas-pending:nth-child(odd){
+.perpindahan-pending{
+  cursor: pointer;
+}
+
+.tugas-pending:nth-child(odd), .perpindahan-pending:nth-child(odd){
   background-color: #f5f5f5;  
 }
 
-.tugas-pending:nth-child(even){
+.tugas-pending:nth-child(even), .perpindahan-pending:nth-child(odd){
   background-color: #e8e8e8;  
 }
 
-.hapustugas{
+.hapustugas, .hapusperpindahan{
   color:#ff3030 !important;
   align-items: center !important;
   justify-content: center !important;
@@ -828,11 +843,16 @@ fieldset{
   cursor: pointer;
 }
 
-.deskripsi-tugas{
+.hapusperpindahan{
+  height: 50px !important;
+  margin:auto;  
+}
+
+.deskripsi-tugas, .deskripsi-perpindahan{
   padding:15px;
 }
 
-.selesaikantugas{
+.selesaikantugas, .selesaikanperpindahan{
   align-items: center !important;
   justify-content: center !important;
   display: flex !important;
@@ -841,7 +861,12 @@ fieldset{
   cursor: pointer;
 }
 
-.hapustugas:hover{
+.selesaikanperpindahan{
+  height: 50px !important;
+  margin:auto;
+}
+
+.hapustugas:hover, .hapusperpindahan:hover{
   border:1px solid #ff3030 !important;
   background-color: #ff3030 !important;
   padding:12px 13px;
@@ -849,13 +874,13 @@ fieldset{
   color:white !important;
 }
 
-.hapustugas:active{
+.hapustugas:active, .hapusperpindahan:active{
   background-color: white !important;
   color:#ff3030 !important;
 }
 
 
-.selesaikantugas:hover{
+.selesaikantugas:hover, .selesaikanperpindahan:hover{
   border:1px solid #33f222 !important;
   background-color: #33f222 !important;
   padding:12px;
@@ -863,26 +888,26 @@ fieldset{
   color:white !important;
 }
 
-.selesaikantugas:active{
+.selesaikantugas:active, .selesaikanperpindahan:active{
   background-color:white !important;
   color:#33f222 !important;
 }
 
-.deskripsi-tugas-selesai{
+.deskripsi-tugas-selesai, .deskripsi-perpindahan-selesai{
   padding:15px;
 }
 
-.tugas-selesai{
+.tugas-selesai, .perpindahan-selesai{
   padding: 8px 20px;
   display: grid;
   grid-template-columns: auto 60px 60px;
 }
 
-.tugas-selesai:nth-child(odd){
+.tugas-selesai:nth-child(odd), .perpindahan-selesai:nth-child(odd){
   background-color: #f5f5f5;  
 }
 
-.tugas-selesai:nth-child(even){
+.tugas-selesai:nth-child(even), .perpindahan-selesai:nth-child(even){
   background-color: #e8e8e8;  
 }
 
@@ -940,7 +965,7 @@ fieldset{
   }
 }
 
-.tugas-selesai:hover{
+.tugas-selesai:hover, .perpindahan-selesai:hover{
   background-color: #91ff93;
 }
 
@@ -951,7 +976,7 @@ fieldset{
   margin:auto !important;
 }
 
-.hapustugasselesai{
+.hapustugasselesai, .hapusperpindahanselesai{
   justify-content: center !important;
   align-items: center !important;
   text-align: center !important;
@@ -968,13 +993,13 @@ fieldset{
   background-color: #ff3030;
 }
 
-.hapustugasselesai:hover{
+.hapustugasselesai:hover, .hapusperpindahanselesai:hover{
   color:#ff3030 !important;
   background-color: white;
   animation: besar 0.1s ease forwards;
 }
 
-.hapustugasselesai:active{
+.hapustugasselesai:active, .hapusperpindahanselesai:active{
   color:white !important;
   background-color: #ff3030;
   animation: kecil 0.1s ease forwards;
@@ -1135,13 +1160,18 @@ body{
   border-bottom: 1px solid rgba(0,0,0,.2);
 }
 
-.info-transaksi, .info-barang-dicari, .info-achievement{
+.info-transaksi, .info-barang-dicari, .info-achievement, .info-perpindahan{
   display: grid;
   grid-template-columns: 150px 15px auto;
   justify-content: center;
   padding-bottom: 12px;
 }
 
+.edit{
+  margin:4px 0px 8px 0px;
+  display: block !important;
+  color:white !important;
+}
 
 .hapustransaksi, .edittransaksi, .hapusbarangdicari, .editbarangdicari, .hapusachievement, .editachievement{
   margin:4px 0px 8px 0px;
@@ -1149,7 +1179,7 @@ body{
   color:white !important;
 }
 
-.modal-transaksi, .modal-barang-dicari, .modal-achievement{
+.modal-transaksi, .modal-barang-dicari, .modal-achievement, .modal-perpindahan{
   display: none;
 }
 

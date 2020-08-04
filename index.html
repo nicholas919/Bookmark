@@ -73,6 +73,10 @@
 
 <hr style="margin:0;">
 
+    <a class="tab-halaman btn text-left menu" id="tab-perpindahan" data-toggle="pill" href="#halaman-perpindahan" role="tab" aria-controls="halaman-perpindahan" aria-selected="true"><span class="daftar2menu"> <i class='fas fa-cubes'></i> Perpindahan <span id="jumlahperpindahanpending" class="badge badge-danger"></span> <span id="jumlahperpindahanselesai" class="badge badge-success"></span></span></a>
+
+<hr style="margin:0;">
+
     <a class="btn text-left menu" id="tab-sheet" target="_blank" href="https://docs.google.com/spreadsheets/u/0/"><span class="daftar2menu"> <i class='fas fa-book-reader'></i> Sheet</span></a>
   </div>
 
@@ -667,7 +671,7 @@
     <div id="judul-atas-tugas">List Tugas</div>
         <form id="form-tugas">
           <div class="form-tugas">
-            <input type="text" autocomplete="off" placeholder="Tambahkan Konten Tugas Disini" class="form-control" id="tugas" required>
+            <input type="text" autocomplete="off" placeholder="Tambahkan Konten Tugas Disini" class="form-control" id="perpindahan" required>
             <button class="btn btn-primary" id="tambah-tugas" type="submit">Tambah</button>
           </div>
         </form>
@@ -912,6 +916,54 @@
   <div id="list-modal-achievement"></div>
 
 </div>
+
+
+<div class="halaman tab-pane fade" id="halaman-perpindahan" role="tabpanel" aria-labelledby="tab-perpindahan">
+  <div id="to-do-list">
+    <div id="judul-atas-perpindahan">Perpindahan Barang</div>
+          <div class="form-perpindahan">
+            <div class="btn btn-primary" id="tambahperpindahan" data-toggle="modal" data-target="#modalperpindahan">Tambah</div>
+          </div>
+  </div>
+      <div id="judul-perpindahan-pending" class="btn btn-link" data-toggle="collapse" data-target="#daftar-perpindahan-pending" aria-expanded="true" aria-controls="daftar-perpindahan-pending"><i class="fa fa-clock-o"></i> Perpindahan Pending <i class='pending perpindahan fas fa-angle-down'></i></div>
+        <div id="daftar-perpindahan-pending" class="collapse show"></div>
+      <div id="judul-perpindahan-completed" class="btn btn-link" data-toggle="collapse" data-target="#daftar-perpindahan-selesai" aria-expanded="false" aria-controls="daftar-perpindahan-selesai"><i class='fas fa-clipboard-check'></i> Perpindahan Selesai <i class='completed perpindahan fas fa-angle-down'></i></div>
+        <div id="daftar-perpindahan-selesai" class="collapse"></div>
+
+<div id="list-modal-perpindahan"></div>
+
+<div class="modal fade" id="modalperpindahan" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Menambahkan Data Perpindahan Barang</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-perpindahan">
+                <div class="form-group">
+                  <label class="col-form-label">Tanggal Perpindahan</label>
+                  <input type="date" class="form-control" id="tanggal-perpindahan" autocomplete="off">
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Konten Perpindahan</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="konten-perpindahan" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required></textarea>
+                </div>
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+</div>
+
 
 </div>
 
