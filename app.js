@@ -1214,8 +1214,9 @@ function renderTugas(doc){
     div.setAttribute('data-id', doc.id);
     let deskripsiTugas = doc.data().deskripsiTugas;
     let tanggalPembuatan = doc.data().tanggalPembuatan;
+
     div.innerHTML = `
-        <div class="deskripsi-tugas">Dibuat pada <span id="tanggal${doc.id}">${tanggalPembuatan}</span> - <span id="deskripsi${doc.id}">${deskripsiTugas}</span></div>
+        <div class="deskripsi-tugas"><div id="tanggal${doc.id}">Dibuat pada ${tanggalPembuatan} - </div><div id="deskripsi${doc.id}">${deskripsiTugas}</div></div>
         <i id="selesaikan${doc.id}" class='fas fa-check selesaikantugas'></i>
         <i id="hapus${doc.id}" class='fas fa-trash-alt hapustugas'></i>
     `

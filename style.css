@@ -569,6 +569,32 @@ button.card-header{
     color:white;
 }
 
+#tambahperpindahan{
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    display: block;
+    position: fixed;
+    bottom: 0px;
+    right:0;
+    left:0;
+    margin-left: 200px;
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    padding:5px 0px;
+    font-size: 30px;
+}
+
+#tambahperpindahan:hover{
+    background-color: white;
+    color:#007bff;
+}
+
+#tambahperpindahan:active{
+    background-color: #007bff;
+    color:white;
+}
+
 .expired{
     color:white;
     background-color:#DC3545;
@@ -756,6 +782,10 @@ fieldset{
   padding-top: 30px;
 }
 
+#judul-atas-perpindahan{
+  padding-bottom: 30px;
+}
+
 #tugas, #perpindahan{
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
@@ -783,7 +813,7 @@ fieldset{
   display: block;
 }
 
-#tambah-tugas, #tambah-perpindahan{
+#tambah-tugas{
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
 }
@@ -843,13 +873,18 @@ fieldset{
   cursor: pointer;
 }
 
-.hapusperpindahan{
+.hapusperpindahan,.hapustugas{
   height: 50px !important;
   margin:auto;  
 }
 
 .deskripsi-tugas, .deskripsi-perpindahan{
   padding:15px;
+}
+
+.deskripsi-tugas{
+  display: grid;
+  grid-template-columns: 235px auto;
 }
 
 .selesaikantugas, .selesaikanperpindahan{
@@ -861,7 +896,7 @@ fieldset{
   cursor: pointer;
 }
 
-.selesaikanperpindahan{
+.selesaikanperpindahan,.selesaikantugas{
   height: 50px !important;
   margin:auto;
 }

@@ -788,7 +788,7 @@
     <tr>
       <th scope="col" style="text-align: center;vertical-align: middle;">Tanggal</th>
       <th scope="col" style="text-align: center;vertical-align: middle;">Nama Customer</th>
-      <th scope="col" style="text-align: center;vertical-align: middle;">Nominal Transaksi</th>
+      <th scope="col" style="text-align: center;vertical-align: middle;width:20%;">Nominal Transaksi</th>
       <th scope="col" style="text-align: center;vertical-align: middle;">Produk</th>
       <th scope="col" style="text-align: center;vertical-align: middle;">Keterangan Transaksi</th>
     </tr>
@@ -921,9 +921,6 @@
 <div class="halaman tab-pane fade" id="halaman-perpindahan" role="tabpanel" aria-labelledby="tab-perpindahan">
   <div id="to-do-list">
     <div id="judul-atas-perpindahan">Perpindahan Barang</div>
-          <div class="form-perpindahan">
-            <div class="btn btn-primary" id="tambahperpindahan" data-toggle="modal" data-target="#modalperpindahan">Tambah</div>
-          </div>
   </div>
       <div id="judul-perpindahan-pending" class="btn btn-link" data-toggle="collapse" data-target="#daftar-perpindahan-pending" aria-expanded="true" aria-controls="daftar-perpindahan-pending"><i class="fa fa-clock-o"></i> Perpindahan Pending <i class='pending perpindahan fas fa-angle-down'></i></div>
         <div id="daftar-perpindahan-pending" class="collapse show"></div>
@@ -931,6 +928,8 @@
         <div id="daftar-perpindahan-selesai" class="collapse"></div>
 
 <div id="list-modal-perpindahan"></div>
+<a id="tambahperpindahan" data-toggle="modal" data-target="#modalperpindahan">+</a>
+
 
 <div class="modal fade" id="modalperpindahan" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
