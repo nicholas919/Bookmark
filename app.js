@@ -1214,13 +1214,33 @@ function renderTugas(doc){
     div.setAttribute('data-id', doc.id);
     let deskripsiTugas = doc.data().deskripsiTugas;
     let tanggalPembuatan = doc.data().tanggalPembuatan;
-
+    let sortir = tanggalPembuatan.slice(0,10);
+    let sortirBaru = sortir.split('/');
+    let sortirTanggal = sortirBaru[2] + sortirBaru[1] + sortirBaru[0]
+    div.setAttribute('data-date', sortirTanggal);
     div.innerHTML = `
         <div class="deskripsi-tugas"><div id="tanggal${doc.id}">Dibuat pada ${tanggalPembuatan} - </div><div id="deskripsi${doc.id}">${deskripsiTugas}</div></div>
         <i id="selesaikan${doc.id}" class='fas fa-check selesaikantugas'></i>
         <i id="hapus${doc.id}" class='fas fa-trash-alt hapustugas'></i>
     `
     isiTugas.appendChild(div);
+
+    $(document).ready(function() {
+    db.collection('tugas').onSnapshot(snapshot =>{
+    let items = $('#daftar-tugas-pending > .tugas-pending').get();
+    items.sort(function(a, b) {
+    let keyA = $(a).data('date');
+    let keyB = $(b).data('date');
+    if (keyA > keyB) return 1;
+    if (keyA < keyB) return -1;
+    return 0;
+    })
+    let daftarTugas = $('#daftar-tugas-pending');
+    $.each(items, function(i, div) {
+    daftarTugas.append(div);
+  })
+  })
+})
 
     let selesaikan = document.querySelector('#selesaikan' + doc.id);
     selesaikan.addEventListener('click', function (e){
@@ -1262,6 +1282,10 @@ function renderTugasSelesai(doc){
     let deskripsiTugas = doc.data().deskripsiTugas;
     let tanggalPembuatan = doc.data().tanggalPembuatan;
     let tanggalPenyelesaian = doc.data().tanggalPenyelesaian;
+    let sortir = tanggalPembuatan.slice(0,10);
+    let sortirBaru = sortir.split('/');
+    let sortirTanggal = sortirBaru[2] + sortirBaru[1] + sortirBaru[0]
+    div.setAttribute('data-date', sortirTanggal);
     div.innerHTML = `
     <div class="deskripsi-tugas-selesai"><div class="keterangan-tugas-selesai">Dibuat pada <span id="tanggal${doc.id}">${tanggalPembuatan}</span> - <span id="deskripsi${doc.id}">${deskripsiTugas}</span></div>
     <small id="penyelesaian${doc.id}" class="penyelesaian">Diselesaikan pada ${tanggalPenyelesaian} </small></div>
@@ -1269,6 +1293,23 @@ function renderTugasSelesai(doc){
     <i id="hapustugasselesai${doc.id}" class='fas fa-trash-alt hapustugasselesai'></i>
     `
     isiTugasCompleted.appendChild(div);
+
+    $(document).ready(function() {
+    db.collection('tugasSelesai').onSnapshot(snapshot =>{
+    let items = $('#daftar-tugas-selesai > .tugas-selesai').get();
+    items.sort(function(a, b) {
+    let keyA = $(a).data('date');
+    let keyB = $(b).data('date');
+    if (keyA < keyB) return 1;
+    if (keyA > keyB) return -1;
+    return 0;
+    })
+    let daftarTugasSelesai = $('#daftar-tugas-selesai');
+    $.each(items, function(i, div) {
+    daftarTugasSelesai.append(div);
+  })
+  })
+})
 
     let hapus = document.querySelector('#hapustugasselesai' + doc.id);
     hapus.addEventListener('click', function(e){
@@ -1389,7 +1430,6 @@ function renderTransaksi(doc){
     let tr = document.createElement('tr');
     let transaksi = document.createElement('div');
     let tanggal = doc.data().tanggal;
-    console.log(tanggal)
     let kalkulasiTanggal = new Date(tanggal);
     let dd = String(kalkulasiTanggal.getDate()).padStart(2, '0');
     let mm = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
