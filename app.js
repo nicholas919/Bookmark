@@ -1169,8 +1169,20 @@ db.collection('tugas').onSnapshot(snapshot =>{
         if(change.type == 'added'){
             renderTugas(change.doc);
         } else if (change.type == 'removed'){
-            document.querySelectorAll('div[data-id="' + change.doc.id + '"]').forEach(e =>
-            e.parentNode.removeChild(e))
+            let div = isiTugas.querySelector('[data-id="' + change.doc.id + '"]');
+            isiTugas.removeChild(div);
+        } 
+    })
+})
+
+db.collection('tugasSelesai').onSnapshot(snapshot =>{
+    let changes = snapshot.docChanges();
+    changes.forEach(change =>{
+        if(change.type == 'added'){
+            renderTugasSelesai(change.doc);
+        } else if (change.type == 'removed'){
+            let div = isiTugasCompleted.querySelector('[data-id="' + change.doc.id + '"]');
+            isiTugasCompleted.removeChild(div);
         } 
     })
 })
@@ -1184,7 +1196,7 @@ if(isiTugas.childNodes.length == 0){
 }
 })
 
-db.collection('tugas').onSnapshot(snapshot =>{
+db.collection('tugasSelesai').onSnapshot(snapshot =>{
 if(isiTugasCompleted.childNodes.length == 0){
     document.querySelector('#jumlahselesai').innerText = '';
 }else{
@@ -1198,54 +1210,10 @@ const isiTugasCompleted = document.querySelector('#daftar-tugas-selesai');
 
 function renderTugas(doc){
     let div = document.createElement('div');
-    div.classList.add('tugas-pending');
+    div.classList.add('tugas-pending' + doc.id, 'tugas-pending');
     div.setAttribute('data-id', doc.id);
     let deskripsiTugas = doc.data().deskripsiTugas;
     let tanggalPembuatan = doc.data().tanggalPembuatan;
-    let div1 = document.createElement('div');
-    div1.classList.add('tugas-selesai');
-    div1.setAttribute('data-id', doc.id);
-    let deskripsiTugas1 = doc.data().deskripsiTugas1;
-    let tanggalPembuatan1 = doc.data().tanggalPembuatan1;
-    let tanggalPenyelesaian = doc.data().tanggalPenyelesaian;
-    if(deskripsiTugas1 != undefined && tanggalPembuatan1 != undefined){
-    div1.innerHTML = `
-    <div class="deskripsi-tugas-selesai"><div class="keterangan-tugas-selesai">Dibuat pada <span id="tanggal${doc.id}">${tanggalPembuatan1}</span> - <span id="deskripsi${doc.id}">${deskripsiTugas1}</span></div>
-    <small id="penyelesaian${doc.id}" class="penyelesaian">Diselesaikan pada ${tanggalPenyelesaian} </small></div>
-    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
-    <i id="hapustugasselesai${doc.id}" class='fas fa-trash-alt hapustugasselesai'></i>
-    `
-    isiTugasCompleted.appendChild(div1);
-
-    let hapus = document.querySelector('#hapustugasselesai' + doc.id);
-    hapus.addEventListener('click', function(e){
-    e.stopPropagation();
-    let konfirmasi = confirm('Anda yakin ingin menghapus ini?');
-    if(konfirmasi == true){
-    let id = e.target.parentElement.getAttribute('data-id');
-    db.collection('tugas').doc(id).delete();
-    }   
-  })
-
-    $(document).ready(function() {
-    db.collection('tugas').onSnapshot(snapshot =>{
-    let items = $('#daftar-tugas-selesai > .tugas-selesai').get();
-    items.sort(function(a, b) {
-    var keyA = $(a).text();
-    var keyB = $(b).text();
-    if (keyA < keyB) return -1;
-    if (keyA > keyB) return 1;
-    return 0;
-    })
-    var daftarTugasSelesai = $('#daftar-tugas-selesai');
-    $.each(items, function(i, div) {
-    daftarTugasSelesai.append(div);
-  })
-  })
-})
-
-}
-    if(deskripsiTugas != undefined && tanggalPembuatan != undefined){
     div.innerHTML = `
         <div class="deskripsi-tugas">Dibuat pada <span id="tanggal${doc.id}">${tanggalPembuatan}</span> - <span id="deskripsi${doc.id}">${deskripsiTugas}</span></div>
         <i id="selesaikan${doc.id}" class='fas fa-check selesaikantugas'></i>
@@ -1264,9 +1232,9 @@ function renderTugas(doc){
     tanggal4 = mm4 + '/' + dd4 + '/' + yyyy4;
     jam4 = hours4 + ":" + minutes4;
     e.stopPropagation();
-    db.collection('tugas').add({
-        tanggalPembuatan1: document.querySelector('#tanggal' + doc.id).textContent,
-        deskripsiTugas1: document.querySelector('#deskripsi' + doc.id).textContent,
+    db.collection('tugasSelesai').add({
+        tanggalPembuatan: tanggalPembuatan,
+        deskripsiTugas: deskripsiTugas,
         tanggalPenyelesaian: tanggal4 + ', '+ jam4
     }).then(() => {
         let id = e.target.parentElement.getAttribute('data-id');
@@ -1279,30 +1247,37 @@ function renderTugas(doc){
     e.stopPropagation();
     let konfirmasi = confirm('Anda yakin ingin menghapus tugas ini?');
     if(konfirmasi == true){
-    let id = e.target.parentElement.getAttribute('data-id');
+    let id = ment.querySelector('.tugas-pending' + doc.id).getAttribute('data-id');
     db.collection('tugas').doc(id).delete();
     }   
   })
 
-$(document).ready(function() {
-db.collection('tugas').onSnapshot(snapshot =>{
-    let items = $('#daftar-tugas-pending > .tugas-pending').get();
-    items.sort(function(a, b) {
-    var keyA = $(a).text();
-    var keyB = $(b).text();
-    if (keyA < keyB) return -1;
-    if (keyA > keyB) return 1;
-    return 0;
-    })
-    var daftarTugasPending = $('#daftar-tugas-pending');
-    $.each(items, function(i, div) {
-    daftarTugasPending.append(div);
-  })
-  })
-})
-
 }
 
+function renderTugasSelesai(doc){
+    let div = document.createElement('div');
+    div.classList.add('tugas-selesai' + doc.id, 'tugas-selesai');
+    div.setAttribute('data-id', doc.id);
+    let deskripsiTugas = doc.data().deskripsiTugas;
+    let tanggalPembuatan = doc.data().tanggalPembuatan;
+    let tanggalPenyelesaian = doc.data().tanggalPenyelesaian;
+    div.innerHTML = `
+    <div class="deskripsi-tugas-selesai"><div class="keterangan-tugas-selesai">Dibuat pada <span id="tanggal${doc.id}">${tanggalPembuatan}</span> - <span id="deskripsi${doc.id}">${deskripsiTugas}</span></div>
+    <small id="penyelesaian${doc.id}" class="penyelesaian">Diselesaikan pada ${tanggalPenyelesaian} </small></div>
+    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
+    <i id="hapustugasselesai${doc.id}" class='fas fa-trash-alt hapustugasselesai'></i>
+    `
+    isiTugasCompleted.appendChild(div);
+
+    let hapus = document.querySelector('#hapustugasselesai' + doc.id);
+    hapus.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin menghapus tugas ini?');
+    if(konfirmasi == true){
+    let id = document.querySelector('.tugas-selesai' + doc.id).getAttribute('data-id');
+    db.collection('tugasSelesai').doc(id).delete();
+    }   
+  })
 
 }
 
@@ -1435,7 +1410,7 @@ function renderTransaksi(doc){
     tr.innerHTML = `
     <td style="font-weight:bold;vertical-align:middle;text-align:center;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
     <td style="vertical-align:middle;text-align:center;" id="customer-table${doc.id}">${customer}</td>
-    <td style="vertical-align:middle;text-align:center;" id="nominal-table${doc.id}">${"Rp." + Number(nominal).toLocaleString(undefined, {
+    <td style="vertical-align:middle;text-align:center;" id="nominal-table${doc.id}">${"Rp " + Number(nominal).toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00"}</td>
@@ -1463,7 +1438,7 @@ function renderTransaksi(doc){
         <div id="customer-transaksi${doc.id}">${customer}</div>
         <div>Nominal Transaksi</div>
         <div>:</div> 
-        <div id="nominal-transaksi${doc.id}">${"Rp." + Number(nominal).toLocaleString(undefined, {
+        <div id="nominal-transaksi${doc.id}">${"Rp " + Number(nominal).toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00"}</div>
@@ -1589,11 +1564,11 @@ function renderUpdateTransaksi(doc){
     document.querySelector('#tanggal-transaksi' + doc.id).innerText = tanggal;
     document.querySelector('#customer-table' + doc.id).innerText = customer;
     document.querySelector('#customer-transaksi' + doc.id).innerText = customer;
-    document.querySelector('#nominal-table' + doc.id).innerText = "Rp." + Number(nominal).toLocaleString(undefined, {
+    document.querySelector('#nominal-table' + doc.id).innerText = "Rp " + Number(nominal).toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00";
-    document.querySelector('#nominal-transaksi' + doc.id).innerText = "Rp." + Number(nominal).toLocaleString(undefined, {
+    document.querySelector('#nominal-transaksi' + doc.id).innerText = "Rp " + Number(nominal).toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00";

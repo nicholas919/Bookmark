@@ -671,7 +671,7 @@
     <div id="judul-atas-tugas">List Tugas</div>
         <form id="form-tugas">
           <div class="form-tugas">
-            <input type="text" autocomplete="off" placeholder="Tambahkan Konten Tugas Disini" class="form-control" id="perpindahan" required>
+            <textarea oninput="auto_grow(this)" class="form-control" id="tugas" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:40px;height:40px;" autocomplete="off" required></textarea>
             <button class="btn btn-primary" id="tambah-tugas" type="submit">Tambah</button>
           </div>
         </form>
