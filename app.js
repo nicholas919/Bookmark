@@ -1248,7 +1248,7 @@ function renderTugas(doc){
     e.stopPropagation();
     let konfirmasi = confirm('Anda yakin ingin menghapus tugas ini?');
     if(konfirmasi == true){
-    let id = ment.querySelector('.tugas-pending' + doc.id).getAttribute('data-id');
+    let id = document.querySelector('.tugas-pending' + doc.id).getAttribute('data-id');
     db.collection('tugas').doc(id).delete();
     }   
   })
