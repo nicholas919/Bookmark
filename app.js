@@ -607,6 +607,9 @@ db.collection('marquee').onSnapshot(snapshot =>{
             document.querySelector('#reset-marquee').classList.remove('disabled');
             document.querySelector('#edit-marquee').classList.add('disabled');
         }else if (change.type == 'removed'){
+            if(isiMarquee.innerHTML = ''){
+                isiMarquee.innerHTML = 'Jangan lupa untuk selalu mengecek DM dan Request DM dari IG dan Whatsapp';
+            }
             isiMarquee.innerHTML = 'Jangan lupa untuk selalu mengecek DM dan Request DM dari IG dan Whatsapp';
             document.querySelector('#reset-marquee').classList.add('disabled');
             document.querySelector('#edit-marquee').classList.remove('disabled');
@@ -620,7 +623,7 @@ const password = document.querySelector('#password');
 
 function renderMarquee(doc){
     let keteranganMarquee = doc.data().keteranganMarquee;
-    isiMarquee.innerHTML = keteranganMarquee
+    isiMarquee.innerHTML = keteranganMarquee;
 
     let reset = document.querySelector('#reset-marquee');
     reset.addEventListener('click', function(e){
