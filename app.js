@@ -37,7 +37,7 @@ let tanggal = doc.data().tanggal;
 let sifat = doc.data().sifat;
 div.classList.add('dokumentasi-pengumuman' + doc.id);
 div.innerHTML = `
-    <div class="jumbotron jumbotron-fluid" id="editya${doc.id}" data-toggle="modal" data-target="#modaleditpengumuman${doc.id}" style="cursor:pointer;margin-bottom:10px;background-image:url(image/jumbotron2.jpg);background-position:bottom;">
+    <div class="jumbotron jumbotron-fluid" id="editya${doc.id}" data-toggle="modal" data-target="#modaleditpengumuman${doc.id}" style="cursor:pointer;margin-bottom:10px;background-image:url(image/jumbotron2.jpg);background-position:bottom;background-size:cover;">
       <div class="container">
         <h1 class="display-4"><span id="judul-pengumuman${doc.id}" style="font-weight:bold;color:white;">${judul}</span> <span id="badge${doc.id}" class="badge badge-danger badge-penting" style="display:none;">Penting</span></h1>
         <p class="lead" style="color:white;font-size:24px;">${tanggal}, <span id="keterangan-pengumuman${doc.id}">${keterangan}</span></p>
@@ -607,8 +607,7 @@ db.collection('marquee').onSnapshot(snapshot =>{
             document.querySelector('#reset-marquee').classList.remove('disabled');
             document.querySelector('#edit-marquee').classList.add('disabled');
         }else if (change.type == 'removed'){
-            document.querySelectorAll('[data-id="' + change.doc.id + '"]').forEach(e =>
-            e.parentNode.removeChild(e));
+            isiMarquee.innerHTML = 'Jangan lupa untuk selalu mengecek DM dan Request DM dari IG dan Whatsapp';
             document.querySelector('#reset-marquee').classList.add('disabled');
             document.querySelector('#edit-marquee').classList.remove('disabled');
         } 
@@ -619,23 +618,7 @@ db.collection('marquee').onSnapshot(snapshot =>{
 const isiMarquee = document.querySelector('#isimarquee');
 const password = document.querySelector('#password');
 
-//db.collection('marquee').onSnapshot(snapshot =>{
-//    if(isiMarquee.childNodes.length == 0){
-//    var callback = function() {
-//    var today = new Date();
-//    var hours = ('0' + today.getHours()).slice(-2);
-//    var minutes = ('0' + today.getMinutes()).slice(-2);
-//    var seconds = ('0' + today.getSeconds()).slice(-2);
-//    isiMarquee.textContent = "Waktu Saat ini " + hours + ":" + minutes + ":" + seconds;
-//   }
-//   callback();
-//   window.setInterval( callback, 1000 );
-// }
-//});
-
-
 function renderMarquee(doc){
-    isiMarquee.setAttribute('data-id', doc.id);
     let keteranganMarquee = doc.data().keteranganMarquee;
     isiMarquee.innerHTML = keteranganMarquee
 
@@ -644,10 +627,8 @@ function renderMarquee(doc){
     e.stopPropagation();
     let konfirmasi = confirm('Anda yakin ingin mereset ulang teks berjalan ini?');
     if(konfirmasi == true){
-    e.preventDefault();
-    let id = isiMarquee.getAttribute('data-id');
-    db.collection('marquee').doc(id).delete();
-    window.location.reload();
+    e.preventDefault()
+    db.collection('marquee').doc(doc.id).delete();
         }
     })
 }
