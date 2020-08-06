@@ -1235,7 +1235,7 @@ function renderTugas(doc){
     let yyyy4 = today4.getFullYear();
     let hours4 = ('0' + today4.getHours()).slice(-2);
     let minutes4 = ('0' + today4.getMinutes()).slice(-2);
-    tanggal4 = mm4 + '/' + dd4 + '/' + yyyy4;
+    tanggal4 = dd4 + '/' + mm4 + '/' + yyyy4;
     jam4 = hours4 + ":" + minutes4;
     e.stopPropagation();
     db.collection('tugasSelesai').add({
@@ -1316,7 +1316,7 @@ createForm7.addEventListener('submit', (e) => {
     let yyyy3 = today3.getFullYear();
     let hours3 = ('0' + today3.getHours()).slice(-2);
     let minutes3 = ('0' + today3.getMinutes()).slice(-2);
-    tanggal3 = mm3 + '/' + dd3 + '/' + yyyy3;
+    tanggal3 = dd3 + '/' + mm3 + '/' + yyyy3;
     jam3 = hours3 + ":" + minutes3;
     e.preventDefault();
     db.collection('tugas').add({
