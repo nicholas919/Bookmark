@@ -599,6 +599,7 @@ db.collection('promo').onSnapshot(snapshot =>{
 //////////////////////Marquee////////////////////////
 
 
+
 db.collection('marquee').onSnapshot(snapshot =>{
     let changes = snapshot.docChanges();
     changes.forEach(change =>{
@@ -607,9 +608,6 @@ db.collection('marquee').onSnapshot(snapshot =>{
             document.querySelector('#reset-marquee').classList.remove('disabled');
             document.querySelector('#edit-marquee').classList.add('disabled');
         }else if (change.type == 'removed'){
-            if(isiMarquee.innerHTML = ''){
-                isiMarquee.innerHTML = 'Jangan lupa untuk selalu mengecek DM dan Request DM dari IG dan Whatsapp';
-            }
             isiMarquee.innerHTML = 'Jangan lupa untuk selalu mengecek DM dan Request DM dari IG dan Whatsapp';
             document.querySelector('#reset-marquee').classList.add('disabled');
             document.querySelector('#edit-marquee').classList.remove('disabled');
@@ -655,7 +653,12 @@ createForm3.addEventListener('submit', (e) => {
 
 })
 
-
+db.collection('marquee').onSnapshot(snapshot =>{
+if(isiMarquee.innerHTML = ''){
+    console.log('berhasil')
+    isiMarquee.innerHTML = 'Jangan lupa untuk selalu mengecek DM dan Request DM dari IG dan Whatsapp';
+}
+})
 
 //////////////////////Data Cust////////////////////////
 
@@ -1405,6 +1408,16 @@ createForm8.addEventListener('submit', (e) => {
         })
     })
 
+//var nominal = document.querySelectorAll('.nominal-table')
+//var sum = 0;
+//for(let x=0;x<nominal.length;x++){
+//var nominalBaru = Number(nominal[x].textContent.replace('Rp ','').slice(0,-3).replace(/,/g, ''));
+//console.log(nominalBaru)
+//console.log(typeof nominalBaru)
+//sum += nominalBaru
+//}
+//console.log(sum)
+
 const isiTransaksi = document.querySelector('#list-transaksi')
 const modalTransaksi = document.querySelector('#list-modal-transaksi')
 
@@ -1433,7 +1446,7 @@ function renderTransaksi(doc){
     tr.innerHTML = `
     <td style="font-weight:bold;vertical-align:middle;text-align:center;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
     <td style="vertical-align:middle;text-align:center;" id="customer-table${doc.id}">${customer}</td>
-    <td style="vertical-align:middle;text-align:center;" id="nominal-table${doc.id}">${"Rp " + Number(nominal).toLocaleString(undefined, {
+    <td style="vertical-align:middle;text-align:center;" id="nominal-table${doc.id}" class="nominal-table">${"Rp " + Number(nominal).toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00"}</td>
