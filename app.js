@@ -1216,8 +1216,8 @@ function renderTugas(doc){
     items.sort(function(a, b) {
     let keyA = $(a).data('date');
     let keyB = $(b).data('date');
-    if (keyA > keyB) return 1;
-    if (keyA < keyB) return -1;
+    if (keyA > keyB) return -1;
+    if (keyA < keyB) return 1;
     return 0;
     })
     let daftarTugas = $('#daftar-tugas-pending');
