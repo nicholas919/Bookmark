@@ -1420,7 +1420,7 @@ createForm8.addEventListener('submit', (e) => {
 
 const isiTransaksi = document.querySelector('#list-transaksi')
 const modalTransaksi = document.querySelector('#list-modal-transaksi')
-
+const periodeTahun = document.querySelector('#periode-tahun')
 function renderTransaksi(doc){
     let tr = document.createElement('tr');
     let transaksi = document.createElement('div');
@@ -1431,6 +1431,7 @@ function renderTransaksi(doc){
     let yyyy = kalkulasiTanggal.getFullYear();
     tanggal = dd + '/' + mm + '/' + yyyy;
     let sortir = tanggal.split('/');
+    let opsi = document.createElement('option');
     let sortirTanggal = sortir[2] + sortir[1] + sortir[0]
     tr.setAttribute('data-date', sortirTanggal);
     let tampilantanggal = yyyy + '-' + mm + '-' + dd
@@ -1443,6 +1444,8 @@ function renderTransaksi(doc){
     tr.setAttribute('data-target', '#modalupdatetransaksi' + doc.id);
     tr.setAttribute('id','transaksi' + doc.id);
     tr.classList.add('dokumentasi-transaksi' + doc.id, 'transaksi');
+    opsi.innerHTML = yyyy;
+    opsi.classList.add('periode-tahun-' + yyyy);
     tr.innerHTML = `
     <td style="font-weight:bold;vertical-align:middle;text-align:center;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
     <td style="vertical-align:middle;text-align:center;" id="customer-table${doc.id}">${customer}</td>
@@ -1523,6 +1526,12 @@ function renderTransaksi(doc){
 
 isiTransaksi.insertBefore(tr,isiTransaksi.childNodes[0]);
 modalTransaksi.appendChild(transaksi);
+
+if(document.querySelectorAll('.periode-tahun-' + yyyy).length == 0){
+periodeTahun.appendChild(opsi);
+} else {
+    return false;
+}
 
     let edit = document.querySelector('#edit' + doc.id);
     edit.addEventListener('click', function(e){
@@ -1654,6 +1663,42 @@ createForm9.addEventListener('submit', (e) => {
   }
 })
 
+const hasilPerhitunganTransaksi = document.querySelector('#hasil-perhitungan-transaksi')
+const formKalkulatorTransaksi = document.querySelector('#form-kalkulator-transaksi');
+formKalkulatorTransaksi.addEventListener('submit', function(e) {
+e.preventDefault();
+let bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+let periodeBulan = document.querySelector('#periode-bulan').value;
+let penentuanBulan = bulan[Number(periodeBulan.padStart(1))-1]
+let periodeTahun = document.querySelector('#periode-tahun').value;
+let periodeKalkulator = periodeBulan + periodeTahun;
+let tanggal = document.querySelectorAll('.tanggal-table');
+let sum = 0;
+for(let x=0;x<tanggal.length;x++){
+    let ambilTanggal = tanggal[x].textContent.slice(3,10).replace('/','');
+    if(ambilTanggal == periodeKalkulator){
+       sum+= Number(document.querySelectorAll('.nominal-table')[x].textContent.replace('Rp ','').slice(0,-3).replace(/,/g,''));
+        }
+    }
+    let keterangan = document.createElement('div');
+    if(sum != 0){
+    keterangan.innerHTML = `
+    <div class="hasil-perhitungan-transaksi ${penentuanBulan.toLowerCase() + periodeTahun}">Jumlah nominal yang masuk pada rekening PT <span style="font-weight:bold;">${penentuanBulan} ${periodeTahun}</span> adalah ${"Rp " + sum.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }) + ",00"}</div>`
+    if(document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun).length == 0){
+    hasilPerhitunganTransaksi.appendChild(keterangan);
+        }
+    } else {
+    keterangan.innerHTML = `<div class="hasil-perhitungan-transaksi ${penentuanBulan.toLowerCase() + periodeTahun}">Tidak ada data transaksi yang masuk pada rekening PT <span style="font-weight:bold;">${penentuanBulan} ${periodeTahun}</span></div>`
+    if(document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun).length == 0){
+    hasilPerhitunganTransaksi.appendChild(keterangan);
+        }
+    }
+})
+
+
 
     db.collection('produk').onSnapshot(snapshot =>{
         let changes = snapshot.docChanges();
@@ -1693,7 +1738,7 @@ function renderBarangDicari(doc){
     tr.setAttribute('id','barangdicari' + doc.id);
     tr.classList.add('dokumentasi-barang-dicari' + doc.id, 'barangdicari');
     tr.innerHTML = `
-    <td style="font-weight:bold;vertical-align:middle;text-align:center;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
+    <td style="font-weight:bold;vertical-align:middle;text-align:center;" id="tanggal-table${doc.id}" class="tanggal-table-kedua">${tanggal}</td>
     <td style="vertical-align:middle;text-align:center;" id="pelapor-table${doc.id}">${pelapor}</td>
     <td style="vertical-align:middle;" id="produk-table${doc.id}">${produk}</td>
     `
@@ -1825,7 +1870,6 @@ function renderUpdateBarangDicari(doc){
     document.querySelector('#pelapor-barang-dicari' + doc.id).innerText = pelapor;
     document.querySelector('#produk-table' + doc.id).innerText = produk;
     document.querySelector('#produk-barang-dicari' + doc.id).innerText = produk;
-    
 }
 
 

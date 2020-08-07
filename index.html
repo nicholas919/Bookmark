@@ -737,8 +737,54 @@
     <h1 class="display-4"><i class='fas fa-comments-dollar'></i> Transaksi Berjalan</h1>
     <p class="lead">Tab ini dikhususkan untuk mencatat transaksi yang masuk pada Rekening PT.</p>
     <div class="btn btn-primary btn-lg pull-right lead" id="konversi-tabel-transaksi">File Excel <i class="fa fa-file-excel-o"></i></div>
+    <div class="btn btn-primary btn-lg pull-right lead" id="kalkulator-transaksi" data-toggle="modal" data-target="#modalkalkulatortransaksi">Cek Jumlah Per Periode <i class='fas fa-calculator'></i></div>
 </div>
 </div>
+
+
+<div class="modal fade" id="modalkalkulatortransaksi" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Menghitung Jumlah Per Periode</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="form-kalkulator-transaksi">
+                <div class="form-group">
+                  <label>Bulan</label>
+                <select class="form-control" id="periode-bulan" required>
+                    <option value="" disabled selected hidden>-</option>
+                      <option value="01">Januari</option>
+                      <option value="02">Februari</option>
+                      <option value="03">Maret</option>
+                      <option value="04">April</option>
+                      <option value="05">Mei</option>
+                      <option value="06">Juni</option>
+                      <option value="07">Juli</option>
+                      <option value="08">Agustus</option>
+                      <option value="09">September</option>
+                      <option value="10">Oktober</option>
+                      <option value="11">November</option>
+                      <option value="12">Desember</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                  <label>Tahun</label>
+                <select class="form-control" id="periode-tahun" required>
+                    <option value="" disabled selected hidden>-</option>
+                    </select>
+                </div>
+                  <button class="btn" type="submit" id="hasil-kalkulator-transaksi">Hitung Sekarang</button>
+              </form>
+        <div id="hasil-perhitungan-transaksi"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 <a id="tambahtransaksi" data-toggle="modal" data-target="#modaltransaksi">+</a>
 

@@ -691,7 +691,7 @@ input::-webkit-inner-spin-button {
 }
 
 
-#hasil-kalkulator{
+#hasil-kalkulator, #hasil-kalkulator-transaksi{
   text-align: center;
   font-family: 'Righteous', cursive;
   font-weight: bold;
@@ -706,13 +706,13 @@ input::-webkit-inner-spin-button {
   justify-content: center;
 }
 
-#hasil-kalkulator:hover{
+#hasil-kalkulator:hover, #hasil-kalkulator-transaksi:hover{
   border:1px solid rgba(0,0,0,.2);
   background-color: white;
   color:black;
 }
 
-#hasil-kalkulator:active{
+#hasil-kalkulator:active, #hasil-kalkulator-transaksi:active{
   border:1px solid rgba(0,0,0,.2);
   background-color: black;
   color:white;
@@ -735,6 +735,14 @@ input::-webkit-inner-spin-button {
 #hasil-perhitungan{
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.hasil-perhitungan-transaksi{
+  padding:10px;
+  border: 1px solid grey;
+  margin-top:8px;
+  background-color:#f5f5f5;
+  text-align: center;
 }
 
 fieldset{
@@ -1222,7 +1230,11 @@ body{
   cursor: pointer;
 }
 
-.tanggal-table{
+#kalkulator-transaksi{
+  margin-right: 10px;
+}
+
+.tanggal-table,.tanggal-table-kedua{
   text-align: center;
 }
 
