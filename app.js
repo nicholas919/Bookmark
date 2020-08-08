@@ -1192,7 +1192,6 @@ if(isiTugasCompleted.childNodes.length == 0){
 
 const isiTugas = document.querySelector('#daftar-tugas-pending');
 const isiTugasCompleted = document.querySelector('#daftar-tugas-selesai');
-
 function renderTugas(doc){
     let div = document.createElement('div');
     div.classList.add('tugas-pending' + doc.id, 'tugas-pending');
@@ -1421,6 +1420,7 @@ createForm8.addEventListener('submit', (e) => {
 const isiTransaksi = document.querySelector('#list-transaksi')
 const modalTransaksi = document.querySelector('#list-modal-transaksi')
 const periodeTahun = document.querySelector('#periode-tahun')
+
 function renderTransaksi(doc){
     let tr = document.createElement('tr');
     let transaksi = document.createElement('div');
@@ -1526,12 +1526,10 @@ function renderTransaksi(doc){
 
 isiTransaksi.insertBefore(tr,isiTransaksi.childNodes[0]);
 modalTransaksi.appendChild(transaksi);
-
 if(document.querySelectorAll('.periode-tahun-' + yyyy).length == 0){
 periodeTahun.appendChild(opsi);
-} else {
-    return false;
 }
+
 
     let edit = document.querySelector('#edit' + doc.id);
     edit.addEventListener('click', function(e){
