@@ -1,7 +1,7 @@
 document.querySelector('#tombol-print').addEventListener('click',function(e){
             e.preventDefault();
-            var printContents = document.querySelector('.preview-print').innerHTML;
-            var originalContents = document.body.innerHTML;
+            let printContents = document.querySelector('.preview-print').innerHTML;
+            let originalContents = document.body.innerHTML;
             document.body.innerHTML = printContents;
             window.print();
             document.body.innerHTML = originalContents;
