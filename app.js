@@ -1578,16 +1578,23 @@ for(let x=0;x<tanggal.length;x++){
     let keterangan = document.createElement('div');
     if(sum != 0){
     keterangan.innerHTML = `
-    <div class="hasil-perhitungan-transaksi ${penentuanBulan.toLowerCase() + periodeTahun}">Jumlah nominal yang masuk pada rekening PT <span style="font-weight:bold;">${penentuanBulan} ${periodeTahun}</span> adalah ${"Rp " + sum.toLocaleString(undefined, {
+    <div class="hasil-perhitungan-transaksi ${penentuanBulan.toLowerCase() + periodeTahun + sum} ${penentuanBulan.toLowerCase() + periodeTahun}">Jumlah nominal yang masuk pada rekening PT <span style="font-weight:bold;">${penentuanBulan} ${periodeTahun}</span> adalah ${"Rp " + sum.toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00"}</div>`
-    if(document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun).length == 0){
+    if(document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun + sum).length == 0){
+    let keterkaitanKeterangan = document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun);
+    for(let x = 0; x<keterkaitanKeterangan.length; x++){
+        keterkaitanKeterangan[x].remove();
+    }
     hasilPerhitunganTransaksi.appendChild(keterangan);
         }
     } else {
-    keterangan.innerHTML = `<div class="hasil-perhitungan-transaksi ${penentuanBulan.toLowerCase() + periodeTahun}">Tidak ada data transaksi yang masuk pada rekening PT <span style="font-weight:bold;">${penentuanBulan} ${periodeTahun}</span></div>`
-    if(document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun).length == 0){
+    keterangan.innerHTML = `<div class="hasil-perhitungan-transaksi ${penentuanBulan.toLowerCase() + periodeTahun + sum} ${penentuanBulan.toLowerCase() + periodeTahun}">Tidak ada data transaksi yang masuk pada rekening PT <span style="font-weight:bold;">${penentuanBulan} ${periodeTahun}</span></div>`
+    if(document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun + sum).length == 0){
+    for(let x = 0; x<keterkaitanKeterangan.length; x++){
+    keterkaitanKeterangan[x].remove();
+    }
     hasilPerhitunganTransaksi.appendChild(keterangan);
         }
     }
@@ -1666,7 +1673,7 @@ createForm9.addEventListener('submit', (e) => {
     let tanggal = new Date().getTime();
     if(document.querySelector('#nominal-transaksi').value == 0){
         alert("Pastikan anda mengisi kolom nominal transaksi")
-    } else if(document.querySelector('#nominal-transaksi').includes('.') && document.querySelector('#nominal-transaksi').includes(',')){
+    } else if(document.querySelector('#nominal-transaksi').value.includes('.') && document.querySelector('#nominal-transaksi').value.includes(',')){
         alert("Pastikan kolom nominal transaksi tidak berisikan karakter spesial seperti titik atau koma");
     } else {
     db.collection('transaksi').add({
