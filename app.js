@@ -1558,6 +1558,41 @@ if(tanggalUpdate == 0){
         })
     })
 
+const hasilPerhitunganTransaksi = document.querySelector('#hasil-perhitungan-transaksi')
+const formKalkulatorTransaksi = document.querySelector('#form-kalkulator-transaksi');
+formKalkulatorTransaksi.addEventListener('submit', function(e) {
+e.preventDefault();
+let bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+let periodeBulan = document.querySelector('#periode-bulan').value;
+let penentuanBulan = bulan[Number(periodeBulan.padStart(1))-1]
+let periodeTahun = document.querySelector('#periode-tahun').value;
+let periodeKalkulator = periodeBulan + periodeTahun;
+let tanggal = document.querySelectorAll('.tanggal-table');
+let sum = 0;
+for(let x=0;x<tanggal.length;x++){
+    let ambilTanggal = tanggal[x].textContent.slice(3,10).replace('/','');
+    if(ambilTanggal == periodeKalkulator){
+       sum+= Number(document.querySelectorAll('.nominal-table')[x].textContent.replace('Rp ','').slice(0,-3).replace(/,/g,''));
+        }
+    }
+    let keterangan = document.createElement('div');
+    if(sum != 0){
+    keterangan.innerHTML = `
+    <div class="hasil-perhitungan-transaksi ${penentuanBulan.toLowerCase() + periodeTahun}">Jumlah nominal yang masuk pada rekening PT <span style="font-weight:bold;">${penentuanBulan} ${periodeTahun}</span> adalah ${"Rp " + sum.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }) + ",00"}</div>`
+    if(document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun).length == 0){
+    hasilPerhitunganTransaksi.appendChild(keterangan);
+        }
+    } else {
+    keterangan.innerHTML = `<div class="hasil-perhitungan-transaksi ${penentuanBulan.toLowerCase() + periodeTahun}">Tidak ada data transaksi yang masuk pada rekening PT <span style="font-weight:bold;">${penentuanBulan} ${periodeTahun}</span></div>`
+    if(document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun).length == 0){
+    hasilPerhitunganTransaksi.appendChild(keterangan);
+        }
+    }
+})
+
     $(document).ready(function() {
     db.collection('transaksi').onSnapshot(snapshot =>{
     let items = $('#list-transaksi > .transaksi').get();
@@ -1661,40 +1696,7 @@ createForm9.addEventListener('submit', (e) => {
   }
 })
 
-const hasilPerhitunganTransaksi = document.querySelector('#hasil-perhitungan-transaksi')
-const formKalkulatorTransaksi = document.querySelector('#form-kalkulator-transaksi');
-formKalkulatorTransaksi.addEventListener('submit', function(e) {
-e.preventDefault();
-let bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-let periodeBulan = document.querySelector('#periode-bulan').value;
-let penentuanBulan = bulan[Number(periodeBulan.padStart(1))-1]
-let periodeTahun = document.querySelector('#periode-tahun').value;
-let periodeKalkulator = periodeBulan + periodeTahun;
-let tanggal = document.querySelectorAll('.tanggal-table');
-let sum = 0;
-for(let x=0;x<tanggal.length;x++){
-    let ambilTanggal = tanggal[x].textContent.slice(3,10).replace('/','');
-    if(ambilTanggal == periodeKalkulator){
-       sum+= Number(document.querySelectorAll('.nominal-table')[x].textContent.replace('Rp ','').slice(0,-3).replace(/,/g,''));
-        }
-    }
-    let keterangan = document.createElement('div');
-    if(sum != 0){
-    keterangan.innerHTML = `
-    <div class="hasil-perhitungan-transaksi ${penentuanBulan.toLowerCase() + periodeTahun}">Jumlah nominal yang masuk pada rekening PT <span style="font-weight:bold;">${penentuanBulan} ${periodeTahun}</span> adalah ${"Rp " + sum.toLocaleString(undefined, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }) + ",00"}</div>`
-    if(document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun).length == 0){
-    hasilPerhitunganTransaksi.appendChild(keterangan);
-        }
-    } else {
-    keterangan.innerHTML = `<div class="hasil-perhitungan-transaksi ${penentuanBulan.toLowerCase() + periodeTahun}">Tidak ada data transaksi yang masuk pada rekening PT <span style="font-weight:bold;">${penentuanBulan} ${periodeTahun}</span></div>`
-    if(document.querySelectorAll('.' + penentuanBulan.toLowerCase() + periodeTahun).length == 0){
-    hasilPerhitunganTransaksi.appendChild(keterangan);
-        }
-    }
-})
+
 
 
 
