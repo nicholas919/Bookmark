@@ -2290,8 +2290,9 @@ function renderPerpindahan(doc){
     let minutes = ('0' + today.getMinutes()).slice(-2);
     let tanggal = dd + '/' + mm + '/' + yyyy;
     let jam = hours + ":" + minutes;
-    let kontenPerpindahanUpdate = document.querySelector('#konten-perpindahan' + doc.id).value.replace(/\n\r?/g, '<br/>');
-    let tanggalPerpindahanUpdate = document.querySelector('#tanggal-perpindahan' + doc.id).value;
+    db.collection('perpindahan').doc(doc.id).get().then(doc => {
+        let kontenPerpindahanUpdate = doc.data().kontenPerpindahan;
+        let tanggalPerpindahanUpdate = doc.data().tanggalPerpindahan;
     db.collection('perpindahanSelesai').add({
         tanggalPembuatanSelesai: tanggalPembuatan,
         kontenPerpindahanSelesai: kontenPerpindahanUpdate,
@@ -2300,6 +2301,7 @@ function renderPerpindahan(doc){
     }).then(() => {
         let id = document.querySelector('.perpindahan-pending' + doc.id).getAttribute('data-id');
         db.collection('perpindahan').doc(id).delete();
+        })
     })
 })
 
