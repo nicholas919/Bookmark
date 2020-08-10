@@ -1666,6 +1666,8 @@ createForm9.addEventListener('submit', (e) => {
     let tanggal = new Date().getTime();
     if(document.querySelector('#nominal-transaksi').value == 0){
         alert("Pastikan anda mengisi kolom nominal transaksi")
+    } else if(document.querySelector('#nominal-transaksi').includes('.') && document.querySelector('#nominal-transaksi').includes(',')){
+        alert("Pastikan kolom nominal transaksi tidak berisikan karakter spesial seperti titik atau koma");
     } else {
     db.collection('transaksi').add({
         tanggal: tanggal,
@@ -1681,6 +1683,8 @@ createForm9.addEventListener('submit', (e) => {
   } else {
     if(document.querySelector('#nominal-transaksi').value == 0){
         alert("Pastikan anda mengisi kolom nominal transaksi")
+    } else if(document.querySelector('#nominal-transaksi').includes('.') && document.querySelector('#nominal-transaksi').includes(',')){
+        alert("Pastikan kolom nominal transaksi tidak berisikan karakter spesial seperti titik atau koma");
     } else {
     db.collection('transaksi').add({
         tanggal: createForm9['tanggal-transaksi'].value,
