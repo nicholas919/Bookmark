@@ -4,7 +4,7 @@ document.querySelector('#tombol-print').addEventListener('click',function(e){
             let originalContents = document.body.innerHTML;
             document.body.innerHTML = printContents;
             window.print();
-            document.body.innerHTML = originalContents;
+            document.body.appendChild = originalContents;
 })
 
 //////////////////////Pengumuman////////////////////////
@@ -1690,7 +1690,7 @@ createForm9.addEventListener('submit', (e) => {
   } else {
     if(document.querySelector('#nominal-transaksi').value == 0){
         alert("Pastikan anda mengisi kolom nominal transaksi")
-    } else if(document.querySelector('#nominal-transaksi').includes('.') && document.querySelector('#nominal-transaksi').includes(',')){
+    } else if(document.querySelector('#nominal-transaksi').value.includes('.') && document.querySelector('#nominal-transaksi').value.includes(',')){
         alert("Pastikan kolom nominal transaksi tidak berisikan karakter spesial seperti titik atau koma");
     } else {
     db.collection('transaksi').add({
