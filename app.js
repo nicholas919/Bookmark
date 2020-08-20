@@ -2,9 +2,6 @@ document.querySelector('#tombol-print').addEventListener('click',function(e){
             e.preventDefault();
             let printContents = document.querySelector('.preview-print').innerHTML;
             let originalContents = document.body.innerHTML;
-            originalContents = new DOMParser().parseFromString(originalContents, "text/xml");
-            console.log(originalContents);
-            console.log(printContents);
             document.body.innerHTML = printContents;
             window.print();
             document.body.innerHTML = originalContents;
@@ -671,7 +668,6 @@ createForm3.addEventListener('submit', (e) => {
 
 db.collection('marquee').onSnapshot(snapshot =>{
 if(isiMarquee.innerHTML = ''){
-    console.log('berhasil')
     isiMarquee.innerHTML = 'Jangan lupa untuk selalu mengecek DM dan Request DM dari IG dan Whatsapp';
 }
 })
@@ -1456,8 +1452,6 @@ function renderTransaksi(doc){
     let alamat = doc.data().alamat;
     let ekspedisi = doc.data().ekspedisi;
     let nominal = doc.data().nominal;
-    console.log(kontak == 0)
-    console.log(customer)
     if(kontak == null && alamat == null && ekspedisi == null){
         kontak = 'Tidak ada';
         alamat = 'Tidak ada';
@@ -1997,7 +1991,6 @@ modalBarangDicari.appendChild(barangDicari);
         formEdit.addEventListener('submit', function(e){
             e.preventDefault();
             let tanggalUpdate = tanggal;
-            console.log(tanggal);
             let pelaporUpdate = document.querySelector('#pelapor-update' + doc.id).value;
             let produkUpdate = document.querySelector('#barang-dicari-update' + doc.id).value;
             db.collection('produk').doc(doc.id).update({
