@@ -2,9 +2,25 @@ document.querySelector('#tombol-print').addEventListener('click',function(e){
             e.preventDefault();
             let printContents = document.querySelector('.preview-print').innerHTML;
             let originalContents = document.body.innerHTML;
+            originalContents = new DOMParser().parseFromString(originalContents, "text/xml");
+            console.log(originalContents);
+            console.log(printContents);
             document.body.innerHTML = printContents;
             window.print();
-            document.body.appendChild = originalContents;
+            document.body.innerHTML = originalContents;
+})
+
+document.querySelector('#print-transaksi').addEventListener('click',function(e){
+            e.preventDefault();
+            if(document.querySelector('#preview-print-transaksi').childNodes.length != 0){
+            let printContents = document.querySelector('#preview-print-transaksi').innerHTML;
+            let originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        } else {
+            alert('Anda belum memilih data yang ingin anda print.');
+        }
 })
 
 //////////////////////Pengumuman////////////////////////
@@ -1436,7 +1452,21 @@ function renderTransaksi(doc){
     tr.setAttribute('data-date', sortirTanggal);
     let tampilantanggal = yyyy + '-' + mm + '-' + dd
     let customer = doc.data().customer;
+    let kontak = doc.data().kontak;
+    let alamat = doc.data().alamat;
+    let ekspedisi = doc.data().ekspedisi;
     let nominal = doc.data().nominal;
+    console.log(kontak == 0)
+    console.log(customer)
+    if(kontak == null && alamat == null && ekspedisi == null){
+        kontak = 'Tidak ada';
+        alamat = 'Tidak ada';
+        ekspedisi = 'Tidak ada';
+    } else if(kontak == 0 && alamat == 0 && ekspedisi == 0){
+        kontak = 'Tidak ada';
+        alamat = 'Tidak ada';
+        ekspedisi = 'Tidak ada';        
+    }
     let produk = doc.data().produk;
     let keterangan = doc.data().keterangan;
     tr.setAttribute('data-id', doc.id);
@@ -1447,14 +1477,18 @@ function renderTransaksi(doc){
     opsi.innerHTML = yyyy;
     opsi.classList.add('periode-tahun-' + yyyy);
     tr.innerHTML = `
+    <td style="vertical-align:middle;" id="checkbox-table${doc.id}"><input type="checkbox" class="checkbox-transaksi" id="checkbox-transaksi${doc.id}"></td>
     <td style="font-weight:bold;vertical-align:middle;text-align:center;" id="tanggal-table${doc.id}" class="tanggal-table">${tanggal}</td>
-    <td style="vertical-align:middle;text-align:center;" id="customer-table${doc.id}">${customer}</td>
+    <td style="vertical-align:middle;text-align:center;" id="customer-table${doc.id}" class="customer-transaksi">${customer}</td>
+    <td style="vertical-align:middle;text-align:center;" id="kontak-table${doc.id}" class="kontak-transaksi">${kontak}</td>
+    <td style="vertical-align:middle;" id="alamat-table${doc.id}" class="alamat-transaksi">${alamat}</td>
+    <td style="vertical-align:middle;" id="produk-table${doc.id}">${produk}</td>
     <td style="vertical-align:middle;text-align:center;" id="nominal-table${doc.id}" class="nominal-table">${"Rp " + Number(nominal).toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00"}</td>
-    <td style="vertical-align:middle;" id="produk-table${doc.id}">${produk}</td>
     <td style="vertical-align:middle;text-align:center;" id="keterangan-table${doc.id}">${keterangan}</td>
+    <td style="vertical-align:middle;text-align:center;" id="ekspedisi-table${doc.id}">${ekspedisi}</td>
     `
     transaksi.innerHTML = `
 <div class="modal fade" id="modalupdatetransaksi${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1475,18 +1509,27 @@ function renderTransaksi(doc){
         <div>Nama Customer</div>
         <div>:</div>        
         <div id="customer-transaksi${doc.id}">${customer}</div>
+        <div>No Hp Customer</div>
+        <div>:</div>        
+        <div id="kontak-transaksi${doc.id}">${kontak}</div>        
+        <div>Produk</div>
+        <div>:</div> 
+        <div id="produk-transaksi${doc.id}">${produk}</div>
+        <div>Alamat Customer</div>
+        <div>:</div> 
+        <div id="alamat-transaksi${doc.id}">${alamat}</div>        
         <div>Nominal Transaksi</div>
         <div>:</div> 
         <div id="nominal-transaksi${doc.id}">${"Rp " + Number(nominal).toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    }) + ",00"}</div>
-        <div>Produk</div>
-        <div>:</div> 
-        <div id="produk-transaksi${doc.id}">${produk}</div>
+    }) + ",00"}</div>        
         <div>Keterangan Transaksi</div>
         <div>:</div> 
         <div id="keterangan-transaksi${doc.id}">${keterangan}</div>
+        <div>Ekspedisi Transaksi</div>
+        <div>:</div> 
+        <div id="ekspedisi-transaksi${doc.id}">${ekspedisi}</div>        
         </div>
         <div id="edit${doc.id}" class="btn btn-warning edittransaksi">Edit Data Transaksi</div>
         <div id="hapus${doc.id}" class="btn btn-danger hapustransaksi">Hapus Data Transaksi</div>
@@ -1500,10 +1543,35 @@ function renderTransaksi(doc){
                   <label class="col-form-label">Nama Customer</label>
                   <input type="text" value="${customer}" class="form-control your_class" id="customer-transaksi-update${doc.id}" autocomplete="off" autocomplete="off">
                 </div>
-                <div class="form-group">
+            <div class="form-row">
+                <div class="form-group col-4">
+                  <label class="col-form-label">No HP Customer</label>
+                  <input type="number" value="${kontak}" class="form-control your_class" id="kontak-transaksi-update${doc.id}" autocomplete="off">
+                </div>            
+                <div class="form-group col-4">
                   <label class="col-form-label">Nominal Transaksi</label>
                   <input type="number" value="${nominal}" class="form-control your_class" id="nominal-transaksi-update${doc.id}" autocomplete="off" autocomplete="off">
                 </div>
+                <div class="form-group col-4">
+                  <label>Ekspedisi</label>
+                <select class="form-control" id="ekspedisi-transaksi-update${doc.id}">
+                    <option value="" disabled selected hidden>-</option>
+                    <option>JNE Reg</option>
+                    <option>JNE Yes</option>
+                    <option>JNE Trucking</option>
+                    <option>GoSend Instant</option>
+                    <option>GoSend Sameday</option>
+                    <option>Grab Instant</option>
+                    <option>Grab Sameday</option>
+                    <option>JNT</option>
+                    <option>SiCepat</option>
+                    </select>
+                </div>                
+            </div>    
+                <div class="form-group">
+                  <label class="col-form-label">Alamat</label>
+                  <textarea oninput="auto_grow(this)" onfocus="auto_grow(this)" class="form-control" id="alamat-transaksi-update${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${alamat.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                </div>                        
                 <div class="form-group">
                   <label class="col-form-label">Produk</label>
                   <textarea oninput="auto_grow(this)" onfocus="auto_grow(this)" class="form-control" id="produk-transaksi-update${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${produk.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
@@ -1531,6 +1599,89 @@ periodeTahun.appendChild(opsi);
 }
 
 
+let pilihanEkspedisi = document.querySelector('#ekspedisi-transaksi-update' + doc.id);
+let opsiEkspedisi;
+for(let x = 0; x<pilihanEkspedisi.options.length; x++){
+    opsiEkspedisi = pilihanEkspedisi.options[x];
+    if(opsiEkspedisi.value == ekspedisi){
+        opsiEkspedisi.setAttribute('selected', 'selected');
+        }
+    }
+    
+
+    let checkbox = document.querySelector('#checkbox-table' + doc.id)
+        checkbox.style.cursor = 'default';        
+        checkbox.addEventListener('click', function(e){
+            e.stopPropagation();
+        })
+
+    let checkboxTransaksi = document.querySelector('#checkbox-transaksi' + doc.id)
+    checkboxTransaksi.addEventListener('click' , function(e){
+            e.stopPropagation();
+            if(checkboxTransaksi.checked){
+            db.collection('transaksi').doc(doc.id).get().then(function(item){
+            let customer = item.data().customer;
+            let kontak = item.data().kontak;
+            let alamat = item.data().alamat;
+            let ekspedisi = item.data().ekspedisi;
+            if(kontak == null && alamat == null && ekspedisi == null){
+                kontak = 'Tidak ada';
+                alamat = 'Tidak ada';
+                ekspedisi = 'Tidak ada';
+            } else if(kontak == 0 && alamat == 0 && ekspedisi == 0){
+                kontak = 'Tidak ada';
+                alamat = 'Tidak ada';
+                ekspedisi = 'Tidak ada';        
+            }            
+            let div = document.createElement('div')
+            div.classList.add('potongan-kertas')
+            div.setAttribute('id', 'potongan-kertas' + doc.id)
+            div.innerHTML = `
+                <div class="super-header-cetak">
+                  <img src="logo.png" class="logo-cetak">
+                  <div class="label-pengiriman">Label Pengiriman</div>          
+                </div>
+                <div class="header-cetak">
+                    <div class="penjual">From</div>
+                    <div>:</div>
+                    <div>
+                      <div class="nama-penjual"><span class="nama-logo">GALAXYCAMERA.ID</span></div>
+                      <div class="alamat-penjual">Mall Metropolis Townsquare, Lantai Dasar Blok GC1 No.7, Cikokol, Tangerang</div>
+                      <div class="kontak-penjual">082111311131</div>
+                    </div>
+                  </div>
+                <div class="body-cetak">
+                  <div class="ship-to">
+                    <div>Ship to</div>
+                    <div>:</div>
+                    <div>
+                      <div class="nama-pembeli">${customer}</div>
+                      <div class="alamat-pembeli">${alamat}</div>
+                      <div class="kontak-pembeli">${kontak}</div>
+                    </div>
+                    <div>Ekspedisi</div>
+                    <div>:</div>
+                      <div class="ekspedisi-terpilih">${ekspedisi}</div>
+                  </div>
+              </div>
+              <div class="footer-cetak">
+                <div class="keterangan-footer">Terima Kasih Sudah Berbelanja di <span class="nama-logo">GALAXYCAMERA.ID</span></div>
+              </div>`
+
+            if(!document.querySelector('#potongan-kertas' + doc.id)){
+            document.querySelector('#preview-print-transaksi').appendChild(div);
+                }
+            })
+            } else {
+            if(document.querySelector('#potongan-kertas' + doc.id)){
+            document.querySelector('#potongan-kertas' + doc.id).remove();
+                }
+            }
+        })
+    
+
+
+
     let edit = document.querySelector('#edit' + doc.id);
     edit.addEventListener('click', function(e){
         e.preventDefault();
@@ -1540,6 +1691,9 @@ periodeTahun.appendChild(opsi);
             e.preventDefault();
             let tanggalUpdate = document.querySelector('#tanggal-transaksi-update' + doc.id).value;
             let customerUpdate = document.querySelector('#customer-transaksi-update' + doc.id).value;
+            let kontakUpdate = document.querySelector('#kontak-transaksi-update' + doc.id).value;
+            let alamatUpdate = document.querySelector('#alamat-transaksi-update' + doc.id).value;
+            let ekspedisiUpdate = document.querySelector('#ekspedisi-transaksi-update' + doc.id).value;
             let nominalUpdate = document.querySelector('#nominal-transaksi-update' + doc.id).value;
             let produkUpdate = document.querySelector('#produk-transaksi-update' + doc.id).value;
             let keteranganUpdate = document.querySelector('#keterangan-transaksi-update' + doc.id).value;
@@ -1549,9 +1703,12 @@ if(tanggalUpdate == 0){
             db.collection('transaksi').doc(doc.id).update({
                 tanggal : tanggalUpdate,
                 customer : customerUpdate,
+                kontak : kontakUpdate,
+                alamat : alamatUpdate.replace(/\n\r?/g, '<br/>'),
+                ekspedisi : ekspedisiUpdate,
                 nominal : nominalUpdate,
-                produk : produkUpdate,
-                keterangan : keteranganUpdate
+                produk : produkUpdate.replace(/\n\r?/g, '<br/>'),
+                keterangan : keteranganUpdate.replace(/\n\r?/g, '<br/>')
             }).then(() => {
                 formEdit.style.display = "none";
             })
@@ -1643,24 +1800,33 @@ function renderUpdateTransaksi(doc){
     tr.setAttribute('data-date', sortirTanggal);   
     let customer = doc.data().customer;
     let nominal = doc.data().nominal;
+    let kontak = doc.data().kontak;
+    let alamat = doc.data().alamat;
+    let ekspedisi = doc.data().ekspedisi;
     let produk = doc.data().produk;
     let keterangan = doc.data().keterangan;
-    document.querySelector('#tanggal-table' + doc.id).innerText = tanggal;
-    document.querySelector('#tanggal-transaksi' + doc.id).innerText = tanggal;
-    document.querySelector('#customer-table' + doc.id).innerText = customer;
-    document.querySelector('#customer-transaksi' + doc.id).innerText = customer;
-    document.querySelector('#nominal-table' + doc.id).innerText = "Rp " + Number(nominal).toLocaleString(undefined, {
+    document.querySelector('#tanggal-table' + doc.id).innerHTML = tanggal;
+    document.querySelector('#tanggal-transaksi' + doc.id).innerHTML = tanggal;
+    document.querySelector('#customer-table' + doc.id).innerHTML = customer;
+    document.querySelector('#customer-transaksi' + doc.id).innerHTML = customer;
+    document.querySelector('#nominal-table' + doc.id).innerHTML = "Rp " + Number(nominal).toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00";
-    document.querySelector('#nominal-transaksi' + doc.id).innerText = "Rp " + Number(nominal).toLocaleString(undefined, {
+    document.querySelector('#nominal-transaksi' + doc.id).innerHTML = "Rp " + Number(nominal).toLocaleString(undefined, {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }) + ",00";
-    document.querySelector('#produk-table' + doc.id).innerText = produk;
-    document.querySelector('#produk-transaksi' + doc.id).innerText = produk;
-    document.querySelector('#keterangan-table' + doc.id).innerText = keterangan;
-    document.querySelector('#keterangan-transaksi' + doc.id).innerText = keterangan;
+    document.querySelector('#kontak-table' + doc.id).innerHTML = kontak;
+    document.querySelector('#kontak-transaksi' + doc.id).innerHTML = kontak;
+    document.querySelector('#alamat-table' + doc.id).innerHTML = alamat;
+    document.querySelector('#alamat-transaksi' + doc.id).innerHTML = alamat;
+    document.querySelector('#ekspedisi-table' + doc.id).innerHTML = ekspedisi;
+    document.querySelector('#ekspedisi-transaksi' + doc.id).innerHTML = ekspedisi;
+    document.querySelector('#produk-table' + doc.id).innerHTML = produk;
+    document.querySelector('#produk-transaksi' + doc.id).innerHTML = produk;
+    document.querySelector('#keterangan-table' + doc.id).innerHTML = keterangan;
+    document.querySelector('#keterangan-transaksi' + doc.id).innerHTML = keterangan;
     
 
 }
@@ -1679,6 +1845,9 @@ createForm9.addEventListener('submit', (e) => {
     db.collection('transaksi').add({
         tanggal: tanggal,
         customer: createForm9['customer-transaksi'].value,
+        kontak: createForm9['kontak-transaksi'].value,
+        alamat: createForm9['alamat-transaksi'].value.replace(/\n\r?/g, '<br/>'),
+        ekspedisi: createForm9['ekspedisi-transaksi'].value,
         nominal: createForm9['nominal-transaksi'].value,
         produk: createForm9['produk-transaksi'].value.replace(/\n\r?/g, '<br/>'),
         keterangan: createForm9['keterangan-transaksi'].value.replace(/\n\r?/g, '<br/>')
@@ -2444,6 +2613,7 @@ document.querySelector(".your_class").addEventListener("keypress", function (evt
         evt.preventDefault();
     }
 });
+
 
 
 

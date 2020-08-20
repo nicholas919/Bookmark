@@ -14,6 +14,10 @@
   <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-firestore.js"></script>
   <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src='https://kit.fontawesome.com/a076d05399.js'></script>  
 
 </head>
 <body>
@@ -742,12 +746,13 @@
 <div class="jumbotron jumbotron-fluid">
 <div class="container">
     <h1 class="display-4"><i class='fas fa-comments-dollar'></i> Transaksi Berjalan</h1>
-    <p class="lead">Tab ini dikhususkan untuk mencatat transaksi yang masuk pada Rekening PT. Format pengisian tanggal transaksi yaitu mm/dd/yyyy, diharapkan agar tidak salah mengisi kolom tanggal transaksi tersebut.</p>
+    <p class="lead">Tab ini dikhususkan untuk mencatat transaksi yang masuk pada Rekening PT. Format pengisian tanggal transaksi yaitu mm/dd/yyyy, diharapkan agar tidak salah mengisi kolom tanggal transaksi tersebut. </p><div class="btn btn-primary btn-lg pull-right lead" id="print-transaksi">Print <i class="fa fa-print"></i></div>
     <div class="btn btn-primary btn-lg pull-right lead" id="konversi-tabel-transaksi">File Excel <i class="fa fa-file-excel-o"></i></div>
     <div class="btn btn-primary btn-lg pull-right lead" id="kalkulator-transaksi" data-toggle="modal" data-target="#modalkalkulatortransaksi">Cek Jumlah Per Periode <i class='fas fa-calculator'></i></div>
 </div>
 </div>
 
+<div id="preview-print-transaksi"></div>
 
 <div class="modal fade" id="modalkalkulatortransaksi" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -812,12 +817,37 @@
                 </div>
                 <div class="form-group">
                   <label class="col-form-label">Nama Customer</label>
-                  <input type="text" class="form-control your_class" id="customer-transaksi" autocomplete="off" autocomplete="off">
+                  <input type="text" class="form-control your_class" id="customer-transaksi" autocomplete="off">
                 </div>
-                <div class="form-group">
+            <div class="form-row">
+                <div class="form-group col-4">
+                  <label class="col-form-label">No HP Customer</label>
+                  <input type="number" class="form-control your_class" id="kontak-transaksi" autocomplete="off">
+                </div>
+                <div class="form-group col-4">
                   <label class="col-form-label">Nominal Transaksi</label>
-                  <input type="number" class="form-control your_class" id="nominal-transaksi" autocomplete="off" autocomplete="off">
-                </div>
+                  <input type="number" class="form-control your_class" id="nominal-transaksi" autocomplete="off">
+                </div>            
+                <div class="form-group col-4">
+                  <label class="col-form-label">Ekspedisi Transaksi</label>
+                <select class="form-control" id="ekspedisi-transaksi">
+                    <option value="" disabled selected hidden>-</option>
+                    <option>JNE Reg</option>
+                    <option>JNE Yes</option>
+                    <option>JNE Trucking</option>
+                    <option>GoSend Instant</option>
+                    <option>GoSend Sameday</option>
+                    <option>Grab Instant</option>
+                    <option>Grab Sameday</option>
+                    <option>JNT</option>
+                    <option>SiCepat</option>
+                    </select>
+                </div>                
+            </div>
+                <div class="form-group">
+                  <label class="col-form-label">Alamat Customer</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="alamat-transaksi" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off"></textarea>
+                </div>            
                 <div class="form-group">
                   <label class="col-form-label">Produk</label>
                   <textarea oninput="auto_grow(this)" class="form-control" id="produk-transaksi" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off"></textarea>
@@ -839,11 +869,15 @@
   <table class="table table-striped" id="tabel-transaksi">
   <thead class="thead-light">
     <tr>
+      <th scope="col" style="text-align: center;vertical-align: middle;"></th>
       <th scope="col" style="text-align: center;vertical-align: middle;">Tanggal</th>
       <th scope="col" style="text-align: center;vertical-align: middle;">Nama Customer</th>
-      <th scope="col" style="text-align: center;vertical-align: middle;width:20%;">Nominal Transaksi</th>
+      <th scope="col" style="text-align: center;vertical-align: middle;width: 10%;">No HP Customer</th>
+      <th scope="col" style="text-align: center;vertical-align: middle;">Alamat Customer</th>
       <th scope="col" style="text-align: center;vertical-align: middle;">Produk</th>
+      <th scope="col" style="text-align: center;vertical-align: middle;width:15%;">Nominal Transaksi</th>      
       <th scope="col" style="text-align: center;vertical-align: middle;">Keterangan Transaksi</th>
+      <th scope="col" style="text-align: center;vertical-align: middle;">Ekspedisi</th>
     </tr>
   </thead>
   <tbody id="list-transaksi"></tbody>
@@ -1038,10 +1072,6 @@
   const db = firebase.firestore();
 </script>
 <script src="app.js"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script src='https://kit.fontawesome.com/a076d05399.js'></script>
 </script>
 <script>
     $(".navigasi-kiri a.tab-halaman").click(function() {

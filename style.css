@@ -1230,8 +1230,12 @@ body{
   cursor: pointer;
 }
 
-#kalkulator-transaksi{
+#kalkulator-transaksi, #konversi-tabel-transaksi{
   margin-right: 10px;
+}
+
+#preview-print-transaksi{
+  display: none;
 }
 
 .tanggal-table,.tanggal-table-kedua{
