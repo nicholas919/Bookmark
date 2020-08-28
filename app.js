@@ -1463,6 +1463,9 @@ function renderTransaksi(doc){
     }
     let produk = doc.data().produk;
     let keterangan = doc.data().keterangan;
+    if(keterangan == null || keterangan == 0){
+        keterangan = 'Tidak ada';
+    }
     tr.setAttribute('data-id', doc.id);
     tr.setAttribute('data-toggle', 'modal');
     tr.setAttribute('data-target', '#modalupdatetransaksi' + doc.id);
