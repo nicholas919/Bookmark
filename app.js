@@ -1452,14 +1452,14 @@ function renderTransaksi(doc){
     let alamat = doc.data().alamat;
     let ekspedisi = doc.data().ekspedisi;
     let nominal = doc.data().nominal;
-    if(kontak == null && alamat == null && ekspedisi == null){
+    if(kontak == null || kontak == 0){
         kontak = 'Tidak ada';
+    }
+    if(alamat == null || alamat == 0){
         alamat = 'Tidak ada';
+    }
+    if(ekspedisi == null || ekspedisi == 0){
         ekspedisi = 'Tidak ada';
-    } else if(kontak == 0 && alamat == 0 && ekspedisi == 0){
-        kontak = 'Tidak ada';
-        alamat = 'Tidak ada';
-        ekspedisi = 'Tidak ada';        
     }
     let produk = doc.data().produk;
     let keterangan = doc.data().keterangan;
