@@ -11,8 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
   <link rel="icon" type="text/css" href="bookmark-alt-flat.png">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-firestore.js"></script>
   <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -62,6 +60,10 @@
 <hr style="margin:0;">
 
     <a class="tab-halaman btn text-left menu" id="tab-perpindahan" data-toggle="pill" href="#halaman-perpindahan" role="tab" aria-controls="halaman-perpindahan" aria-selected="true"><span class="daftar2menu"> <i class='fas fa-cubes'></i> Perpindahan <span id="jumlahperpindahanpending" class="badge badge-danger"></span> <span id="jumlahperpindahanselesai" class="badge badge-success"></span></span></a>
+
+<hr style="margin:0;">
+
+    <a class="tab-halaman btn text-left menu" id="tab-retur" data-toggle="pill" href="#halaman-retur" role="tab" aria-controls="halaman-retur" aria-selected="true"><span class="daftar2menu"> <i class="fa fa-outdent"></i> Retur <span id="jumlahreturpending" class="badge badge-danger"></span> <span id="jumlahreturselesai" class="badge badge-success"></span></span></a>
 
 <hr style="margin:0;">
 
@@ -1008,7 +1010,7 @@
 
 
 <div class="halaman tab-pane fade" id="halaman-perpindahan" role="tabpanel" aria-labelledby="tab-perpindahan">
-  <div id="to-do-list">
+  <div id="perpindahan-barang">
     <div id="judul-atas-perpindahan">Perpindahan Barang</div>
   </div>
       <div id="judul-perpindahan-pending" class="btn btn-link" data-toggle="collapse" data-target="#daftar-perpindahan-pending" aria-expanded="true" aria-controls="daftar-perpindahan-pending"><i class="fa fa-clock-o"></i> Perpindahan Pending <i class='pending perpindahan fas fa-angle-down'></i></div>
@@ -1053,12 +1055,63 @@
 
 </div>
 
+<div class="halaman tab-pane fade" id="halaman-retur" role="tabpanel" aria-labelledby="tab-retur">
+  <div id="retur-penjualan">
+    <div id="judul-atas-retur">Retur Penjualan</div>
+  </div>
+      <div id="judul-retur-pending" class="btn btn-link" data-toggle="collapse" data-target="#daftar-retur-pending" aria-expanded="true" aria-controls="daftar-retur-pending"><i class="fa fa-clock-o"></i> Retur Pending <i class='pending retur fas fa-angle-down'></i></div>
+        <div id="daftar-retur-pending" class="collapse show"></div>
+      <div id="judul-retur-completed" class="btn btn-link" data-toggle="collapse" data-target="#daftar-retur-selesai" aria-expanded="false" aria-controls="daftar-retur-selesai"><i class='fas fa-clipboard-check'></i> Retur Selesai <i class='completed retur fas fa-angle-down'></i></div>
+        <div id="daftar-retur-selesai" class="collapse"></div>
+
+<div style="margin-bottom: 100px;"></div>
+<div id="list-modal-retur"></div>
+<a id="tambahretur" data-toggle="modal" data-target="#modalretur">+</a>
+
+<div class="modal fade" id="modalretur" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Menambahkan Data Retur Penjualan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <div class="modal-body">
+          <form id="tambah-retur">
+                <div class="form-group">
+                  <label class="col-form-label">Nama Customer</label>
+                  <input type="text" class="form-control" id="nama-customer-retur" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Kontak Customer</label>
+                  <input type="number" class="form-control" id="kontak-customer-retur" autocomplete="off">
+                </div>                
+                <div class="form-group">
+                  <label class="col-form-label">Produk yang diretur</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="konten-produk-retur" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="col-form-label">Keterangan</label>
+                  <textarea oninput="auto_grow(this)" class="form-control" id="konten-keterangan-retur" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off"></textarea>
+                </div>                
+
+                <div class="modal-footer">
+                      <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
 </div>
 
 
 <audio id="audio" style="display: none;" src="https://firebasestorage.googleapis.com/v0/b/bookmark-61950.appspot.com/o/notification_sound.mp3?alt=media&token=e0361dc1-aeb4-42ac-8665-3d41d6cb3cc3"></audio>
-
+<script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-firestore.js"></script>
 <script>
   var firebaseConfig = {
     apiKey: "AIzaSyCEeVAgf7GcdXyJWFyyjt36k24i3gEe7bI",

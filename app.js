@@ -2366,7 +2366,7 @@ function renderPerpindahan(doc){
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Penngaturan Data Perpindahan Barang</h5>
+            <h5 class="modal-title">Pengaturan Data Perpindahan Barang</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -2503,7 +2503,7 @@ function renderPerpindahanSelesai(doc){
     let yyyy = tanggalPerpindahanBaru.getFullYear();
     tanggalPerpindahanBaru = dd + '/' + mm + '/' + yyyy;
     div.innerHTML = `
-    <div class="deskripsi-perpindahan-selesai"><div class="keterangan-tugas-selesai">Dibuat ${tanggalPembuatan} - Perpindahan Tanggal <span id="tanggalperpindahanbarang${doc.id}">${tanggalPerpindahanBaru}</span><br><span id="deskripsi${doc.id}">${kontenPerpindahan}</span></div>
+    <div class="deskripsi-perpindahan-selesai"><div class="keterangan-perpindahan-selesai">Dibuat ${tanggalPembuatan} - Perpindahan Tanggal <span id="tanggalperpindahanbarang${doc.id}">${tanggalPerpindahanBaru}</span><br><span id="deskripsi${doc.id}">${kontenPerpindahan}</span></div>
     <small id="penyelesaian${doc.id}" class="penyelesaian">Diselesaikan pada ${tanggalPenyelesaian} </small></div>
     <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
     <i id="hapusperpindahanselesai${doc.id}" class='fas fa-trash-alt hapusperpindahanselesai'></i>
@@ -2571,7 +2571,348 @@ createForm12.addEventListener('submit', (e) => {
         tanggalPerpindahan: createForm12['tanggal-perpindahan'].value,
         tanggalPembuatan: tanggal + ', ' + jam
     }).then(() => {
+        $('#modalperpindahan').modal('hide');
         document.querySelector('#tambah-perpindahan').reset();
+    })
+})
+
+db.collection('returPenjualan').onSnapshot(snapshot =>{
+    let changes = snapshot.docChanges();
+    changes.forEach(change =>{
+        if(change.type == 'added'){
+            renderRetur(change.doc);
+        } else if (change.type == 'removed'){
+            let div = isiRetur.querySelector('[data-id="' + change.doc.id + '"]');
+            isiRetur.removeChild(div);
+        } else if(change.type == 'modified'){
+            renderUpdateRetur(change.doc);
+        }
+    })
+})
+
+db.collection('returPenjualanSelesai').onSnapshot(snapshot =>{
+    let changes = snapshot.docChanges();
+    changes.forEach(change =>{
+        if(change.type == 'added'){
+            renderReturSelesai(change.doc);
+        } else if (change.type == 'removed'){
+            let div = isiReturCompleted.querySelector('[data-id="' + change.doc.id + '"]');
+            isiReturCompleted.removeChild(div);
+        } 
+    })
+})
+
+db.collection('returPenjualan').onSnapshot(snapshot =>{
+if(isiRetur.childNodes.length == 0){
+    document.querySelector('#jumlahreturpending').innerText = '';
+}else{
+    let badgeJumlahReturPending = isiRetur.childNodes.length;
+    document.querySelector('#jumlahreturpending').innerText = badgeJumlahReturPending;
+}
+})
+
+db.collection('returPenjualanSelesai').onSnapshot(snapshot =>{
+if(isiReturCompleted.childNodes.length == 0){
+    document.querySelector('#jumlahreturselesai').innerText = '';
+}else{
+    let badgeJumlahReturCompleted = isiReturCompleted.childNodes.length;
+    document.querySelector('#jumlahreturselesai').innerText = badgeJumlahReturCompleted;
+}
+})
+
+
+const isiRetur = document.querySelector('#daftar-retur-pending');
+const isiReturCompleted = document.querySelector('#daftar-retur-selesai');
+const modalRetur = document.querySelector('#list-modal-retur');
+function renderRetur(doc){
+    let div = document.createElement('div');
+    let retur = document.createElement('div');
+    div.setAttribute('data-id', doc.id);
+    div.setAttribute('data-toggle', 'modal');
+    div.setAttribute('data-target', '#modalretur' + doc.id);
+    div.setAttribute('id', 'retur' + doc.id);
+    div.classList.add('retur-pending' + doc.id, 'retur-pending');    
+    let namaCustomer = doc.data().namaCustomer;
+    let kontakCustomer = doc.data().kontakCustomer;
+    let produkRetur = doc.data().produkRetur;
+    let keteranganRetur = doc.data().keteranganRetur;
+    let tanggalPembuatan = doc.data().tanggalPembuatan;
+    div.setAttribute('data-date', tanggalPembuatan);
+    let kalkulasiTanggal = new Date(tanggalPembuatan);
+    let dd = String(kalkulasiTanggal.getDate()).padStart(2, '0');
+    let mm = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = kalkulasiTanggal.getFullYear();
+    let hours = ('0' + kalkulasiTanggal.getHours()).slice(-2);
+    let minutes = ('0' + kalkulasiTanggal.getMinutes()).slice(-2);
+    let tanggal = dd + '/' + mm + '/' + yyyy;    
+    let jam = hours + ':' + minutes;
+    tanggalPembuatan = tanggal + ', ' + jam;
+    div.innerHTML = `
+    <div class="deskripsi-retur"><div>Dibuat ${tanggalPembuatan}</div> <div>-</div> <div>Produk yang diretur : <span id="konten-produk-retur-tampilan${doc.id}">${produkRetur}</span><br>Keterangan Retur : <span id="konten-keterangan-retur-tampilan${doc.id}">${keteranganRetur}</span><br>Nama Customer : <span id="nama-customer-retur-tampilan${doc.id}">${namaCustomer}</span><br>Kontak Customer : <span id="kontak-customer-retur-tampilan${doc.id}">${kontakCustomer}</span></div></div>
+    <i id="selesaikan${doc.id}" class='fas fa-check selesaikanretur'></i>
+    <i id="hapus${doc.id}" class='fas fa-trash-alt hapusretur'></i>
+    `
+    isiRetur.appendChild(div);
+
+    retur.innerHTML = `
+    <div class="modal fade" id="modalretur${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Pengaturan Data Retur Penjualan</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="data-retur">
+            <div class="info-retur">
+            <div>Tanggal Pembuatan</div>
+            <div>:</div>
+            <div style="font-weight:bold;" id="tanggal-pembuatan-body${doc.id}">${tanggalPembuatan}</div>
+            <div>Nama Customer</div>
+            <div>:</div>
+            <div style="font-weight:bold;" id="nama-customer-retur-body${doc.id}">${namaCustomer}</div>
+            <div>Kontak Customer</div>
+            <div>:</div> 
+            <div id="kontak-customer-retur-body${doc.id}">${kontakCustomer}</div>
+            <div>Produk yang diretur</div>
+            <div>:</div> 
+            <div id="konten-produk-retur-body${doc.id}">${produkRetur}</div>
+            <div>Keterangan Retur</div>
+            <div>:</div> 
+            <div id="konten-keterangan-retur-body${doc.id}">${keteranganRetur}</div>
+            </div>
+            <div id="edit${doc.id}" class="btn btn-warning edit editperpindahan">Edit Data Perpindahan Barang</div>
+          </div>
+              <form id="modal-retur${doc.id}" class="modal-retur">
+                        <div class="form-group">
+                          <label class="col-form-label">Nama Customer</label>
+                          <input type="text" value="${namaCustomer}" class="form-control" id="nama-customer-retur${doc.id}" autocomplete="off" required>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-form-label">Kontak Customer</label>
+                          <input type="number" value="${kontakCustomer}" class="form-control" id="kontak-customer-retur${doc.id}" autocomplete="off">
+                        </div>                
+                        <div class="form-group">
+                          <label class="col-form-label">Produk yang diretur</label>
+                          <textarea oninput="auto_grow(this)" class="form-control" id="konten-produk-retur${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off" required>${produkRetur.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                        </div>
+                        <div class="form-group">
+                          <label class="col-form-label">Keterangan</label>
+                          <textarea oninput="auto_grow(this)" class="form-control" id="konten-keterangan-retur${doc.id}" style="display: block;overflow: hidden;resize: none;box-sizing: border-box;min-height:50px;" autocomplete="off">${keteranganRetur.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                        </div>
+                    <div class="modal-footer">
+                          <button class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                          <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+                </div>
+              </div>
+           </div>
+         </div>
+    `
+
+    modalRetur.appendChild(retur);
+
+if(kontakCustomer == 0){
+    document.querySelector('#kontak-customer-retur-tampilan' + doc.id).innerText = 'Tidak Ada';
+    document.querySelector('#kontak-customer-retur-body' + doc.id).innerText = 'Tidak Ada';
+}
+
+if(keteranganRetur == 0){
+    document.querySelector('#konten-keterangan-retur-tampilan' + doc.id).innerText = 'Tidak Ada';
+    document.querySelector('#konten-keterangan-retur-body' + doc.id).innerText = 'Tidak Ada';
+}
+
+    $(document).ready(function() {
+    db.collection('returPenjualan').onSnapshot(snapshot =>{
+    let items = $('#daftar-retur-pending > .retur-pending').get();
+    items.sort(function(a, b) {
+    let keyA = $(a).data('date');
+    let keyB = $(b).data('date');
+    if (keyA > keyB) return 1;
+    if (keyA < keyB) return -1;
+    return 0;
+    })
+    let daftarRetur = $('#daftar-retur-pending');
+    $.each(items, function(i, div) {
+    daftarRetur.append(div);
+  })
+  })
+})
+
+    let edit = document.querySelector('#edit' + doc.id);
+    edit.addEventListener('click', function(e){
+        e.preventDefault();
+        let formEdit = document.querySelector('#modal-retur' + doc.id);
+        formEdit.style.display = "block";      
+        formEdit.addEventListener('submit', function(e){
+            e.preventDefault();
+            let namaCustomerUpdate = document.querySelector('#nama-customer-retur' + doc.id).value;
+            let kontakCustomerUpdate = document.querySelector('#kontak-customer-retur' + doc.id).value;
+            let produkReturUpdate = document.querySelector('#konten-produk-retur' + doc.id).value.replace(/\n\r?/g, '<br/>');
+            let keteranganReturUpdate = document.querySelector('#konten-keterangan-retur' + doc.id).value.replace(/\n\r?/g, '<br/>');
+            db.collection('returPenjualan').doc(doc.id).update({
+                namaCustomer : namaCustomerUpdate,
+                kontakCustomer : kontakCustomerUpdate,
+                produkRetur : produkReturUpdate,
+                keteranganRetur : keteranganReturUpdate
+            }).then(() =>{
+                formEdit.style.display = "none";
+            })
+        })
+    })
+
+    let selesaikan = document.querySelector('#selesaikan' + doc.id);
+    selesaikan.addEventListener('click', function (e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Tekan "OK" untuk melanjutkan jika produk yang diretur sudah diterima.');
+    if(konfirmasi == true){
+    db.collection('returPenjualan').doc(doc.id).get().then(doc => {
+        let namaCustomerUpdate = doc.data().namaCustomer;
+        let kontakCustomerUpdate = doc.data().kontakCustomer;
+        let produkReturUpdate = doc.data().produkRetur;
+        let keteranganReturUpdate = doc.data().keteranganRetur;
+        let tanggalPembuatan = doc.data().tanggalPembuatan;
+    db.collection('returPenjualanSelesai').add({
+        namaCustomer: namaCustomerUpdate,
+        kontakCustomer: kontakCustomerUpdate,
+        produkRetur: produkReturUpdate,
+        keteranganRetur: keteranganReturUpdate,
+        tanggalPembuatan: tanggalPembuatan,
+        tanggalPenyelesaian : new Date().getTime()
+    }).then(() => {
+        let id = document.querySelector('.retur-pending' + doc.id).getAttribute('data-id');
+        db.collection('returPenjualan').doc(id).delete();
+        })
+    })
+    }
+})
+
+    let hapus = document.querySelector('#hapus' + doc.id);
+    hapus.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin menghapus data retur penjualan ini?');
+    if(konfirmasi == true){
+    let id = document.querySelector('.retur-pending' + doc.id).getAttribute('data-id');
+    db.collection('returPenjualan').doc(id).delete();
+    }   
+  })
+
+}
+
+function renderReturSelesai(doc){
+    let div = document.createElement('div');
+    div.classList.add('retur-selesai' + doc.id, 'retur-selesai');
+    div.setAttribute('data-id', doc.id);
+    let namaCustomer = doc.data().namaCustomer;
+    let kontakCustomer = doc.data().kontakCustomer;
+    let produkRetur = doc.data().produkRetur;
+    let keteranganRetur = doc.data().keteranganRetur;
+    let tanggalPembuatan = doc.data().tanggalPembuatan;
+    let tanggalPenyelesaian = doc.data().tanggalPenyelesaian;
+    div.setAttribute('data-date', tanggalPenyelesaian);
+    let kalkulasiTanggal = new Date(tanggalPembuatan);
+    let dd = String(kalkulasiTanggal.getDate()).padStart(2, '0');
+    let mm = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = kalkulasiTanggal.getFullYear();
+    let hours = ('0' + kalkulasiTanggal.getHours()).slice(-2);
+    let minutes = ('0' + kalkulasiTanggal.getMinutes()).slice(-2);
+    let tanggal = dd + '/' + mm + '/' + yyyy;    
+    let jam = hours + ':' + minutes;
+    tanggalPembuatan = tanggal + ', ' + jam;
+    kalkulasiTanggal = new Date(tanggalPenyelesaian);
+    dd = String(kalkulasiTanggal.getDate()).padStart(2, '0');
+    mm = String(kalkulasiTanggal.getMonth() + 1).padStart(2, '0'); //January is 0!
+    yyyy = kalkulasiTanggal.getFullYear();
+    hours = ('0' + kalkulasiTanggal.getHours()).slice(-2);
+    minutes = ('0' + kalkulasiTanggal.getMinutes()).slice(-2);
+    tanggal = dd + '/' + mm + '/' + yyyy;    
+    jam = hours + ':' + minutes;
+    tanggalPenyelesaian = tanggal + ', ' + jam;
+    div.innerHTML = `
+    <div><div class="deskripsi-retur-selesai"><div>Dibuat ${tanggalPembuatan}</div> <div>-</div> <div>Produk yang diretur : <span>${produkRetur}</span><br>Keterangan Retur : <span id="konten-keterangan-retur-tampilan${doc.id}">${keteranganRetur}</span><br>Nama Customer : <span>${namaCustomer}</span><br>Kontak Customer : <span id="kontak-customer-retur-tampilan${doc.id}">${kontakCustomer}</span></div></div>
+    <small id="penyelesaian${doc.id}" class="penyelesaian penyelesaianretur">Diselesaikan pada ${tanggalPenyelesaian} </small></div>
+    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
+    <i id="hapusreturselesai${doc.id}" class='fas fa-trash-alt hapusreturselesai'></i>
+    `
+    isiReturCompleted.appendChild(div);
+
+if(kontakCustomer == 0){
+    document.querySelector('#kontak-customer-retur-tampilan' + doc.id).innerText = 'Tidak Ada';
+}
+
+if(keteranganRetur == 0){
+    document.querySelector('#konten-keterangan-retur-tampilan' + doc.id).innerText = 'Tidak Ada';
+}
+
+    $(document).ready(function() {
+    db.collection('returPenjualanSelesai').onSnapshot(snapshot =>{
+    let items = $('#daftar-retur-selesai > .retur-selesai').get();
+    items.sort(function(a, b) {
+    let keyA = $(a).data('date');
+    let keyB = $(b).data('date');
+    if (keyA < keyB) return 1;
+    if (keyA > keyB) return -1;
+    return 0;
+    })
+    let daftarReturSelesai = $('#daftar-retur-selesai');
+    $.each(items, function(i, div) {
+    daftarReturSelesai.append(div);
+  })
+  })
+})
+
+    let hapus = document.querySelector('#hapusreturselesai' + doc.id);
+    hapus.addEventListener('click', function(e){
+    e.stopPropagation();
+    let konfirmasi = confirm('Anda yakin ingin menghapus data retur penjualan(selesai) ini?');
+    if(konfirmasi == true){
+    let id = document.querySelector('.retur-selesai' + doc.id).getAttribute('data-id');
+    db.collection('returPenjualanSelesai').doc(id).delete();
+    }   
+  })
+
+}
+
+function renderUpdateRetur(doc){
+    let namaCustomer = doc.data().namaCustomer;
+    let kontakCustomer = doc.data().kontakCustomer;
+    let produkRetur = doc.data().produkRetur;
+    let keteranganRetur = doc.data().keteranganRetur;
+    document.querySelector('#nama-customer-retur-tampilan' + doc.id).innerHTML = namaCustomer;
+    document.querySelector('#nama-customer-retur-body' + doc.id).innerHTML = namaCustomer;
+if(kontakCustomer == 0){
+    document.querySelector('#kontak-customer-retur-tampilan').innerText = 'Tidak Ada';
+    document.querySelector('#kontak-customer-retur-body').innerText = 'Tidak Ada';
+} else {    
+    document.querySelector('#kontak-customer-retur-tampilan' + doc.id).innerHTML = kontakCustomer;
+    document.querySelector('#kontak-customer-retur-body' + doc.id).innerHTML = kontakCustomer;
+    }
+    document.querySelector('#konten-produk-retur-tampilan' + doc.id).innerHTML = produkRetur;
+    document.querySelector('#konten-produk-retur-body' + doc.id).innerHTML = produkRetur;   
+if(keteranganRetur == 0){
+    document.querySelector('#konten-keterangan-retur-tampilan').innerText = 'Tidak Ada';
+    document.querySelector('#konten-keterangan-retur-body').innerText = 'Tidak Ada';
+} else {    
+    document.querySelector('#konten-keterangan-retur-tampilan' + doc.id).innerHTML = keteranganRetur;
+    document.querySelector('#konten-keterangan-retur-body' + doc.id).innerHTML = keteranganRetur; 
+    }
+}
+
+const createForm13 = document.querySelector('#tambah-retur');
+createForm13.addEventListener('submit', (e) => {
+    e.preventDefault();
+    db.collection('returPenjualan').add({
+        namaCustomer: createForm13['nama-customer-retur'].value,
+        kontakCustomer: createForm13['kontak-customer-retur'].value,
+        produkRetur: createForm13['konten-produk-retur'].value.replace(/\n\r?/g, '<br/>'),
+        keteranganRetur: createForm13['konten-keterangan-retur'].value.replace(/\n\r?/g, '<br/>'),
+        tanggalPembuatan: new Date().getTime()
+    }).then(() => {
+        $('#modalretur').modal('hide');
+        document.querySelector('#tambah-retur').reset();
     })
 })
 
