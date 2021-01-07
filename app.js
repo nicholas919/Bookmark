@@ -707,9 +707,9 @@ function renderPengguna(doc){
         for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length;x++){
             if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked){
                 if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
-                    db.collection('pengguna').doc(doc.id).get().then(item => {
+                    db.collection('user').doc(doc.id).get().then(item => {
                         if(item.data().token != 'admin'){
-                            db.collection('pengguna').doc(doc.id).update({
+                            db.collection('user').doc(doc.id).update({
                                 token : 'admin'
                             })
                         } else {
@@ -717,9 +717,9 @@ function renderPengguna(doc){
                         }
                     })
                 } else if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
-                    db.collection('pengguna').doc(doc.id).get().then(item => {
+                    db.collection('user').doc(doc.id).get().then(item => {
                         if(item.data().token != 'member'){
-                            db.collection('pengguna').doc(doc.id).update({
+                            db.collection('user').doc(doc.id).update({
                                 token : 'member'
                             })
                         } else {
@@ -733,7 +733,7 @@ function renderPengguna(doc){
 
     if(document.querySelector('#remove-custom-claims' + doc.id)){
         document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
-            db.collection('pengguna').doc(doc.id).update({
+            db.collection('user').doc(doc.id).update({
                 token : firebase.firestore.FieldValue.delete()
             })
         })
@@ -811,7 +811,7 @@ function renderUpdatePengguna(doc){
             document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(removeCustClaims, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
 
             document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
-                db.collection('pengguna').doc(doc.id).update({
+                db.collection('user').doc(doc.id).update({
                     token : firebase.firestore.FieldValue.delete()
                 })      
             })
