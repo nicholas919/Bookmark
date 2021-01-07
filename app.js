@@ -751,81 +751,58 @@ function renderUpdatePengguna(doc){
     let refreshTokenAdmin;
     let refreshTokenMember;
     let refreshRemoveToken;
-    if(token != null){
-        switch(token){
-            case 'admin':
-            addAdminRole({email: email}).then(() => {
-                if(auth.currentUser.email == email){
-                    auth.onAuthStateChanged(user => {
-                        user.getIdToken(true).then(() => {
-                            user.getIdTokenResult().then(idTokenResult => {
-                                refreshTokenAdmin = setInterval(refreshTokenAdmin,10);
-                                function refreshTokenAdmin(){
-                                    if(idTokenResult.claims.adminKantor == true){
-                                        clearInterval(refreshTokenAdmin);
-                                        window.location.reload();
-                                    }
-                                }                                 
-                            })
+    switch(token){
+        case 'admin':
+        addAdminRole({email: email}).then(() => {
+            if(auth.currentUser.email == email){
+                auth.onAuthStateChanged(user => {
+                    user.getIdToken(true).then(() => {
+                        user.getIdTokenResult().then(idTokenResult => {
+                            refreshRoleAdminKantor = setInterval(refreshRoleAdminKantor,10);
+                            function refreshRoleAdminKantor(){
+                                if(idTokenResult.claims.adminKantor == true){
+                                    clearInterval(refreshRoleAdminKantor)
+                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh kembali. Jika tidak terdapat perubahan apapun pada tampilan website, Diharapkan anda keluar dan masuk lagi kembali pada website.')
+                                    window.location.reload();
+                                }
+                            }                                
                         })
-                    })                
-                }                               
-            })
-            for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
-                if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
-                    document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
-                }
-                
-            }           
-            break;
-            case 'member':
-            addMemberRole({email: email}).then(() => {
-                if(auth.currentUser.email == email){
-                    auth.onAuthStateChanged(user => {
-                        user.getIdToken(true).then(() => {
-                            user.getIdTokenResult().then(idTokenResult => {
-                                refreshTokenMember = setInterval(refreshTokenMember,10);
-                                function refreshTokenMember(){
-                                    if(idTokenResult.claims.member == true){
-                                        clearInterval(refreshTokenMember);
-                                        window.location.reload();
-                                    }
-                                }                                 
-                            })
+                    })
+                })
+            }
+        })      
+        break;
+        case 'member':
+        addMemberRole({email: email}).then(() => {
+            if(auth.currentUser.email == email){
+                auth.onAuthStateChanged(user => {
+                    user.getIdToken(true).then(() => {
+                        user.getIdTokenResult().then(idTokenResult => {
+                            refreshRoleMember = setInterval(refreshRoleMember,10);
+                            function refreshRoleMember(){
+                                if(idTokenResult.claims.member == true){
+                                    clearInterval(refreshRoleMember)
+                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh kembali. Jika tidak terdapat perubahan apapun pada tampilan website, Diharapkan anda keluar dan masuk lagi kembali pada website.')
+                                    window.location.reload();
+                                }
+                            }                                 
                         })
-                    })                
-                }                               
-            })          
-            for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
-                if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
-                    document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
-                }
-            }           
-        }
-        document.querySelector('#user-token' + doc.id).innerHTML = token;   
-        if(!document.querySelector('#remove-custom-claims' + doc.id)){
-            let removeCustClaims = document.createElement('div');
-            removeCustClaims.setAttribute('id', 'remove-custom-claims' + doc.id);
-            removeCustClaims.classList.add('btn', 'btn-danger');
-            removeCustClaims.innerHTML = 'Remove Custom Claims';
-            document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(removeCustClaims, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
-
-            document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
-                db.collection('user').doc(doc.id).update({
-                    token : firebase.firestore.FieldValue.delete()
-                })      
-            })
-        }       
-    } else {
+                    })
+                })                
+            }
+        })      
+        break;
+        case null:
         removeRole({email: email}).then(() => {
             if(auth.currentUser.email == email){
                 auth.onAuthStateChanged(user => {
                     user.getIdToken(true).then(() => {
                         user.getIdTokenResult().then(idTokenResult => {
-                            refreshRemoveToken = setInterval(refreshRemoveToken,10);
-                            function refreshRemoveToken(){
+                            refreshRemoveRole = setInterval(refreshRemoveRole,10);
+                            function refreshRemoveRole(){
                                 if(idTokenResult.claims.adminKantor == false && idTokenResult.claims.member == false){
-                                    clearInterval(refreshRemoveToken)
+                                    clearInterval(refreshRemoveRole)
+                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh kembali. Jika tidak terdapat perubahan apapun pada tampilan website, Diharapkan anda keluar dan masuk lagi kembali pada website.')
                                     window.location.reload();
                                 }
                             }
@@ -834,14 +811,7 @@ function renderUpdatePengguna(doc){
                 })
             }
         })      
-        for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
-            document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = false;
-        }
-        document.querySelector('#user-token' + doc.id).innerHTML = `<div on-request on-request-uid-${doc.id}>On Request</div>`      
-        if(document.querySelector('#remove-custom-claims' + doc.id)){
-            document.querySelector('#remove-custom-claims' + doc.id).remove();
-        }
-    }   
+    }
 }
 
 function renderTugas(doc){
