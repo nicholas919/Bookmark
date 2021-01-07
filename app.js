@@ -713,25 +713,7 @@ function renderPengguna(doc){
                                 db.collection('pengguna').doc(doc.id).update({
                                     token : 'admin'
                                 }).then(() => {
-                                    functions.httpsCallable('addAdminRole')({
-                                        email: email
-                                    }).then(() => {
-                                        if(auth.currentUser.email == email){
-                                            auth.onAuthStateChanged(user => {
-                                                user.getIdToken(true).then(() => {
-                                                    user.getIdTokenResult().then(idTokenResult => {
-                                                        refreshTokenAdmin = setInterval(refreshTokenAdmin,10);
-                                                        function refreshTokenAdmin(){
-                                                            if(idTokenResult.claims.adminKantor == true){
-                                                                clearInterval(refreshTokenAdmin);
-                                                                window.location.reload();
-                                                            }
-                                                        }                                 
-                                                    })
-                                                })
-                                            })                
-                                        }                               
-                                    })
+
                                 })
                             } else {
                                 alert("this user's custom claims already setted as admin");
@@ -743,29 +725,7 @@ function renderPengguna(doc){
                                 db.collection('pengguna').doc(doc.id).update({
                                     token : 'member'
                                 }).then(() => {                         
-                                    functions.httpsCallable('addMemberRole')({
-                                        email: email
-                                    }).then(() => {
-                                        if(auth.currentUser.email == email){
-                                            auth.onAuthStateChanged(user => {
-                                                user.getIdToken(true).then(() => {
-                                                    user.getIdTokenResult().then(idTokenResult => {
-                                                        refreshTokenMember = setInterval(refreshTokenMember,10);
-                                                        function refreshTokenMember(){
-                                                            if(idTokenResult.claims.member == true){
-                                                                clearInterval(refreshTokenMember);
-                                                                db.collection('pengguna').doc(doc.id).update({
-                                                                    token : 'member'
-                                                                }).then(() => {
-                                                                    window.location.reload();
-                                                                })
-                                                            }
-                                                        }                                 
-                                                    })
-                                                })
-                                            })                
-                                        }                               
-                                    })
+
                                 })
                             } else {
                                 alert("this user's custom claims already setted as member");
@@ -780,26 +740,6 @@ function renderPengguna(doc){
             document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
                 db.collection('pengguna').doc(doc.id).update({
                     token : firebase.firestore.FieldValue.delete()
-                }).then(() => {
-                    functions.httpsCallable('removeRole')({
-                        email: email
-                    }).then(() => {
-                        if(auth.currentUser.email == email){
-                            auth.onAuthStateChanged(user => {
-                                user.getIdToken(true).then(() => {
-                                    user.getIdTokenResult().then(idTokenResult => {
-                                        refreshRemoveToken = setInterval(refreshRemoveToken,10);
-                                        function refreshRemoveToken(){
-                                            if(idTokenResult.claims.adminKantor == false && idTokenResult.claims.member == false){
-                                                clearInterval(refreshRemoveToken)
-                                                window.location.reload();
-                                            }
-                                        }
-                                    })
-                                })
-                            })
-                        }
-                    })
                 })
             })
         }
@@ -813,13 +753,52 @@ function renderUpdatePengguna(doc){
     if(token != null){
         switch(token){
             case 'admin':
+            functions.httpsCallable('addAdminRole')({
+                email: email
+            }).then(() => {
+                if(auth.currentUser.email == email){
+                    auth.onAuthStateChanged(user => {
+                        user.getIdToken(true).then(() => {
+                            user.getIdTokenResult().then(idTokenResult => {
+                                refreshTokenAdmin = setInterval(refreshTokenAdmin,10);
+                                function refreshTokenAdmin(){
+                                    if(idTokenResult.claims.adminKantor == true){
+                                        clearInterval(refreshTokenAdmin);
+                                        window.location.reload();
+                                    }
+                                }                                 
+                            })
+                        })
+                    })                
+                }                               
+            })
             for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
                 if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
                     document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
                 }
+                
             }           
             break;
             case 'member':
+            functions.httpsCallable('addMemberRole')({
+                email: email
+            }).then(() => {
+                if(auth.currentUser.email == email){
+                    auth.onAuthStateChanged(user => {
+                        user.getIdToken(true).then(() => {
+                            user.getIdTokenResult().then(idTokenResult => {
+                                refreshTokenMember = setInterval(refreshTokenMember,10);
+                                function refreshTokenMember(){
+                                    if(idTokenResult.claims.member == true){
+                                        clearInterval(refreshTokenMember);
+                                        window.location.reload();
+                                    }
+                                }                                 
+                            })
+                        })
+                    })                
+                }                               
+            })          
             for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
                 if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
                     document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
@@ -838,29 +817,30 @@ function renderUpdatePengguna(doc){
                 db.collection('pengguna').doc(doc.id).update({
                     token : firebase.firestore.FieldValue.delete()
                 }).then(() => {
-                    functions.httpsCallable('removeRole')({
-                        email: email
-                    }).then(() => {
-                        if(auth.currentUser.email == email){
-                            auth.onAuthStateChanged(user => {
-                                user.getIdToken(true).then(() => {
-                                    user.getIdTokenResult().then(idTokenResult => {
-                                        refreshRemoveToken = setInterval(refreshRemoveToken,10);
-                                        function refreshRemoveToken(){
-                                            if(idTokenResult.claims.adminKantor == false && idTokenResult.claims.member == false){
-                                                clearInterval(refreshRemoveToken)
-                                                window.location.reload();
-                                            }
-                                        }
-                                    })
-                                })
-                            })
-                        }
-                    })
+                    
                 })              
             })
         }       
     } else {
+        functions.httpsCallable('removeRole')({
+            email: email
+        }).then(() => {
+            if(auth.currentUser.email == email){
+                auth.onAuthStateChanged(user => {
+                    user.getIdToken(true).then(() => {
+                        user.getIdTokenResult().then(idTokenResult => {
+                            refreshRemoveToken = setInterval(refreshRemoveToken,10);
+                            function refreshRemoveToken(){
+                                if(idTokenResult.claims.adminKantor == false && idTokenResult.claims.member == false){
+                                    clearInterval(refreshRemoveToken)
+                                    window.location.reload();
+                                }
+                            }
+                        })
+                    })
+                })
+            }
+        })      
         for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
             document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = false;
         }
