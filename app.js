@@ -748,9 +748,9 @@ function renderUpdatePengguna(doc){
     let addAdminRole = functions.httpsCallable('addAdminRole');
     let addMemberRole = functions.httpsCallable('addMemberRole');
     let removeRole = functions.httpsCallable('removeRole');
-    let refreshTokenAdmin;
-    let refreshTokenMember;
-    let refreshRemoveToken;
+    let refreshRoleAdminKantor;
+    let refreshRoleMember;
+    let refreshRemoveRole;
     switch(token){
         case 'admin':
         console.log('hei')
