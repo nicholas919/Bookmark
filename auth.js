@@ -13,9 +13,7 @@ auth.onAuthStateChanged(user => {
                 renderUpdatePengguna(change.doc);
             }
         })
-    }, err => {
-		authError(err);
-	})
+    })
 
     db.collection('tugass').onSnapshot(snapshot =>{
         let changes = snapshot.docChanges();
