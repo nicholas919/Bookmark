@@ -4,10 +4,8 @@ auth.onAuthStateChanged(user => {
         let changes = snapshot.docChanges();
         changes.forEach(change =>{
             if(change.type == 'added'){
-            	if(change.doc.id != auth.currentUser.uid){
-                	if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
-            	    	renderPengguna(change.doc);
-            		}
+                if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
+            		renderPengguna(change.doc);
                 }
             } else if(change.type == 'removed'){
 
