@@ -746,17 +746,17 @@ function renderUpdatePengguna(doc){
     let username = doc.data().username;
     let email = doc.data().email;
     let token = doc.data().token;
+    let addAdminRole = functions.httpsCallable('addAdminRole');
+    let addMemberRole = functions.httpsCallable('addMemberRole');
+    let removeRole = functions.httpsCallable('removeRole');
     let refreshTokenAdmin;
     let refreshTokenMember;
     let refreshRemoveToken;
     if(token != null){
         switch(token){
             case 'admin':
-            functions.httpsCallable('addAdminRole')({
-                email: email
-            }).then(() => {
+            addAdminRole({email: email}).then(() => {
                 if(auth.currentUser.email == email){
-                    alert('hello')
                     auth.onAuthStateChanged(user => {
                         user.getIdToken(true).then(() => {
                             user.getIdTokenResult().then(idTokenResult => {
@@ -780,11 +780,8 @@ function renderUpdatePengguna(doc){
             }           
             break;
             case 'member':
-            functions.httpsCallable('addMemberRole')({
-                email: email
-            }).then(() => {
+            addMemberRole({email: email}).then(() => {
                 if(auth.currentUser.email == email){
-                    alert('hello')
                     auth.onAuthStateChanged(user => {
                         user.getIdToken(true).then(() => {
                             user.getIdTokenResult().then(idTokenResult => {
@@ -821,9 +818,7 @@ function renderUpdatePengguna(doc){
             })
         }       
     } else {
-        functions.httpsCallable('removeRole')({
-            email: email
-        }).then(() => {
+        removeRole({email: email}).then(() => {
             if(auth.currentUser.email == email){
                 auth.onAuthStateChanged(user => {
                     user.getIdToken(true).then(() => {
