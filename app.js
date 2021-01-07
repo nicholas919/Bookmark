@@ -753,6 +753,7 @@ function renderUpdatePengguna(doc){
     let refreshRemoveToken;
     switch(token){
         case 'admin':
+        console.log('hei')
         addAdminRole({email: email}).then(() => {
             if(auth.currentUser.email == email){
                 auth.onAuthStateChanged(user => {
@@ -773,6 +774,7 @@ function renderUpdatePengguna(doc){
         })      
         break;
         case 'member':
+        console.log('hei')
         addMemberRole({email: email}).then(() => {
             if(auth.currentUser.email == email){
                 auth.onAuthStateChanged(user => {
@@ -793,6 +795,7 @@ function renderUpdatePengguna(doc){
         })      
         break;
         case null:
+        console.log('hei')
         removeRole({email: email}).then(() => {
             if(auth.currentUser.email == email){
                 auth.onAuthStateChanged(user => {
