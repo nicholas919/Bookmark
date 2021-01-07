@@ -5,7 +5,7 @@ auth.onAuthStateChanged(user => {
         changes.forEach(change =>{
             if(change.type == 'added'){
                 if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
-            		renderPengguna(change.doc);
+            	    renderPengguna(change.doc);
                 }
             } else if(change.type == 'removed'){
 
@@ -13,7 +13,9 @@ auth.onAuthStateChanged(user => {
                 renderUpdatePengguna(change.doc);
             }
         })
-    })
+    }, err => {
+		authError(err);
+	})
 
     db.collection('tugass').onSnapshot(snapshot =>{
         let changes = snapshot.docChanges();

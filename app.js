@@ -753,7 +753,7 @@ function renderUpdatePengguna(doc){
     let refreshTokenMember;
     let refreshRemoveToken;
     if(token != null){
-        console.log('hei')
+        console.log('hei');
         switch(token){
             case 'admin':
             addAdminRole({email: email}).then(() => {
