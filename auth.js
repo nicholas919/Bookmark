@@ -1,6 +1,6 @@
 auth.onAuthStateChanged(user => {
   if(user){
-    db.collection('pengguna').onSnapshot(snapshot =>{
+    db.collection('user').onSnapshot(snapshot =>{
         let changes = snapshot.docChanges();
         changes.forEach(change =>{
             if(change.type == 'added'){
@@ -353,11 +353,7 @@ function formDaftar(e){
 	let nama = document.querySelector('#nama-login').value;
 	let email = document.querySelector('#email-login').value;
 	let password = document.querySelector('#password-login').value;
-	auth.createUserWithEmailAndPassword(email, password).then(cred => {
-        return db.collection('pengguna').doc(cred.user.uid).set({
-            username : nama
-        });		
-	}).then(() => {
+	auth.createUserWithEmailAndPassword(email, password).then(() => {
 		e.target.reset();
 		auth.currentUser.updateProfile({
 			displayName : nama
