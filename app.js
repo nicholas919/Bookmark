@@ -742,6 +742,7 @@ function renderPengguna(doc){
     }
 }
 
+
 function renderUpdatePengguna(doc){
     let username = doc.data().username;
     let email = doc.data().email;
@@ -752,6 +753,51 @@ function renderUpdatePengguna(doc){
     let refreshTokenAdmin;
     let refreshTokenMember;
     let refreshRemoveToken;
+
+        switch(token){         
+        case "Member":
+        addMemberRole({email: email}).then(() => {
+            if(auth.currentUser.email == email){
+                auth.onAuthStateChanged(user => {
+                    user.getIdToken(true).then(() => {
+                        user.getIdTokenResult().then(idTokenResult => {
+                            refreshRoleMember = setInterval(refreshRoleMember,10);
+                            function refreshRoleMember(){
+                                if(idTokenResult.claims.member == true){
+                                    clearInterval(refreshRoleMember)
+                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh kembali. Jika tidak terdapat perubahan apapun pada tampilan website, Diharapkan anda keluar dan masuk lagi kembali pada website.')
+                                    window.location.reload();
+                                }
+                            }                                 
+                        })
+                    })
+                })                
+            }
+        })           
+        break;
+        case "Admin Kantor":
+        addAdminRole({email: email}).then(() => {
+            if(auth.currentUser.email == email){
+                auth.onAuthStateChanged(user => {
+                    user.getIdToken(true).then(() => {
+                        user.getIdTokenResult().then(idTokenResult => {
+                            refreshRoleAdminKantor = setInterval(refreshRoleAdminKantor,10);
+                            function refreshRoleAdminKantor(){
+                                if(idTokenResult.claims.adminKantor == true){
+                                    clearInterval(refreshRoleAdminKantor)
+                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh kembali. Jika tidak terdapat perubahan apapun pada tampilan website, Diharapkan anda keluar dan masuk lagi kembali pada website.')
+                                    window.location.reload();
+                                }
+                            }                                
+                        })
+                    })
+                })
+            }
+        })
+
+    }
+
+/**
     if(token != null){
         console.log('hei');
         switch(token){
@@ -843,7 +889,9 @@ function renderUpdatePengguna(doc){
         if(document.querySelector('#remove-custom-claims' + doc.id)){
             document.querySelector('#remove-custom-claims' + doc.id).remove();
         }
-    }   
+    }  
+*/
+ 
 }
 
 function renderTugas(doc){
