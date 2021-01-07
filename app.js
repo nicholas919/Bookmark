@@ -746,6 +746,9 @@ function renderUpdatePengguna(doc){
     let username = doc.data().username;
     let email = doc.data().email;
     let token = doc.data().token;
+    let refreshTokenAdmin;
+    let refreshTokenMember;
+    let refreshRemoveToken;
     if(token != null){
         switch(token){
             case 'admin':
@@ -814,9 +817,7 @@ function renderUpdatePengguna(doc){
             document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
                 db.collection('pengguna').doc(doc.id).update({
                     token : firebase.firestore.FieldValue.delete()
-                }).then(() => {
-
-                })              
+                })      
             })
         }       
     } else {
