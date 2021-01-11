@@ -246,8 +246,10 @@ const setupUI = (user) => {
                         db.collection('user').doc(auth.currentUser.uid).get().then(doc => {
                             if(doc.exists){
                                 if(doc.data().token != null){
+                                    alert('')
                                     user.getIdTokenResult().then(idTokenResult => {
                                         user.getIdToken(true).then(() => {
+                                            alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
                                             window.location.reload();
                                         });
                                     });
@@ -255,7 +257,7 @@ const setupUI = (user) => {
                             } else {
                                 db.collection('user').doc(auth.currentUser.uid).set({
                                     username : auth.currentUser.displayName,
-                                    email : auth.currentUser.email,
+                                    email : auth.currentUser.email
                                 }).then(() => {
                                     alert('Your request has been sended!');
                                 })
@@ -797,7 +799,7 @@ function renderUpdatePengguna(doc){
                             function refreshRemoveRole(){
                                 if(idTokenResult.claims.adminKantor == false && idTokenResult.claims.member == false){
                                     clearInterval(refreshRemoveRole)
-                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.')
+                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
                                     window.location.reload();
                                 }
                             }
@@ -838,7 +840,7 @@ function renderUpdatePengguna(doc){
                                 function refreshRoleAdminKantor(){
                                     if(idTokenResult.claims.adminKantor == true){
                                         clearInterval(refreshRoleAdminKantor)
-                                        alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.')
+                                        alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
                                         window.location.reload();
                                     }
                                 }                                
