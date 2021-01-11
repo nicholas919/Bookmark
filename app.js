@@ -777,6 +777,7 @@ function renderUpdatePengguna(doc){
                 })
             }
         })
+        document.querySelector('#user-token' + doc.id).innerHTML = `<div on-request on-request-uid-${doc.id}>On Request</div>`;
     } else {
         switch(token){
             case 'admin':
@@ -793,7 +794,7 @@ function renderUpdatePengguna(doc){
                             token : firebase.firestore.FieldValue.delete()
                         })
                     })
-                    
+
                 }
                 for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
                     if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
@@ -857,6 +858,7 @@ function renderUpdatePengguna(doc){
                 }
             })         
         }
+        document.querySelector('#user-token' + doc.id).innerHTML = token;
     }
 }
 
