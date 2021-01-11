@@ -60,6 +60,7 @@ const setupUI = (user) => {
 
                     window.addEventListener('resize', windowResize)
 
+
                 }
 
 
@@ -244,7 +245,8 @@ const setupUI = (user) => {
                         e.stopPropagation();
                         db.collection('user').doc(auth.currentUser.uid).set({
                             username : auth.currentUser.displayName,
-                            email : auth.currentUser.email
+                            email : auth.currentUser.email,
+                            userId : auth.currentUser.uid
                         }).then(() => {
                             alert('Your request has been sended!');
                         })          
@@ -793,6 +795,7 @@ function renderUpdatePengguna(doc){
         })      
         break;
         case null:
+        console.log('hello')        
         removeRole({email: email}).then(() => {
             if(auth.currentUser.email == email){
                 auth.onAuthStateChanged(user => {
