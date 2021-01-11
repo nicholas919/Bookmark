@@ -751,7 +751,6 @@ function renderUpdatePengguna(doc){
     let refreshRoleAdminKantor;
     let refreshRoleMember;
     let refreshRemoveRole;
-    
     switch(token){
         case 'admin':
         addAdminRole({email: email}).then(() => {

@@ -9,8 +9,8 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src='https://kit.fontawesome.com/a076d05399.js'></script>
   <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-auth.js"></script>  
   <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-functions.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-storage.js"></script>
 </head>
@@ -405,8 +405,8 @@
   const auth = firebase.auth();
   const functions = firebase.functions();
 </script>
-<script src="app.js"></script>
 <script src="auth.js"></script>
+<script src="app.js"></script>
 <script>
     $("#tab-halaman .tab-halaman").click(function(){
       $("#tab-halaman .tab-halaman").removeClass('active');

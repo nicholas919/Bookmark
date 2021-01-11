@@ -5,6 +5,7 @@ auth.onAuthStateChanged(user => {
         changes.forEach(change =>{
             if(change.type == 'added'){
                 if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
+                	console.log(change.doc.id)
             	    renderPengguna(change.doc);
                 }
             } else if(change.type == 'removed'){
