@@ -246,7 +246,6 @@ const setupUI = (user) => {
                         db.collection('user').doc(auth.currentUser.uid).get().then(doc => {
                             if(doc.exists){
                                 if(doc.data().token != null){
-                                    alert('')
                                     user.getIdTokenResult().then(idTokenResult => {
                                         user.getIdToken(true).then(() => {
                                             alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
@@ -255,7 +254,7 @@ const setupUI = (user) => {
                                     });
                                 }
                             } else {
-                                db.collection('user').doc(auth.currentUser.uid).collection('user-info').set({
+                                db.collection('user').doc(auth.currentUser.uid).collection('property').doc('user-info').set({
                                     username : auth.currentUser.displayName,
                                     email : auth.currentUser.email
                                 }).then(() => {
@@ -642,240 +641,20 @@ function renderUpdateAktivitasKalender(doc){
 }
 
 function renderPengguna(doc){
-    let username = doc.data().username;
-    let email = doc.data().email;
-    let token = doc.data().token;
-    let data = document.createElement('tr');
-    let modal = document.createElement('div');
-    data.classList.add('text-center');
-    data.setAttribute('data-id', doc.id);       
-    let custClaim = '';
-    if(token != null){
-        custClaim = `
-        <div class="btn btn-primary" id="set-custom-claims${doc.id}" data-toggle="modal" data-target="#modal-custom-claims${doc.id}"><i class='fas fa-key'></i> Set Custom Claims</div>
-        <div class="btn btn-danger" id="remove-custom-claims${doc.id}">Remove Custom Claims</div>
-        `
-        let optionTask = document.createElement('option');
-        optionTask.setAttribute('uid', doc.id);
-        optionTask.innerHTML = username;
-        document.querySelector('#penerima-tugas').appendChild(optionTask);
-        let items = $('#penerima-tugas > option').get();
-        items.sort(function(a, b) {
-            let keyA = $(a).text();
-            let keyB = $(b).text();
-            if (keyA < keyB) return 1;
-            if (keyA > keyB) return -1;
-            return 0;
-        })
-        let list = $('#penerima-tugas');
-        $.each(items, function(i, div){
-            list.append(div);
-        })        
-    } else {
-        token = `<div on-request on-request-uid-${doc.id}>On Request</div>`
-        custClaim = `<div class="btn btn-primary" id="set-custom-claims${doc.id}" data-toggle="modal" data-target="#modal-custom-claims${doc.id}"><i class='fas fa-key'></i> Set Custom Claims</div>`
-    }
-    data.innerHTML = `
-    <td class="align-middle font-weight-bold">${doc.id}</td>
-    <td class="align-middle">${username}</td>
-    <td class="align-middle">${email}</td>
-    <td class="align-middle font-weight-bold user-token" id="user-token${doc.id}">${token}</td>
-    <td class="align-middle user-action" id="user-action${doc.id}">${custClaim}</td>
-    `
-    modal.innerHTML = `
-    <div class="modal fade" id="modal-custom-claims${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form id="tambah-custom-claim${doc.id}">
-                    <div class="modal-header">
-                        <h5 class="modal-title"><i class='fas fa-key'></i> Set Custom Claims</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div>Set ${username}'s custom claims as :</div>
-                        <div class="w-50 border m-auto" style="display:grid;grid-template-columns:80% 20%;">
-                            <div class="p-1 border-right border-bottom font-weight-bold bg-light">Moderator</div>
-                            <div class="border-bottom text-center d-flex"><input type="radio" name="${doc.id}" class="m-auto custom-claims-choice${doc.id}" set-as-moderator disabled></div>
-                            <div class="p-1 border-right border-bottom font-weight-bold bg-light">Admin</div>
-                            <div class="border-bottom text-center d-flex"><input type="radio" name="${doc.id}" class="m-auto custom-claims-choice${doc.id}" set-as-admin></div>
-                            <div class="p-1 border-right font-weight-bold bg-light">Member</div>
-                            <div class="text-center d-flex"><input type="radio" name="${doc.id}" class="m-auto custom-claims-choice${doc.id}" set-as-member></div>
-                        </div>          
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>      
-    `
-
-    document.querySelector('#list-req-custom-claim').appendChild(data);     
-    document.body.appendChild(modal);
-
-    switch(token){
-        case 'admin':
-        for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
-            if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
-                document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
-            }
-        }           
-        break;
-        case 'member':
-        for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
-            if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
-                document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
-            }
-        }           
-    }
-
-    document.querySelector('#tambah-custom-claim' + doc.id).addEventListener('submit', function(e){
-        e.preventDefault();
-        for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length;x++){
-            if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked){
-                if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
-                    db.collection('user').doc(doc.id).get().then(item => {
-                        if(item.data().token != 'admin'){
-                            db.collection('user').doc(doc.id).update({
-                                token : 'admin'
-                            })
-                        } else {
-                            alert("this user's custom claims already setted as admin");
-                        }
-                    })
-                } else if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
-                    db.collection('user').doc(doc.id).get().then(item => {
-                        if(item.data().token != 'member'){
-                            db.collection('user').doc(doc.id).update({
-                                token : 'member'
-                            })
-                        } else {
-                            alert("this user's custom claims already setted as member");
-                        }
-                    })
-                }
-            }
-        }
-    })
-
-    if(document.querySelector('#remove-custom-claims' + doc.id)){
-        document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
-            db.collection('user').doc(doc.id).update({
-                token : firebase.firestore.FieldValue.delete()
-            })
-        })
-    }
-
-}
-
-function renderUpdatePengguna(doc){
-    let username = doc.data().username;
-    let email = doc.data().email;
-    let token = doc.data().token;
-    let addAdminRole = functions.httpsCallable('addAdminRole');
-    let addMemberRole = functions.httpsCallable('addMemberRole');
-    let removeRole = functions.httpsCallable('removeRole');
-    let refreshRoleAdminKantor;
-    let refreshRoleMember;
-    let refreshRemoveRole;
-
-    if(token == null){
-        removeRole({email: email}).then(() => {
-            document.querySelector('#remove-custom-claims' + doc.id).remove();
-            for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
-                document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = false;
-            }
-            document.querySelector('#user-token' + doc.id).innerHTML = `<div on-request on-request-uid-${doc.id}>On Request</div>`;
-            document.querySelector('#penerima-tugas').querySelector('[uid="' + doc.id + '"]').remove();
-            if(auth.currentUser.email == email){
-                auth.onAuthStateChanged(user => {
-                    user.getIdToken(true).then(() => {
-                        user.getIdTokenResult().then(idTokenResult => {
-                            refreshRemoveRole = setInterval(refreshRemoveRole,10);
-                            function refreshRemoveRole(){
-                                if(idTokenResult.claims.adminKantor == false && idTokenResult.claims.member == false){
-                                    clearInterval(refreshRemoveRole)
-                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
-                                    window.location.reload();
-                                }
-                            }
-                        })
-                    })
-                })
-            }
-        })
-    } else {
-        switch(token){
-            case 'admin':
-            addAdminRole({email: email}).then(() => {
-                for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
-                    if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
-                        document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
-                    }
-                }                                
-                document.querySelector('#user-token' + doc.id).innerHTML = token;
-                if(auth.currentUser.email == email){
-                    auth.onAuthStateChanged(user => {
-                        user.getIdToken(true).then(() => {
-                            user.getIdTokenResult().then(idTokenResult => {
-                                refreshRoleAdminKantor = setInterval(refreshRoleAdminKantor,10);
-                                function refreshRoleAdminKantor(){
-                                    if(idTokenResult.claims.adminKantor == true){
-                                        clearInterval(refreshRoleAdminKantor)
-                                        alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
-                                        window.location.reload();
-                                    }
-                                }                                
-                            })
-                        })
-                    })
-                }
-            })      
-            break;
-            case 'member':
-            addMemberRole({email: email}).then(() => {                
-                for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
-                    if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
-                        document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
-                    }
-                }                  
-                document.querySelector('#user-token' + doc.id).innerHTML = token;
-                if(auth.currentUser.email == email){
-                    auth.onAuthStateChanged(user => {
-                        user.getIdToken(true).then(() => {
-                            user.getIdTokenResult().then(idTokenResult => {
-                                refreshRoleMember = setInterval(refreshRoleMember,10);
-                                function refreshRoleMember(){
-                                    if(idTokenResult.claims.member == true){
-                                        clearInterval(refreshRoleMember)
-                                        alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.')
-                                        window.location.reload();
-                                    }
-                                }                                 
-                            })
-                        })
-                    })                
-                }
-            })                     
-        }
-        if(!document.querySelector('#remove-custom-claims' + doc.id)){
-            let div = document.createElement('div');
-            div.setAttribute('id', 'remove-custom-claims' + doc.id);
-            div.classList.add('btn', 'btn-danger');
-            div.innerHTML = 'Remove Custom Claims';
-            document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(div, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
-
-            document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
-                db.collection('user').doc(doc.id).update({
-                    token : firebase.firestore.FieldValue.delete()
-                })
-            })
-        }        
-        if(!document.querySelector('#penerima-tugas').querySelector('[uid="' + doc.id + '"]')){
+    db.collection('user').doc(doc.id).collection('property').doc('user-info').get().then(subDoc => {
+        let username = subDoc.data().username;
+        let email = subDoc.data().email;
+        let token = doc.data().token;
+        let data = document.createElement('tr');
+        let modal = document.createElement('div');
+        data.classList.add('text-center');
+        data.setAttribute('data-id', doc.id);       
+        let custClaim = '';
+        if(token != null){
+            custClaim = `
+            <div class="btn btn-primary" id="set-custom-claims${doc.id}" data-toggle="modal" data-target="#modal-custom-claims${doc.id}"><i class='fas fa-key'></i> Set Custom Claims</div>
+            <div class="btn btn-danger" id="remove-custom-claims${doc.id}">Remove Custom Claims</div>
+            `
             let optionTask = document.createElement('option');
             optionTask.setAttribute('uid', doc.id);
             optionTask.innerHTML = username;
@@ -891,9 +670,232 @@ function renderUpdatePengguna(doc){
             let list = $('#penerima-tugas');
             $.each(items, function(i, div){
                 list.append(div);
+            })        
+        } else {
+            token = `<div on-request on-request-uid-${doc.id}>On Request</div>`
+            custClaim = `<div class="btn btn-primary" id="set-custom-claims${doc.id}" data-toggle="modal" data-target="#modal-custom-claims${doc.id}"><i class='fas fa-key'></i> Set Custom Claims</div>`
+        }
+        data.innerHTML = `
+        <td class="align-middle font-weight-bold">${doc.id}</td>
+        <td class="align-middle">${username}</td>
+        <td class="align-middle">${email}</td>
+        <td class="align-middle font-weight-bold user-token" id="user-token${doc.id}">${token}</td>
+        <td class="align-middle user-action" id="user-action${doc.id}">${custClaim}</td>
+        `
+        modal.innerHTML = `
+        <div class="modal fade" id="modal-custom-claims${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form id="tambah-custom-claim${doc.id}">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><i class='fas fa-key'></i> Set Custom Claims</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>Set ${username}'s custom claims as :</div>
+                            <div class="w-50 border m-auto" style="display:grid;grid-template-columns:80% 20%;">
+                                <div class="p-1 border-right border-bottom font-weight-bold bg-light">Moderator</div>
+                                <div class="border-bottom text-center d-flex"><input type="radio" name="${doc.id}" class="m-auto custom-claims-choice${doc.id}" set-as-moderator disabled></div>
+                                <div class="p-1 border-right border-bottom font-weight-bold bg-light">Admin</div>
+                                <div class="border-bottom text-center d-flex"><input type="radio" name="${doc.id}" class="m-auto custom-claims-choice${doc.id}" set-as-admin></div>
+                                <div class="p-1 border-right font-weight-bold bg-light">Member</div>
+                                <div class="text-center d-flex"><input type="radio" name="${doc.id}" class="m-auto custom-claims-choice${doc.id}" set-as-member></div>
+                            </div>          
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>      
+        `
+
+        document.querySelector('#list-req-custom-claim').appendChild(data);     
+        document.body.appendChild(modal);
+
+        switch(token){
+            case 'admin':
+            for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
+                if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
+                    document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
+                }
+            }           
+            break;
+            case 'member':
+            for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
+                if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
+                    document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
+                }
+            }           
+        }
+
+        document.querySelector('#tambah-custom-claim' + doc.id).addEventListener('submit', function(e){
+            e.preventDefault();
+            for(let x = 0;x<document.querySelectorAll('.custom-claims-choice' + doc.id).length;x++){
+                if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked){
+                    if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
+                        db.collection('user').doc(doc.id).get().then(item => {
+                            if(item.data().token != 'admin'){
+                                db.collection('user').doc(doc.id).update({
+                                    token : 'admin'
+                                })
+                            } else {
+                                alert("this user's custom claims already setted as admin");
+                            }
+                        })
+                    } else if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
+                        db.collection('user').doc(doc.id).get().then(item => {
+                            if(item.data().token != 'member'){
+                                db.collection('user').doc(doc.id).update({
+                                    token : 'member'
+                                })
+                            } else {
+                                alert("this user's custom claims already setted as member");
+                            }
+                        })
+                    }
+                }
+            }
+        })
+
+        if(document.querySelector('#remove-custom-claims' + doc.id)){
+            document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
+                db.collection('user').doc(doc.id).update({
+                    token : firebase.firestore.FieldValue.delete()
+                })
             })
         }
-    }
+    })
+}
+
+function renderUpdatePengguna(doc){
+    db.collection('user').doc(doc.id).collection('property').doc('user-info').get(subDoc => {
+        let username = subDoc.data().username;
+        let email = subDoc.data().email;
+        let token = doc.data().token;
+        let addAdminRole = functions.httpsCallable('addAdminRole');
+        let addMemberRole = functions.httpsCallable('addMemberRole');
+        let removeRole = functions.httpsCallable('removeRole');
+        let refreshRoleAdminKantor;
+        let refreshRoleMember;
+        let refreshRemoveRole;
+
+        if(token == null){
+            removeRole({email: email}).then(() => {
+                document.querySelector('#remove-custom-claims' + doc.id).remove();
+                for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
+                    document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = false;
+                }
+                document.querySelector('#user-token' + doc.id).innerHTML = `<div on-request on-request-uid-${doc.id}>On Request</div>`;
+                document.querySelector('#penerima-tugas').querySelector('[uid="' + doc.id + '"]').remove();
+                if(auth.currentUser.email == email){
+                    auth.onAuthStateChanged(user => {
+                        user.getIdToken(true).then(() => {
+                            user.getIdTokenResult().then(idTokenResult => {
+                                refreshRemoveRole = setInterval(refreshRemoveRole,10);
+                                function refreshRemoveRole(){
+                                    if(idTokenResult.claims.adminKantor == false && idTokenResult.claims.member == false){
+                                        clearInterval(refreshRemoveRole)
+                                        alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
+                                        window.location.reload();
+                                    }
+                                }
+                            })
+                        })
+                    })
+                }
+            })
+        } else {
+            switch(token){
+                case 'admin':
+                addAdminRole({email: email}).then(() => {
+                    for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
+                        if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
+                            document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
+                        }
+                    }                                
+                    document.querySelector('#user-token' + doc.id).innerHTML = token;
+                    if(auth.currentUser.email == email){
+                        auth.onAuthStateChanged(user => {
+                            user.getIdToken(true).then(() => {
+                                user.getIdTokenResult().then(idTokenResult => {
+                                    refreshRoleAdminKantor = setInterval(refreshRoleAdminKantor,10);
+                                    function refreshRoleAdminKantor(){
+                                        if(idTokenResult.claims.adminKantor == true){
+                                            clearInterval(refreshRoleAdminKantor)
+                                            alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
+                                            window.location.reload();
+                                        }
+                                    }                                
+                                })
+                            })
+                        })
+                    }
+                })      
+                break;
+                case 'member':
+                addMemberRole({email: email}).then(() => {                
+                    for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
+                        if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
+                            document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
+                        }
+                    }                  
+                    document.querySelector('#user-token' + doc.id).innerHTML = token;
+                    if(auth.currentUser.email == email){
+                        auth.onAuthStateChanged(user => {
+                            user.getIdToken(true).then(() => {
+                                user.getIdTokenResult().then(idTokenResult => {
+                                    refreshRoleMember = setInterval(refreshRoleMember,10);
+                                    function refreshRoleMember(){
+                                        if(idTokenResult.claims.member == true){
+                                            clearInterval(refreshRoleMember)
+                                            alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.')
+                                            window.location.reload();
+                                        }
+                                    }                                 
+                                })
+                            })
+                        })                
+                    }
+                })                     
+            }
+            if(!document.querySelector('#remove-custom-claims' + doc.id)){
+                let div = document.createElement('div');
+                div.setAttribute('id', 'remove-custom-claims' + doc.id);
+                div.classList.add('btn', 'btn-danger');
+                div.innerHTML = 'Remove Custom Claims';
+                document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(div, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
+
+                document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
+                    db.collection('user').doc(doc.id).update({
+                        token : firebase.firestore.FieldValue.delete()
+                    })
+                })
+            }        
+            if(!document.querySelector('#penerima-tugas').querySelector('[uid="' + doc.id + '"]')){
+                let optionTask = document.createElement('option');
+                optionTask.setAttribute('uid', doc.id);
+                optionTask.innerHTML = username;
+                document.querySelector('#penerima-tugas').appendChild(optionTask);
+                let items = $('#penerima-tugas > option').get();
+                items.sort(function(a, b) {
+                    let keyA = $(a).text();
+                    let keyB = $(b).text();
+                    if (keyA < keyB) return 1;
+                    if (keyA > keyB) return -1;
+                    return 0;
+                })
+                let list = $('#penerima-tugas');
+                $.each(items, function(i, div){
+                    list.append(div);
+                })
+            }
+        }
+    })
 }
 
 function renderTugas(doc){
