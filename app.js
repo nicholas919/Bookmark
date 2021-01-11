@@ -756,6 +756,10 @@ function renderUpdatePengguna(doc){
 
     if(token == null){
         removeRole({email: email}).then(() => {
+            document.querySelector('#remove-custom-claims' + doc.id).remove();
+            for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
+                document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = false;
+            }
             if(auth.currentUser.email == email){
                 auth.onAuthStateChanged(user => {
                     user.getIdToken(true).then(() => {
@@ -764,7 +768,7 @@ function renderUpdatePengguna(doc){
                             function refreshRemoveRole(){
                                 if(idTokenResult.claims.adminKantor == false && idTokenResult.claims.member == false){
                                     clearInterval(refreshRemoveRole)
-                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh kembali. Jika tidak terdapat perubahan apapun pada tampilan website, Diharapkan anda keluar dan masuk lagi kembali pada website.')
+                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.')
                                     window.location.reload();
                                 }
                             }
@@ -777,6 +781,25 @@ function renderUpdatePengguna(doc){
         switch(token){
             case 'admin':
             addAdminRole({email: email}).then(() => {
+                if(!document.querySelector('#remove-custom-claims' + doc.id)){
+                    let div = document.createElement('div');
+                    div.setAttribute('id', 'remove-custom-claims' + doc.id);
+                    div.classList.add('btn', 'btn-danger');
+                    div.innerHTML = 'Remove Custom Claims'
+                    document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(div, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
+
+                    document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
+                        db.collection('user').doc(doc.id).update({
+                            token : firebase.firestore.FieldValue.delete()
+                        })
+                    })
+                    
+                }
+                for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
+                    if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
+                        document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
+                    }
+                }                
                 if(auth.currentUser.email == email){
                     auth.onAuthStateChanged(user => {
                         user.getIdToken(true).then(() => {
@@ -785,7 +808,7 @@ function renderUpdatePengguna(doc){
                                 function refreshRoleAdminKantor(){
                                     if(idTokenResult.claims.adminKantor == true){
                                         clearInterval(refreshRoleAdminKantor)
-                                        alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh kembali. Jika tidak terdapat perubahan apapun pada tampilan website, Diharapkan anda keluar dan masuk lagi kembali pada website.')
+                                        alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.')
                                         window.location.reload();
                                     }
                                 }                                
@@ -797,6 +820,25 @@ function renderUpdatePengguna(doc){
             break;
             case 'member':
             addMemberRole({email: email}).then(() => {
+                if(!document.querySelector('#remove-custom-claims' + doc.id)){
+                    let div = document.createElement('div');
+                    div.setAttribute('id', 'remove-custom-claims' + doc.id);
+                    div.classList.add('btn', 'btn-danger');
+                    div.innerHTML = 'Remove Custom Claims'
+                    document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(div, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
+
+                    document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
+                        db.collection('user').doc(doc.id).update({
+                            token : firebase.firestore.FieldValue.delete()
+                        })
+                    })
+
+                }                
+                for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
+                    if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
+                        document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
+                    }
+                }                        
                 if(auth.currentUser.email == email){
                     auth.onAuthStateChanged(user => {
                         user.getIdToken(true).then(() => {
@@ -805,7 +847,7 @@ function renderUpdatePengguna(doc){
                                 function refreshRoleMember(){
                                     if(idTokenResult.claims.member == true){
                                         clearInterval(refreshRoleMember)
-                                        alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh kembali. Jika tidak terdapat perubahan apapun pada tampilan website, Diharapkan anda keluar dan masuk lagi kembali pada website.')
+                                        alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.')
                                         window.location.reload();
                                     }
                                 }                                 
