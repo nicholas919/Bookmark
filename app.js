@@ -255,7 +255,7 @@ const setupUI = (user) => {
                                     });
                                 }
                             } else {
-                                db.collection('user').doc(auth.currentUser.uid).set({
+                                db.collection('user').doc(auth.currentUser.uid).collection('user-info').set({
                                     username : auth.currentUser.displayName,
                                     email : auth.currentUser.email
                                 }).then(() => {
@@ -812,20 +812,6 @@ function renderUpdatePengguna(doc){
         switch(token){
             case 'admin':
             addAdminRole({email: email}).then(() => {
-                if(!document.querySelector('#remove-custom-claims' + doc.id)){
-                    let div = document.createElement('div');
-                    div.setAttribute('id', 'remove-custom-claims' + doc.id);
-                    div.classList.add('btn', 'btn-danger');
-                    div.innerHTML = 'Remove Custom Claims';
-                    document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(div, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
-
-                    document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
-                        db.collection('user').doc(doc.id).update({
-                            token : firebase.firestore.FieldValue.delete()
-                        })
-                    })
-
-                }
                 for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
                     if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
                         document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
@@ -851,21 +837,7 @@ function renderUpdatePengguna(doc){
             })      
             break;
             case 'member':
-            addMemberRole({email: email}).then(() => {
-                if(!document.querySelector('#remove-custom-claims' + doc.id)){
-                    let div = document.createElement('div');
-                    div.setAttribute('id', 'remove-custom-claims' + doc.id);
-                    div.classList.add('btn', 'btn-danger');
-                    div.innerHTML = 'Remove Custom Claims';
-                    document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(div, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
-
-                    document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
-                        db.collection('user').doc(doc.id).update({
-                            token : firebase.firestore.FieldValue.delete()
-                        })
-                    })
-
-                }                
+            addMemberRole({email: email}).then(() => {                
                 for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
                     if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
                         document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
@@ -890,22 +862,37 @@ function renderUpdatePengguna(doc){
                 }
             })                     
         }
-        let optionTask = document.createElement('option');
-        optionTask.setAttribute('uid', doc.id);
-        optionTask.innerHTML = username;
-        document.querySelector('#penerima-tugas').appendChild(optionTask);
-        let items = $('#penerima-tugas > option').get();
-        items.sort(function(a, b) {
-            let keyA = $(a).text();
-            let keyB = $(b).text();
-            if (keyA < keyB) return 1;
-            if (keyA > keyB) return -1;
-            return 0;
-        })
-        let list = $('#penerima-tugas');
-        $.each(items, function(i, div){
-            list.append(div);
-        })
+        if(!document.querySelector('#remove-custom-claims' + doc.id)){
+            let div = document.createElement('div');
+            div.setAttribute('id', 'remove-custom-claims' + doc.id);
+            div.classList.add('btn', 'btn-danger');
+            div.innerHTML = 'Remove Custom Claims';
+            document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(div, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
+
+            document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
+                db.collection('user').doc(doc.id).update({
+                    token : firebase.firestore.FieldValue.delete()
+                })
+            })
+        }        
+        if(!document.querySelector('#penerima-tugas').querySelector('[uid="' + doc.id + '"]')){
+            let optionTask = document.createElement('option');
+            optionTask.setAttribute('uid', doc.id);
+            optionTask.innerHTML = username;
+            document.querySelector('#penerima-tugas').appendChild(optionTask);
+            let items = $('#penerima-tugas > option').get();
+            items.sort(function(a, b) {
+                let keyA = $(a).text();
+                let keyB = $(b).text();
+                if (keyA < keyB) return 1;
+                if (keyA > keyB) return -1;
+                return 0;
+            })
+            let list = $('#penerima-tugas');
+            $.each(items, function(i, div){
+                list.append(div);
+            })
+        }
     }
 }
 
