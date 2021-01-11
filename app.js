@@ -243,12 +243,23 @@ const setupUI = (user) => {
 
                     document.querySelector('#send-req-custom-claims').addEventListener('click', function(e){
                         e.stopPropagation();
-                        db.collection('user').doc(auth.currentUser.uid).set({
-                            username : auth.currentUser.displayName,
-                            email : auth.currentUser.email,
-                            userId : auth.currentUser.uid
-                        }).then(() => {
-                            alert('Your request has been sended!');
+                        db.collection('user').doc(auth.currentUser.uid).get().then(doc => {
+                            if(doc.exists){
+                                if(doc.data().token != null){
+                                    user.getIdTokenResult().then(idTokenResult => {
+                                        user.getIdToken(true).then(() => {
+                                            window.location.reload();
+                                        });
+                                    });
+                                }
+                            } else {
+                                db.collection('user').doc(auth.currentUser.uid).set({
+                                    username : auth.currentUser.displayName,
+                                    email : auth.currentUser.email,
+                                }).then(() => {
+                                    alert('Your request has been sended!');
+                                })
+                            }
                         })          
                     })
                 }
@@ -642,6 +653,22 @@ function renderPengguna(doc){
         <div class="btn btn-primary" id="set-custom-claims${doc.id}" data-toggle="modal" data-target="#modal-custom-claims${doc.id}"><i class='fas fa-key'></i> Set Custom Claims</div>
         <div class="btn btn-danger" id="remove-custom-claims${doc.id}">Remove Custom Claims</div>
         `
+        let optionTask = document.createElement('option');
+        optionTask.setAttribute('uid', doc.id);
+        optionTask.innerHTML = username;
+        document.querySelector('#penerima-tugas').appendChild(optionTask);
+        let items = $('#penerima-tugas > option').get();
+        items.sort(function(a, b) {
+            let keyA = $(a).text();
+            let keyB = $(b).text();
+            if (keyA < keyB) return 1;
+            if (keyA > keyB) return -1;
+            return 0;
+        })
+        let list = $('#penerima-tugas');
+        $.each(items, function(i, div){
+            list.append(div);
+        })        
     } else {
         token = `<div on-request on-request-uid-${doc.id}>On Request</div>`
         custClaim = `<div class="btn btn-primary" id="set-custom-claims${doc.id}" data-toggle="modal" data-target="#modal-custom-claims${doc.id}"><i class='fas fa-key'></i> Set Custom Claims</div>`
@@ -761,6 +788,7 @@ function renderUpdatePengguna(doc){
                 document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = false;
             }
             document.querySelector('#user-token' + doc.id).innerHTML = `<div on-request on-request-uid-${doc.id}>On Request</div>`;
+            document.querySelector('#penerima-tugas').querySelector('[uid="' + doc.id + '"]').remove();
             if(auth.currentUser.email == email){
                 auth.onAuthStateChanged(user => {
                     user.getIdToken(true).then(() => {
@@ -800,8 +828,8 @@ function renderUpdatePengguna(doc){
                     if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-admin')){
                         document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
                     }
-                }                
-                document.querySelector('#user-token' + doc.id).innerHTML = token;                
+                }                                
+                document.querySelector('#user-token' + doc.id).innerHTML = token;
                 if(auth.currentUser.email == email){
                     auth.onAuthStateChanged(user => {
                         user.getIdToken(true).then(() => {
@@ -841,7 +869,7 @@ function renderUpdatePengguna(doc){
                         document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
                     }
                 }                  
-                document.querySelector('#user-token' + doc.id).innerHTML = token;                      
+                document.querySelector('#user-token' + doc.id).innerHTML = token;
                 if(auth.currentUser.email == email){
                     auth.onAuthStateChanged(user => {
                         user.getIdToken(true).then(() => {
@@ -858,8 +886,24 @@ function renderUpdatePengguna(doc){
                         })
                     })                
                 }
-            })         
+            })                     
         }
+        let optionTask = document.createElement('option');
+        optionTask.setAttribute('uid', doc.id);
+        optionTask.innerHTML = username;
+        document.querySelector('#penerima-tugas').appendChild(optionTask);
+        let items = $('#penerima-tugas > option').get();
+        items.sort(function(a, b) {
+            let keyA = $(a).text();
+            let keyB = $(b).text();
+            if (keyA < keyB) return 1;
+            if (keyA > keyB) return -1;
+            return 0;
+        })
+        let list = $('#penerima-tugas');
+        $.each(items, function(i, div){
+            list.append(div);
+        })
     }
 }
 
