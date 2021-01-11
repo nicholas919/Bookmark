@@ -760,6 +760,7 @@ function renderUpdatePengguna(doc){
             for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
                 document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = false;
             }
+            document.querySelector('#user-token' + doc.id).innerHTML = `<div on-request on-request-uid-${doc.id}>On Request</div>`;
             if(auth.currentUser.email == email){
                 auth.onAuthStateChanged(user => {
                     user.getIdToken(true).then(() => {
@@ -777,7 +778,6 @@ function renderUpdatePengguna(doc){
                 })
             }
         })
-        document.querySelector('#user-token' + doc.id).innerHTML = `<div on-request on-request-uid-${doc.id}>On Request</div>`;
     } else {
         switch(token){
             case 'admin':
@@ -786,7 +786,7 @@ function renderUpdatePengguna(doc){
                     let div = document.createElement('div');
                     div.setAttribute('id', 'remove-custom-claims' + doc.id);
                     div.classList.add('btn', 'btn-danger');
-                    div.innerHTML = 'Remove Custom Claims'
+                    div.innerHTML = 'Remove Custom Claims';
                     document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(div, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
 
                     document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
@@ -801,6 +801,7 @@ function renderUpdatePengguna(doc){
                         document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
                     }
                 }                
+                document.querySelector('#user-token' + doc.id).innerHTML = token;                
                 if(auth.currentUser.email == email){
                     auth.onAuthStateChanged(user => {
                         user.getIdToken(true).then(() => {
@@ -825,7 +826,7 @@ function renderUpdatePengguna(doc){
                     let div = document.createElement('div');
                     div.setAttribute('id', 'remove-custom-claims' + doc.id);
                     div.classList.add('btn', 'btn-danger');
-                    div.innerHTML = 'Remove Custom Claims'
+                    div.innerHTML = 'Remove Custom Claims';
                     document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(div, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
 
                     document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
@@ -839,7 +840,8 @@ function renderUpdatePengguna(doc){
                     if(document.querySelectorAll('.custom-claims-choice' + doc.id)[x].hasAttribute('set-as-member')){
                         document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = true;
                     }
-                }                        
+                }                  
+                document.querySelector('#user-token' + doc.id).innerHTML = token;                      
                 if(auth.currentUser.email == email){
                     auth.onAuthStateChanged(user => {
                         user.getIdToken(true).then(() => {
@@ -858,7 +860,6 @@ function renderUpdatePengguna(doc){
                 }
             })         
         }
-        document.querySelector('#user-token' + doc.id).innerHTML = token;
     }
 }
 
