@@ -773,7 +773,7 @@ function renderPengguna(doc){
 }
 
 function renderUpdatePengguna(doc){
-    db.collection('user').doc(doc.id).collection('property').doc('user-info').get(subDoc => {
+    db.collection('user').doc(doc.id).collection('property').doc('user-info').get().then(subDoc => {
         let username = subDoc.data().username;
         let email = subDoc.data().email;
         let token = doc.data().token;
