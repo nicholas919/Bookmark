@@ -445,7 +445,7 @@ usn{
   display: inline;
 }
 
-.alert-auth-error-andro{
+.alert-firebase-error-andro{
   border:1px solid crimson;
   background-color: #d9534f;
   margin:-5px 0px 10px;
@@ -454,7 +454,7 @@ usn{
   text-align: center;
 }
 
-.alert-auth-error{
+.alert-firebase-error{
   position: fixed;
   right: 15px;
   padding: 8px;

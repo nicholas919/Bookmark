@@ -742,6 +742,8 @@ function renderPengguna(doc){
                             if(item.data().token != 'admin'){
                                 db.collection('user').doc(doc.id).update({
                                     token : 'admin'
+                                }).catch(err => {
+                                    return firebaseError(err);
                                 })
                             } else {
                                 alert("this user's custom claims already setted as admin");
@@ -752,6 +754,8 @@ function renderPengguna(doc){
                             if(item.data().token != 'member'){
                                 db.collection('user').doc(doc.id).update({
                                     token : 'member'
+                                }).catch(err => {
+                                    return firebaseError(err);
                                 })
                             } else {
                                 alert("this user's custom claims already setted as member");
@@ -766,6 +770,8 @@ function renderPengguna(doc){
             document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
                 db.collection('user').doc(doc.id).update({
                     token : firebase.firestore.FieldValue.delete()
+                }).catch(err => {
+                    return firebaseError(err);
                 })
             })
         }
@@ -783,32 +789,35 @@ function renderUpdatePengguna(doc){
         let refreshRoleAdminKantor;
         let refreshRoleMember;
         let refreshRemoveRole;
-
         if(token == null){
             removeRole({email: email}).then(() => {
                 document.querySelector('#remove-custom-claims' + doc.id).remove();
                 for(let x = 0; x<document.querySelectorAll('.custom-claims-choice' + doc.id).length; x++){
                     document.querySelectorAll('.custom-claims-choice' + doc.id)[x].checked = false;
                 }
-                document.querySelector('#user-token' + doc.id).innerHTML = `<div on-request on-request-uid-${doc.id}>On Request</div>`;
-                document.querySelector('#penerima-tugas').querySelector('[uid="' + doc.id + '"]').remove();
                 if(auth.currentUser.email == email){
                     auth.onAuthStateChanged(user => {
-                        user.getIdToken(true).then(() => {
-                            user.getIdTokenResult().then(idTokenResult => {
-                                refreshRemoveRole = setInterval(refreshRemoveRole,10);
-                                function refreshRemoveRole(){
-                                    if(idTokenResult.claims.adminKantor == false && idTokenResult.claims.member == false){
-                                        clearInterval(refreshRemoveRole)
-                                        alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
-                                        window.location.reload();
-                                    }
-                                }
-                            })
+                        user.getIdTokenResult().then(idTokenResultBef => {
+                            if(idTokenResultBef.claims.moderator != false && idTokenResultBef.claims.adminKantor != false && idTokenResultBef.claims.member != false){
+                                user.getIdToken(true).then(() => {
+                                    user.getIdTokenResult().then(idTokenResultAft => {
+                                        refreshRemoveRole = setInterval(refreshRemoveRole,10);
+                                        function refreshRemoveRole(){
+                                            if(idTokenResultAft.claims.moderator == false && idTokenResultAft.claims.adminKantor == false && idTokenResultAft.claims.member == false){
+                                                clearInterval(refreshRemoveRole)
+                                                alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
+                                                window.location.reload();
+                                            }
+                                        }
+                                    })
+                                })
+                            }
                         })
                     })
                 }
             })
+            document.querySelector('#user-token' + doc.id).innerHTML = `<div on-request on-request-uid-${doc.id}>On Request</div>`;
+            document.querySelector('#penerima-tugas').querySelector('[uid="' + doc.id + '"]').remove();            
         } else {
             switch(token){
                 case 'admin':
@@ -821,17 +830,37 @@ function renderUpdatePengguna(doc){
                     document.querySelector('#user-token' + doc.id).innerHTML = token;
                     if(auth.currentUser.email == email){
                         auth.onAuthStateChanged(user => {
-                            user.getIdToken(true).then(() => {
-                                user.getIdTokenResult().then(idTokenResult => {
-                                    refreshRoleAdminKantor = setInterval(refreshRoleAdminKantor,10);
-                                    function refreshRoleAdminKantor(){
-                                        if(idTokenResult.claims.adminKantor == true){
-                                            clearInterval(refreshRoleAdminKantor)
-                                            alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
-                                            window.location.reload();
-                                        }
-                                    }                                
-                                })
+                            user.getIdTokenResult().then(idTokenResultBef => {
+                                if(idTokenResultBef.claims.adminKantor != true){
+                                    user.getIdToken(true).then(() => {
+                                        user.getIdTokenResult().then(idTokenResultAft => {
+                                            refreshRoleAdminKantor = setInterval(refreshRoleAdminKantor,10);
+                                            function refreshRoleAdminKantor(){                                            
+                                                if(idTokenResultAft.claims.adminKantor == true){
+                                                    clearInterval(refreshRoleAdminKantor)
+                                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.');
+                                                    window.location.reload();
+                                                }
+                                            }                                
+                                        })
+                                    })
+                                } else {
+                                    if(!document.querySelector('#remove-custom-claims' + doc.id)){
+                                        let removeCustomClaims = document.createElement('div');
+                                        removeCustomClaims.setAttribute('id', 'remove-custom-claims' + doc.id);
+                                        removeCustomClaims.classList.add('btn', 'btn-danger');
+                                        removeCustomClaims.innerHTML = 'Remove Custom Claims';
+                                        document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(removeCustomClaims, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
+
+                                        document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
+                                            db.collection('user').doc(doc.id).update({
+                                                token : firebase.firestore.FieldValue.delete()
+                                            }).catch(err => {
+                                                return firebaseError(err)
+                                            })
+                                        })
+                                    }                                    
+                                }
                             })
                         })
                     }
@@ -847,32 +876,54 @@ function renderUpdatePengguna(doc){
                     document.querySelector('#user-token' + doc.id).innerHTML = token;
                     if(auth.currentUser.email == email){
                         auth.onAuthStateChanged(user => {
-                            user.getIdToken(true).then(() => {
-                                user.getIdTokenResult().then(idTokenResult => {
-                                    refreshRoleMember = setInterval(refreshRoleMember,10);
-                                    function refreshRoleMember(){
-                                        if(idTokenResult.claims.member == true){
-                                            clearInterval(refreshRoleMember)
-                                            alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.')
-                                            window.location.reload();
-                                        }
-                                    }                                 
-                                })
+                            user.getIdTokenResult().then(idTokenResultBef => {
+                                if(idTokenResultBef.claims.member != true){
+                                    user.getIdToken(true).then(() => {
+                                        user.getIdTokenResult().then(idTokenResultAft => {
+                                            refreshRoleMember = setInterval(refreshRoleMember,10);
+                                            function refreshRoleMember(){
+                                                if(idTokenResultAft.claims.member == true){
+                                                    clearInterval(refreshRoleMember)
+                                                    alert('Terdapat suatu perubahan pada tampilan halaman website anda, halaman akan direfresh.')
+                                                    window.location.reload();
+                                                }
+                                            }                                 
+                                        })
+                                    })
+                                } else {
+                                    if(!document.querySelector('#remove-custom-claims' + doc.id)){
+                                        let removeCustomClaims = document.createElement('div');
+                                        removeCustomClaims.setAttribute('id', 'remove-custom-claims' + doc.id);
+                                        removeCustomClaims.classList.add('btn', 'btn-danger');
+                                        removeCustomClaims.innerHTML = 'Remove Custom Claims';
+                                        document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(removeCustomClaims, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
+
+                                        document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
+                                            db.collection('user').doc(doc.id).update({
+                                                token : firebase.firestore.FieldValue.delete()
+                                            }).catch(err => {
+                                                return firebaseError(err)
+                                            })
+                                        })
+                                    }
+                                }
                             })
                         })                
                     }
                 })                     
             }
             if(!document.querySelector('#remove-custom-claims' + doc.id)){
-                let div = document.createElement('div');
-                div.setAttribute('id', 'remove-custom-claims' + doc.id);
-                div.classList.add('btn', 'btn-danger');
-                div.innerHTML = 'Remove Custom Claims';
-                document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(div, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
+                let removeCustomClaims = document.createElement('div');
+                removeCustomClaims.setAttribute('id', 'remove-custom-claims' + doc.id);
+                removeCustomClaims.classList.add('btn', 'btn-danger');
+                removeCustomClaims.innerHTML = 'Remove Custom Claims';
+                document.querySelector('#set-custom-claims' + doc.id).parentElement.insertBefore(removeCustomClaims, document.querySelector('#set-custom-claims' + doc.id).nextSibling);
 
                 document.querySelector('#remove-custom-claims' + doc.id).addEventListener('click', function(e){
                     db.collection('user').doc(doc.id).update({
                         token : firebase.firestore.FieldValue.delete()
+                    }).catch(err => {
+                        return firebaseError(err)
                     })
                 })
             }        

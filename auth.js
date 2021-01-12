@@ -7,12 +7,13 @@ auth.onAuthStateChanged(user => {
                 if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
             	    renderPengguna(change.doc);
                 }
-            } else if(change.type == 'removed'){
-
             } else if (change.type == 'modified'){
                 renderUpdatePengguna(change.doc);
             }
         })
+    }, err => {
+    	console.log('hallo')
+    	firebaseError(err);
     })
 
     db.collection('tugass').onSnapshot(snapshot =>{
@@ -30,7 +31,7 @@ auth.onAuthStateChanged(user => {
             }
         })
     }, err => {
-		authError(err);
+		firebaseError(err);
 	})	
 
     db.collection('pengaturanAktivitasKalender').onSnapshot(snapshot =>{
@@ -41,7 +42,7 @@ auth.onAuthStateChanged(user => {
             }
         })
     }, err => {
-		authError(err);
+		firebaseError(err);
 	})	
 
     db.collection('aktivitasKalender').onSnapshot(snapshot =>{
@@ -85,7 +86,7 @@ auth.onAuthStateChanged(user => {
             }
         })
     }, err => {
-		authError(err);
+		firebaseError(err);
 	})	
 
   	setupUI(user);  		
@@ -329,7 +330,7 @@ function resendEmailVerification(e){
 	auth.currentUser.sendEmailVerification().then(() => {
 		alert('A verification link has been sent to your email addresses')
 	}, err => {
-		authError(err);
+		firebaseError(err);
 	})
 }
 
@@ -342,7 +343,7 @@ function formMasuk(e){
 	}).then(() => {
 		e.target.reset();
 	}, err => {
-		authError(err);
+		firebaseError(err);
 	})
 }
 
@@ -359,7 +360,7 @@ function formDaftar(e){
 			auth.currentUser.sendEmailVerification();
 		})
 	}, err => {
-		authError(err);
+		firebaseError(err);
 	})
 }
 
@@ -369,21 +370,21 @@ function formReset(e){
 	auth.sendPasswordResetEmail(email).then(() => {
 		checkEmail(email);
 	}, err => {
-		authError(err);
+		firebaseError(err);
 	})
 }
 
-function authError(err){
-	if(document.querySelector('#auth-error')){
-		if(document.querySelector('#auth-error').innerHTML != err.message){
-			document.querySelector('#auth-error').remove();
+function firebaseError(err){
+	if(document.querySelector('#firebase-error')){
+		if(document.querySelector('#firebase-error').innerHTML != err.message){
+			document.querySelector('#firebase-error').remove();
 		}
 	} else {
 		let alert = document.createElement('div');
-		alert.setAttribute('id', 'auth-error');
+		alert.setAttribute('id', 'firebase-error');
 		alert.innerHTML = err.message;
 		if(/Mobi/.test(navigator.userAgent) || /Android/i.test(navigator.userAgent) || window.innerWidth <= 900){
-			alert.classList.add('alert-auth-error-andro');
+			alert.classList.add('alert-firebase-error-andro');
 			if(document.querySelector('#form-reset')){
 				document.querySelector('#label-forgot-password').parentElement.insertBefore(alert, document.querySelector('#label-forgot-password').nextSibling);
 			} else if(document.querySelector('#form-daftar')){
@@ -392,17 +393,17 @@ function authError(err){
 				document.querySelector('#email-login').parentElement.parentElement.insertBefore(alert, document.querySelector('#email-login').parentElement);
 			}
 		} else {
-			alert.classList.add('alert-auth-error');
+			alert.classList.add('alert-firebase-error');
 			document.body.appendChild(alert)
 		}
 
 		setTimeout(function(){
 			for(let opacity = 1; opacity >= 0; opacity = opacity.toFixed(1) - 0.1){
 				setTimeout(function(){
-					if(document.querySelector('#auth-error')){
-						document.querySelector('#auth-error').style.opacity = opacity;
+					if(document.querySelector('#firebase-error')){
+						document.querySelector('#firebase-error').style.opacity = opacity;
 						if(opacity == 0){
-							document.querySelector('#auth-error').remove();
+							document.querySelector('#firebase-error').remove();
 						}					
 					}
 				},300 + (1-opacity)*500)
