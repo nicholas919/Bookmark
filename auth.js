@@ -12,7 +12,6 @@ auth.onAuthStateChanged(user => {
             }
         })
     }, err => {
-    	console.log('hallo')
     	firebaseError(err);
     })
 
