@@ -15,6 +15,17 @@ auth.onAuthStateChanged(user => {
     	firebaseError(err);
     })
 
+    db.collection('pengaturanTugas').onSnapshot(snapshot =>{
+        let changes = snapshot.docChanges();
+        changes.forEach(change =>{
+            if(change.type == 'added' || change.type == 'modified'){
+            	renderPengaturanTugas(change.doc);
+            }
+        })
+    }, err => {
+    	firebaseError(err);
+    })
+
     db.collection('tugass').onSnapshot(snapshot =>{
         let changes = snapshot.docChanges();
         changes.forEach(change =>{
@@ -31,19 +42,9 @@ auth.onAuthStateChanged(user => {
         })
     }, err => {
 		firebaseError(err);
-	})	
+	})		
 
-    db.collection('pengaturanAktivitasKalender').onSnapshot(snapshot =>{
-        let changes = snapshot.docChanges();
-        changes.forEach(change =>{
-            if(change.type == 'added' || change.type == 'modified'){
-                renderPengaturanAktivitasKalender(change.doc);
-            }
-        })
-    }, err => {
-		firebaseError(err);
-	})	
-
+/*
     db.collection('aktivitasKalender').onSnapshot(snapshot =>{
         let changes = snapshot.docChanges();
         changes.forEach(change =>{
@@ -87,7 +88,7 @@ auth.onAuthStateChanged(user => {
     }, err => {
 		firebaseError(err);
 	})	
-
+*/
   	setupUI(user);  		
   } else {
   	setupUI();
@@ -96,128 +97,10 @@ auth.onAuthStateChanged(user => {
 
 document.querySelector('#form-masuk').addEventListener('submit', formMasuk);
 
-document.querySelector('#tambah-aktivitas-kalender').addEventListener('submit', function(e){
-	e.preventDefault();
-	db.collection('pengaturanAktivitasKalender').doc(auth.currentUser.uid).get().then(function(doc){
-		if(doc.exists){
-			db.collection('aktivitasKalender').add({
-				date : document.querySelector('[current-date]').getAttribute('id'),
-				description : this['deskripsi-aktivitas-kalender'].value.replace(/\n\r?/g, '<br/>'),
-				username : auth.currentUser.displayName,
-				userUID : auth.currentUser.uid,
-				readAdm : doc.data().readAdm,
-				readMem : doc.data().readMem,
-				editAdm : doc.data().editAdm,
-				editMem : doc.data().editMem,
-				delAdm : doc.data().delAdm,
-				delMem : doc.data().delMem
-			}).then(() => {
-				$('#modal-tambah-aktivitas-kalender').modal('hide');
-				alert('This event has been uploaded!');					
-			})
-		} else {
-			db.collection('pengaturanAktivitasKalender').doc(auth.currentUser.uid).set({
-				readAdm : true,
-				readMem : true,
-				editAdm : true,
-				editMem : true,
-				delAdm : true,
-				delMem : true			
-			})
-			db.collection('aktivitasKalender').add({
-				date : document.querySelector('[current-date]').getAttribute('id'),
-				description : this['deskripsi-aktivitas-kalender'].value,
-				username : auth.currentUser.displayName,
-				userUID : auth.currentUser.uid.replace(/\n\r?/g, '<br/>'),
-				readAdm : true,
-				readMem : true,
-				editAdm : true,
-				editMem : true,
-				delAdm : true,
-				delMem : true
-			}).then(() => {
-				$('#modal-tambah-aktivitas-kalender').modal('hide');
-				alert('This event has been uploaded!');
-			})		
-		}
-	})
-})
-
-document.querySelector('#pengaturan-aktivitas-kalender').addEventListener('submit', function(e){
-	e.preventDefault();
-	db.collection('pengaturanAktivitasKalender').doc(auth.currentUser.uid).get().then(function(doc){
-		if(doc.exists){
-			db.collection('pengaturanAktivitasKalender').doc(auth.currentUser.uid).update({
-				readAdm : this['izin-baca-aktivitas-kalender-adm'].checked,
-				readMem : this['izin-baca-aktivitas-kalender-mem'].checked,
-				editAdm : this['izin-edit-aktivitas-kalender-adm'].checked,
-				editMem : this['izin-edit-aktivitas-kalender-mem'].checked,
-				delAdm : this['izin-hapus-aktivitas-kalender-adm'].checked,
-				delMem : this['izin-hapus-aktivitas-kalender-mem'].checked
-			}).then(() => {
-				db.collection('aktivitasKalender').get().then(querySnapshot => {
-					querySnapshot.docs.map(doc => {
-						if(doc.data().userUID == auth.currentUser.uid){
-							db.collection('aktivitasKalender').doc(doc.id).update({
-								readAdm : this['izin-baca-aktivitas-kalender-adm'].checked,
-								readMem : this['izin-baca-aktivitas-kalender-mem'].checked,
-								editAdm : this['izin-edit-aktivitas-kalender-adm'].checked,
-								editMem : this['izin-edit-aktivitas-kalender-mem'].checked,
-								delAdm : this['izin-hapus-aktivitas-kalender-adm'].checked,
-								delMem : this['izin-hapus-aktivitas-kalender-mem'].checked								
-							}).then(() => {
-								$('#modal-pengaturan-aktivitas-kalender').modal('hide');
-								alert('Events calendar settings has been updated!');
-							})
-						}
-					})
-				})
-			})
-		} else {
-			db.collection('pengaturanAktivitasKalender').doc(auth.currentUser.uid).set({
-				readAdm : this['izin-baca-aktivitas-kalender-adm'].checked,
-				readMem : this['izin-baca-aktivitas-kalender-mem'].checked,
-				editAdm : this['izin-edit-aktivitas-kalender-adm'].checked,
-				editMem : this['izin-edit-aktivitas-kalender-mem'].checked,
-				delAdm : this['izin-hapus-aktivitas-kalender-adm'].checked,
-				delMem : this['izin-hapus-aktivitas-kalender-mem'].checked
-			}).then(() => {
-				$('#modal-pengaturan-aktivitas-kalender').modal('hide');
-				alert('Events calendar settings has been setted!');
-			})		
-		}
-	})
-})
-
 document.querySelector('#tambah-tugas').addEventListener('submit', function(e){
 	e.preventDefault();
 	db.collection('pengaturanTugas').doc(auth.currentUser.uid).get().then(function(doc){
-		if(doc.exists){
-			db.collection('tugass').add({
-				date : new Date().getTime(),
-				targetedUsername : this['penerima-tugas'].value,
-				targetedUserUID : this['penerima-tugas'].querySelector('option:checked').getAttribute('uid'),
-				status : 'PENDING',
-				description : this['deskripsi-tugas'].value.replace(/\n\r?/g, '<br/>'),
-				username : auth.currentUser.displayName,
-				userUID : auth.currentUser.uid,
-				completeAdm : doc.data().completeAdm,
-				completeMem : doc.data().completeMem,
-				completeAse : doc.data().completeAse,
-				readAdm : doc.data().readAdm,
-				readMem : doc.data().readMem,
-				readAse : doc.data().readAse, 
-				editAdm : doc.data().editAdm,
-				editMem : doc.data().editMem,
-				editAse : doc.data().editAse, 
-				delAdm : doc.data().delAdm,
-				delMem : doc.data().delMem,
-				delAse : doc.data().delAse	
-			}).then(() => {
-				$('#modal-tambah-tugas').modal('hide');
-				alert('This task has been uploaded!');					
-			})
-		} else {
+		if(!doc.exists){
 			db.collection('pengaturanTugas').doc(auth.currentUser.uid).set({
 				completeAdm : true,
 				completeMem : false,
@@ -231,31 +114,64 @@ document.querySelector('#tambah-tugas').addEventListener('submit', function(e){
 				delAdm : true,
 				delMem : false,
 				delAse : false	
-			})
+			})			
+		}
+		let dateRelease = new Date().getTime();
+		if(document.querySelector('#set-due-date-task').checked){
+			let dateDue = dateRelease;
+			let dateDueWeek = false;
+			let dateDueDay = false;
+			let dateDueHour = false;
+			let dateDueMinute = false;
+			switch(document.querySelector('#due-date-basis').value){
+				case "Week":
+				dateDue = dateDue + (document.querySelector('#due-date-input').value * 7 * 24 * 60 * 60 * 1000);
+				dateDueWeek = true;
+				break;
+				case "Day":
+				dateDue = dateDue + (document.querySelector('#due-date-input').value * 24 * 60 * 60 * 1000);
+				dateDueDay = true;
+				break;
+				case "Hour":
+				dateDue = dateDue + (document.querySelector('#due-date-input').value * 60 * 60 * 1000);
+				dateDueHour = true;
+				break;
+				case "Minute":
+				dateDue = dateDue + (document.querySelector('#due-date-input').value * 60 * 1000);
+				dateDueMinute = true;
+			}
 			db.collection('tugass').add({
-				date : new Date().getTime(),
+				dateRelease : dateRelease,
 				targetedUsername : this['penerima-tugas'].value,
 				targetedUserUID : this['penerima-tugas'].querySelector('option:checked').getAttribute('uid'),
 				status : 'PENDING',
-				description : this['deskripsi-tugas'].value,
+				description : this['deskripsi-tugas'].value.replace(/\n\r?/g, '<br/>'),
 				username : auth.currentUser.displayName,
-				userUID : auth.currentUser.uid.replace(/\n\r?/g, '<br/>'),
-				completeAdm : true,
-				completeMem : false,
-				completeAse : true,
-				readAdm : true,
-				readMem : false,
-				readAse : true, 
-				editAdm : true,
-				editMem : false,
-				editAse : false, 
-				delAdm : true,
-				delMem : false,
-				delAse : false
+				userUID : auth.currentUser.uid,
+				dateDueExists : true,
+				dateDueWeek : dateDueWeek,
+				dateDueDay : dateDueDay,
+				dateDueHour : dateDueHour,
+				dateDueMinute : dateDueMinute,
+				dateDue : dateDue
 			}).then(() => {
 				$('#modal-tambah-tugas').modal('hide');
-				alert('This task has been uploaded!');
-			})		
+				alert('This task has been uploaded!');					
+			})
+		} else if(document.querySelector('#not-set-due-date-task').checked){
+			db.collection('tugass').add({
+				dateRelease : dateRelease,
+				targetedUsername : this['penerima-tugas'].value,
+				targetedUserUID : this['penerima-tugas'].querySelector('option:checked').getAttribute('uid'),
+				status : 'PENDING',
+				description : this['deskripsi-tugas'].value.replace(/\n\r?/g, '<br/>'),
+				username : auth.currentUser.displayName,
+				userUID : auth.currentUser.uid,
+				dateDueExists : false
+			}).then(() => {
+				$('#modal-tambah-tugas').modal('hide');
+				alert('This task has been uploaded!');					
+			})			
 		}
 	})
 })
@@ -267,7 +183,7 @@ document.querySelector('#pengaturan-tugas').addEventListener('submit', function(
 			db.collection('pengaturanTugas').doc(auth.currentUser.uid).update({
 				completeAdm : this['izin-selesai-tugas-adm'].checked,
 				completeMem : this['izin-selesai-tugas-mem'].checked,
-				completeAse : this['izin-selesai-tugas-mem'].checked,
+				completeAse : this['izin-selesai-tugas-rec'].checked,
 				readAdm : this['izin-baca-tugas-adm'].checked,
 				readMem : this['izin-baca-tugas-mem'].checked,
 				readAse : this['izin-baca-tugas-rec'].checked, 
@@ -278,35 +194,14 @@ document.querySelector('#pengaturan-tugas').addEventListener('submit', function(
 				delMem : this['izin-hapus-tugas-mem'].checked,
 				delAse : this['izin-hapus-tugas-rec'].checked
 			}).then(() => {
-				db.collection('tugas').get().then(querySnapshot => {
-					querySnapshot.docs.map(doc => {
-						if(doc.data().assignorUID == auth.currentUser.uid){
-							db.collection('tugas').doc(doc.id).update({
-								completeAdm : this['izin-selesai-tugas-adm'].checked,
-								completeMem : this['izin-selesai-tugas-mem'].checked,
-								completeAse : this['izin-selesai-tugas-mem'].checked,
-								readAdm : this['izin-baca-tugas-adm'].checked,
-								readMem : this['izin-baca-tugas-mem'].checked,
-								readAse : this['izin-baca-tugas-rec'].checked, 
-								editAdm : this['izin-edit-tugas-adm'].checked,
-								editMem : this['izin-edit-tugas-mem'].checked,
-								editAse : this['izin-edit-tugas-rec'].checked, 
-								delAdm : this['izin-hapus-tugas-adm'].checked,
-								delMem : this['izin-hapus-tugas-mem'].checked,
-								delAse : this['izin-hapus-tugas-rec'].checked								
-							}).then(() => {
-								$('#modal-pengaturan-tugas').modal('hide');
-								alert('Tasks settings has been updated!');
-							})
-						}
-					})
-				})
+				$('#modal-pengaturan-tugas').modal('hide');
+				alert('Tasks settings has been updated!');
 			})
 		} else {
 			db.collection('pengaturanTugas').doc(auth.currentUser.uid).set({
 				completeAdm : this['izin-selesai-tugas-adm'].checked,
 				completeMem : this['izin-selesai-tugas-mem'].checked,
-				completeAse : this['izin-selesai-tugas-mem'].checked,
+				completeAse : this['izin-selesai-tugas-rec'].checked,
 				readAdm : this['izin-baca-tugas-adm'].checked,
 				readMem : this['izin-baca-tugas-mem'].checked,
 				readAse : this['izin-baca-tugas-rec'].checked, 

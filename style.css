@@ -1,3 +1,27 @@
+.task-action{
+  font-size: 16px !important;
+}
+
+#list-tugas{
+  height: 210px;
+}
+
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.tabel-tugas tbody tr td:nth-child(1){
+  width: 35%;
+}
+
+.tabel-tugas tbody tr td:nth-child(2){
+  width: 5%;
+}
+
 .user-action{
   display: grid;
   grid-row-gap: 5px;
@@ -22,13 +46,19 @@
   display: none;
 }
 
+.tugas{
+  display: grid;
+  grid-template-columns: 50px auto;
+}
+
 #selesaikan-semua-tugas{
   cursor: pointer;
   color:mediumseagreen;
   font-weight: bold;
 }
 
-#tampilkan-semua-tugas, #tampilkan-tugas-pending, #tampilkan-tugas-selesai, #tombol-tambah-tugas, .deskripsi-tugas, #help-center-custom-claim{
+#tampilkan-semua-tugas, #tampilkan-tugas-pending, #tampilkan-tugas-selesai, #tombol-tambah-tugas, .deskripsi-tugas, #help-center-custom-claim, #tombol-pengaturan-tugas, #set-due-date-task, #not-set-due-date-task,
+.task-action{
   cursor: pointer;
 }
 
@@ -58,44 +88,7 @@
   display: none;
 }
 
-#kalender{
-  display: none;
-  grid-template-columns: 28% auto;
-  margin: 5px 15px;
-  box-shadow: 0px 0px 3px black;
-}
-
-#tombol-tambah-aktivitas-kalender{
-  font-weight: 700;
-  position: absolute;
-  bottom: 0;
-  padding: 5px;
-  border-radius: 0;
-}
-
-#body-lihat-list-aktivitas{
-  background-color: white;
-  position: relative;
-  border-right: 1px solid darkgrey;
-  overflow: hidden; 
-}
-
-#header-lihat-list-aktivitas{
-  font-weight: 700;
-  padding: 5px;
-  background-color: lightgrey;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-#tampilan-tanggal-hari-sekarang{
-  padding: 15% 0px;
-  background-color: rgb(26, 115, 232);
-  color:white;
-}
-
-.copy-aktivitas-kalender, .edit-aktivitas-kalender, .hapus-aktivitas-kalender, .copy-tugas, .edit-tugas, .hapus-tugas{
+.copy-tugas, .edit-tugas, .hapus-tugas{
   font-size: 18px !important;
   margin-right: 5px;
   cursor: pointer;
@@ -105,42 +98,16 @@
   border-radius: 50%;
 }
 
-.copy-aktivitas-kalender, .copy-tugas{
+.copy-tugas{
   color:steelblue;
 }
 
-.edit-aktivitas-kalender, .edit-tugas{
+.edit-tugas{
   color:tomato;
 }
 
-.hapus-aktivitas-kalender, .hapus-tugas{
+.hapus-tugas{
   color:crimson;
-}
-
-.menu-konfigurasi-aktivitas-kalender{
-  position:absolute;
-  right:0;
-  display:flex;
-}
-
-#list-aktivitas-kalender{
-  margin-top: 6px;
-}
-
-#lihat-list-aktivitas{
-  cursor: pointer;
-  position: absolute;
-  right: 10px;
-}
-
-usn{
-  font-size: 12px;
-  color: dimgray;
-}
-
-#list-aktivitas-kalender-onlist{
-  height: calc(100% - 70px);
-  overflow-y: scroll;
 }
 
 .checkbox-permission{
@@ -148,136 +115,8 @@ usn{
   height: 20px;
 }
 
-.tampilan-deskripsi-aktivitas-kalender, .modal-deskripsi-aktivitas-kalender{
-  overflow-wrap: anywhere;
-}
-
-#aktivitas-kalender{
-  display: grid;
-  grid-template-rows: 1fr 1.2fr;
-}
-
-.aktivitas-kalender{
-  background-color: antiquewhite;
-  padding: 5px;
-  margin-bottom: 5px;
-  box-shadow: 0px 0px 3px black;
-  position: relative;
-}
-
-[current-date]{
-  color:white;
-  background-color: #4793d1;
-  box-shadow: 0px 0px 4px #4793d1;
-  border-radius: 50%;
-}
-
-[current-event]{
-  display: flex;
+input[type=checkbox]{
   cursor: pointer;
-  align-items: center;
-  padding: 6px 6px 6px 15px;
-  border-bottom: 1px solid lightgrey;
-  background-color: ghostwhite;
-}
-
-[current-event]:hover{
-  background-color: silver;
-}
-
-[current-event]:hover div .tampilan-deskripsi-aktivitas-berjalan{
-  margin-left: -100%;
-}
-
-[noncurrent-event]{
-  display: none;
-}
-
-#tanggal-sekarang{
-  font-size: 80px;
-  font-weight: bold;
-  line-height: 80px;
-  text-align: center;
-}
-
-#hari-sekarang{
-  font-size: 30px;
-  text-align: center;
-}
-
-#tampilan-kalender{
-  background-color: white;
-  padding: 20px 25px;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
-#pilih-tahun-kalender{
-  display: grid;
-  grid-template-columns: 30px 80px 30px;
-  align-items: center;
-  text-align: center;
-  color: dimgray;
-  margin-bottom: 10px;
-  margin-right: 20px;
-}
-
-#bulan-kalender{
-  border-bottom: 2px solid darkgrey;
-  color:grey;
-  text-align: center;
-  display: flex;
-}
-
-#hari-kalender{
-  color:gray;
-  display: grid;
-  text-align: center;
-  font-weight: bold;
-  grid-template-columns: calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7);  
-}
-
-.bulan-kalender, .hari-kalender{
-  margin: 0px auto;
-}
-
-[selected-month]{
-  color: steelblue;
-  font-weight: bold;
-}
-
-#bulan-kalender div, #tombol-pengaturan-aktivitas-kalender, input[type=checkbox]{
-  cursor: pointer;
-}
-
-.arah-tahun-kalender{
-  font-size: 22px;
-  cursor: pointer;
-}
-
-#tahun-kalender-sekarang{
-  font-size: 30px;
-  color:steelblue;
-}
-
-.tanggal-kalender-bulan-sebelum, .tanggal-kalender-bulan-setelah{
-  color:lightgray;
-}
-
-.tanggal-kalender{
-  display: inline;
-  cursor: pointer;
-}
-
-.senin, .selasa, .rabu, .kamis, .jumat, .sabtu, .minggu{
-  text-align: center;
-  display: block;
-  line-height: 50px;
-}
-
-.minggu-kalender{
-  display: grid;
-  grid-template-columns: calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7) calc(100%/7);
 }
 
 #kolom-pencari{
@@ -317,7 +156,7 @@ usn{
   padding: 10px 30px 20px;
 }
 
-#nama-user, #tahun-kalender-sekarang, .modal-tanggal-aktivitas-kalender{
+#nama-user{
   font-weight: bold;
 }
 
@@ -514,10 +353,6 @@ usn{
 }
 
 @media only screen and (max-width: 1000px){
-#kalender{
-  grid-template-columns: 30% auto;
-}
-
 #navbar{
   margin-left: 0px;
   width: 100%;
@@ -537,35 +372,5 @@ usn{
 }
 
 @media only screen and (max-width: 700px){
-#kalender{
-  box-shadow: none;
-}
 
-#tombol-tambah-aktivitas-kalender{
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
-#tampilan-kalender{
-  border-bottom-left-radius: 5px;
-  border-top-left-radius: 5px;
-  box-shadow: 0px 0px 3px black;
-}
-
-#aktivitas-kalender{
-  margin-bottom: 5px;
-  border-radius: 5px;
-}
-
-#tampilan-tanggal-hari-sekarang{
-  border-top-right-radius: 5px;
-  border-top-left-radius: 5px;
-  padding: 12% 0px 12%;
-}
-
-#body-lihat-list-aktivitas{
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;  
-  border-left:1px solid darkgrey;
-}
 }

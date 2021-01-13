@@ -6,8 +6,6 @@ document.body.addEventListener('click', function(){
     })
 })
 
-const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-const hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 const setupUI = (user) => {   
     if(user){
         if(user.emailVerified){
@@ -16,9 +14,10 @@ const setupUI = (user) => {
             user.getIdTokenResult().then(idTokenResult => {
                 if(idTokenResult.claims.moderator || idTokenResult.claims.adminKantor || idTokenResult.claims.member){
                     document.querySelector('#navbar').style.display = 'grid';
-                    document.querySelector('#kalender').style.setProperty('display', 'grid', 'important');
-                    document.querySelector('#nav-sidebar').style.display = 'block';
-                    document.querySelector('#myTabContent').style.display = 'block';
+                    document.querySelector('#nav-sidebar').classList.add('d-block');
+                    document.querySelector('#nav-sidebar').classList.remove('d-none');
+                    document.querySelector('#myTabContent').classList.add('d-block');
+                    document.querySelector('#myTabContent').classList.remove('d-none');
                     document.querySelector('#user').addEventListener('click', function(e){
                         e.stopImmediatePropagation();
                         if(!document.querySelector('#user-info')){
@@ -46,190 +45,66 @@ const setupUI = (user) => {
                     })
 
                     if(window.innerWidth < 1300){
-                        for(let y = 0; y<document.querySelectorAll('.bulan-kalender').length; y++){
-                            document.querySelectorAll('.bulan-kalender')[y].innerHTML = document.querySelectorAll('.bulan-kalender')[y].innerHTML.slice(0,3);
-                        }                       
-                        if(window.innerWidth < 800){
-                            document.querySelector('#kalender').style.setProperty('display', 'block', 'important')
-                        }
+
                     } else if(window.innerWidth > 1300){
-                        for(let y = 0; y<document.querySelectorAll('.bulan-kalender').length; y++){
-                            document.querySelectorAll('.bulan-kalender')[y].innerHTML = bulan[y];
-                        }                       
+
                     }
 
                     window.addEventListener('resize', windowResize)
-
-
                 }
 
+                if(idTokenResult.claims.moderator || idTokenResult.claims.adminKantor){
+                    document.querySelector('#set-due-date-task').addEventListener('change', function(){
+                        if(this.checked){
+                            document.querySelector('[set-due-date-hd]').classList.add('text-primary');
+                            document.querySelector('[set-due-date-bd]').classList.add('d-block');
+                            document.querySelector('[set-due-date-bd]').classList.remove('d-none');
+                            document.querySelector('[not-set-due-date-hd]').classList.remove('text-primary');
+                            document.querySelector('[not-set-due-date-bd]').classList.add('d-none')
+                            document.querySelector('[not-set-due-date-bd]').classList.remove('d-block');;
 
-                [document.querySelector('#undur-tahun-kalender'), document.querySelector('#maju-tahun-kalender')].forEach(item => {
-                    item.addEventListener('click', function(){
-                        if(item == document.querySelector('#undur-tahun-kalender')){
-                            document.querySelector('#tahun-kalender-sekarang').innerHTML = Number(document.querySelector('#tahun-kalender-sekarang').innerHTML) - 1;
-                        } else if(item == document.querySelector('#maju-tahun-kalender')){
-                            document.querySelector('#tahun-kalender-sekarang').innerHTML = Number(document.querySelector('#tahun-kalender-sekarang').innerHTML) + 1;
-                        }
-                        if(document.querySelector('[current-date]')){
-                            return renderKalender(Number(document.querySelector('#tahun-kalender-sekarang').innerHTML), Number(document.querySelector('[selected-month]').getAttribute('data-value')), Number(document.querySelector('[current-date]').innerHTML));
-                        }
-                    })
-                })      
-
-                for(let y = 0; y<document.querySelectorAll('.bulan-kalender').length; y++){
-                    document.querySelectorAll('.bulan-kalender')[y].addEventListener('click', function(){                       
-                        if(document.querySelector('[current-date]')){
-                            return renderKalender(Number(document.querySelector('#tahun-kalender-sekarang').innerHTML), Number(this.getAttribute('data-value')), Number(document.querySelector('[current-date').innerHTML));
-                        }
-                    })
-                }
-
-                renderKalender(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
-
-                function renderKalender(YYYY,MM,DD){
-                    for(let y = document.querySelectorAll('.minggu-kalender').length; y>= 0; y--){
-                        if(document.querySelectorAll('.minggu-kalender')[y]){
-                            document.querySelectorAll('.minggu-kalender')[y].remove();
-                        }
-                    }
-                    for(let y = 0; y<document.querySelectorAll('.tanggal-kalender').length; y++){
-                        if(document.querySelectorAll('.tanggal-kalender')[y].classList.contains('tanggal-kalender-bulan-sebelum')){
-                            document.querySelectorAll('.tanggal-kalender')[y].classList.remove('tanggal-kalender-bulan-sebelum');
-                        } else if(document.querySelectorAll('.tanggal-kalender')[y].classList.contains('tanggal-kalender-bulan-setelah')){
-                            document.querySelectorAll('.tanggal-kalender')[y].classList.remove('tanggal-kalender-bulan-setelah');
-                        }
-                    }
-
-                    document.querySelector('#tahun-kalender-sekarang').innerHTML = YYYY;
-                    let tanggalSekarang = DD;
-                    let bulanSekarang = MM;
-                    let tahunSekarang = YYYY;
-                    if(tanggalSekarang > new Date(tahunSekarang, bulanSekarang + 1, 0).getDate()){
-                        tanggalSekarang = new Date(tahunSekarang, bulanSekarang + 1, 0).getDate();
-                    }
-                    let hariSekarang = new Date(tahunSekarang, bulanSekarang, tanggalSekarang).getDay();
-                    let bulanSebelum = bulanSekarang - 1;
-                    let tahunSebelum = new Date(tahunSekarang, bulanSebelum).getFullYear();
-                    bulanSebelum = new Date(tahunSekarang, bulanSebelum).getMonth();
-                    let bulanSetelah = bulanSekarang + 1;
-                    let tahunSetelah = new Date(tahunSekarang, bulanSetelah).getFullYear();
-                    bulanSetelah = new Date(tahunSekarang, bulanSetelah).getMonth();
-                    let jumlahTanggalBulanSebelum = new Date(tahunSekarang, bulanSekarang, 0).getDate();
-                    let jumlahTanggalBulanIni = new Date(tahunSekarang, bulanSekarang + 1, 0).getDate();
-                    let hariTanggalAwalBulan = new Date(tahunSekarang, bulanSekarang, 1).getDay();
-                    let hariTanggalAkhirBulan = new Date(tahunSekarang, bulanSekarang + 1, 0).getDay();
-                    let jumlahMinggu = Math.ceil((jumlahTanggalBulanIni + hariTanggalAwalBulan + (6- hariTanggalAkhirBulan))/7);
-
-                    for(let y = 0; y<document.querySelectorAll('.bulan-kalender').length; y++){
-                        if(document.querySelectorAll('.bulan-kalender')[y].getAttribute('data-value') == bulanSekarang){
-                            document.querySelectorAll('.bulan-kalender')[y].setAttribute('selected-month', '');
-                        } else {
-                            document.querySelectorAll('.bulan-kalender')[y].removeAttribute('selected-month');
-                        }
-                    }
-
-                    let x = 0;
-                    while(x<jumlahMinggu){
-                        let minggu = document.createElement('div');
-                        minggu.setAttribute('id', 'minggu' + (x + 1));
-                        minggu.classList.add('minggu-kalender')
-                        minggu.innerHTML = `
-                        <div class="minggu">
-                            <div class="tanggal-kalender"></div>
-                            <div class="bulletin-activities"></div>
-                        </div>
-                        <div class="senin">
-                            <div class="tanggal-kalender"></div>
-                            <div class="bulletin-activities"></div>
-                        </div>
-                        <div class="selasa">
-                            <div class="tanggal-kalender"></div>
-                            <div class="bulletin-activities"></div>
-                        </div>
-                        <div class="rabu">
-                            <div class="tanggal-kalender"></div>
-                            <div class="bulletin-activities"></div>
-                        </div>
-                        <div class="kamis">
-                            <div class="tanggal-kalender"></div>
-                            <div class="bulletin-activities"></div>
-                        </div>
-                        <div class="jumat">
-                            <div class="tanggal-kalender"></div>
-                            <div class="bulletin-activities"></div>
-                        </div>
-                        <div class="sabtu">
-                            <div class="tanggal-kalender"></div>
-                            <div class="bulletin-activities"></div>
-                        </div>
-                        `
-                        document.querySelector('#tanggal-kalender').appendChild(minggu);
-                        x++
-                    }
-
-                    for(let y = hariTanggalAwalBulan - 1; y>=0; y--){
-                        document.querySelectorAll('.tanggal-kalender')[y].style.padding = '6px';
-                        document.querySelectorAll('.tanggal-kalender')[y].classList.add('tanggal-kalender-bulan-sebelum');
-                        document.querySelectorAll('.tanggal-kalender')[y].setAttribute('id', tahunSebelum + '-' + ("0" + (bulanSebelum + 1)).slice(-2) + '-' + ("0" + jumlahTanggalBulanSebelum).slice(-2));
-                        document.querySelectorAll('.tanggal-kalender')[y].innerHTML = jumlahTanggalBulanSebelum;
-                        jumlahTanggalBulanSebelum--;
-                    }
-
-                    let hariAwal = 1;
-                    for(let y = hariTanggalAwalBulan; y<jumlahTanggalBulanIni + hariTanggalAwalBulan; y++){
-                        if(hariAwal < 10){
-                            document.querySelectorAll('.tanggal-kalender')[y].style.padding = '6px 10px';
-                        } else {
-                            document.querySelectorAll('.tanggal-kalender')[y].style.padding = '6px';
-                        }
-                        document.querySelectorAll('.tanggal-kalender')[y].setAttribute('id', tahunSekarang + '-' + ("0" + (bulanSekarang + 1)).slice(-2) + '-' + ("0" + hariAwal).slice(-2));
-                        document.querySelectorAll('.tanggal-kalender')[y].innerHTML = hariAwal;
-                        hariAwal++;
-                    }
-
-                    let hariAkhir = 1;
-                    for(let y = hariTanggalAwalBulan + jumlahTanggalBulanIni; y<hariTanggalAwalBulan + jumlahTanggalBulanIni + (6 - hariTanggalAkhirBulan);y++){
-                        document.querySelectorAll('.tanggal-kalender')[y].style.padding = '6px 10px';
-                        document.querySelectorAll('.tanggal-kalender')[y].classList.add('tanggal-kalender-bulan-setelah');
-                        document.querySelectorAll('.tanggal-kalender')[y].setAttribute('id', tahunSetelah + '-' + ("0" + (bulanSetelah + 1)).slice(-2) + '-' + ("0" + hariAkhir).slice(-2));
-                        document.querySelectorAll('.tanggal-kalender')[y].innerHTML = hariAkhir;
-                        hariAkhir++;
-                    }
-
-                    document.querySelector('#tanggal-sekarang').innerHTML = tanggalSekarang; 
-                    document.querySelector('#hari-sekarang').innerHTML = hari[hariSekarang].toUpperCase();
-                    for(let y = 0; y<document.querySelectorAll('.tanggal-kalender').length; y++){
-                        if(document.querySelectorAll('.tanggal-kalender')[y].getAttribute('id') == tahunSekarang + '-' + ("0" + (bulanSekarang + 1)).slice(-2) + '-' + ("0" + tanggalSekarang).slice(-2)){
-                            document.querySelectorAll('.tanggal-kalender')[y].setAttribute('current-date', '');
-                            for(let z = 0; z<document.querySelectorAll('.aktivitas-kalender-onlist').length; z++){
-                                if(document.querySelectorAll('.aktivitas-kalender-onlist')[z].getAttribute('data-date') == document.querySelectorAll('.tanggal-kalender')[y].getAttribute('id')){
-                                    document.querySelectorAll('.aktivitas-kalender-onlist')[z].removeAttribute('noncurrent-event');
-                                    document.querySelectorAll('.aktivitas-kalender-onlist')[z].setAttribute('current-event', '');
-                                } else {
-                                    document.querySelectorAll('.aktivitas-kalender-onlist')[z].removeAttribute('current-event');
-                                    document.querySelectorAll('.aktivitas-kalender-onlist')[z].setAttribute('noncurrent-event', '');                                    
+                            document.querySelector('#due-date-basis').addEventListener('change', function(){
+                                document.querySelector('#due-date-input').disabled = false;
+                                switch (this.value){
+                                    case "Week":
+                                        document.querySelector('#due-date-input').setAttribute('max', '50');
+                                    break;
+                                    case "Day":
+                                        document.querySelector('#due-date-input').setAttribute('max', '360');
+                                    break;
+                                    case "Hour":
+                                        document.querySelector('#due-date-input').setAttribute('max', '168');
+                                    break;
+                                    case "Minute":
+                                        document.querySelector('#due-date-input').setAttribute('max', '1440');
                                 }
-                            }                           
-                        }
+                            })
 
-                        document.querySelectorAll('.tanggal-kalender')[y].addEventListener('click', function(e){
-                            if(document.querySelector('[current-date]')){
-                                document.querySelector('[current-date]').removeAttribute('current-date')
-                            }
-                            this.setAttribute('current-date', '');
-                            renderKalender(Number(this.getAttribute('id').slice(0,4)), Number(this.getAttribute('id').slice(5,7)) - 1, Number(this.getAttribute('id').slice(8, 10)));
-                        })
-                    }
-                    
-                }
+                        }
+                    })
+                    document.querySelector('#not-set-due-date-task').addEventListener('change', function(){
+                        if(this.checked){
+                            document.querySelector('[not-set-due-date-hd]').classList.add('text-primary');
+                            document.querySelector('[not-set-due-date-bd]').classList.add('d-block');
+                            document.querySelector('[not-set-due-date-bd]').classList.remove('d-none');
+                            document.querySelector('[set-due-date-hd]').classList.remove('text-primary');
+                            document.querySelector('[set-due-date-bd]').classList.add('d-none')
+                            document.querySelector('[set-due-date-bd]').classList.remove('d-block');
+
+                            document.querySelector('#due-date-basis').selectedIndex = 0
+                            document.querySelector('#due-date-input').disabled = true;
+
+
+                        }
+                    })                    
+                }                
 
                 if(idTokenResult.claims.moderator){
                     
                 } else if(idTokenResult.claims.adminKantor){
-
+                    
                 } else if(idTokenResult.claims.member){
-
+                    document.querySelector('#tombol-tambah-tugas').classList.add('d-none');
                 } else {
                     let reqCustomClaims = document.createElement('div');
                     reqCustomClaims.setAttribute('id', 'req-custom-claims');
@@ -288,7 +163,7 @@ const setupUI = (user) => {
                         item.removeEventListener('submit', formMasuk);
                         document.querySelector('#sign-up').parentElement.remove();
                     }
-                    item.style.display = 'block';
+                    item.classList.add('d-block');
                     item.querySelector('button[type=submit]').innerHTML = 'Resend email';
                     item.setAttribute('id', 'form-verify-email');
                     item.addEventListener('submit', resendEmailVerification);
@@ -312,8 +187,10 @@ const setupUI = (user) => {
             document.querySelector('#user-info').remove();
         }   
         document.querySelector('#navbar').style.display = 'none';
-        document.querySelector('#nav-sidebar').style.display = 'none';
-        document.querySelector('#myTabContent').style.display = 'none';
+        document.querySelector('#nav-sidebar').classList.add('d-none');
+        document.querySelector('#myTabContent').classList.add('d-none');
+        document.querySelector('#nav-sidebar').classList.remove('d-block');
+        document.querySelector('#myTabContent').classList.remove('d-block');        
         document.body.style.setProperty('background-color', '#4793d1', 'important')     
         if(!document.querySelector('#form-masuk')){
             let form = document.createElement('form');
@@ -347,13 +224,13 @@ const setupUI = (user) => {
             <div class="rounded-bottom" id="parent-lupa-password"><div id="lupa-password">Forgot password?</div></div>
             `
             document.body.appendChild(form);
-            document.querySelector('#form-masuk').style.display = 'block';
+            document.querySelector('#form-masuk').classList.add('d-block');
 
             document.querySelector('#form-masuk').addEventListener('submit', formMasuk);
             document.querySelector('#lupa-password').addEventListener('click', lupaPassword);
 
         } else {
-            document.querySelector('#form-masuk').style.display = 'block';
+            document.querySelector('#form-masuk').classList.add('d-block');
         }
         [document.querySelector('#sign-in'), document.querySelector('#sign-up')].forEach(item => {
             if(item){
@@ -366,18 +243,9 @@ const setupUI = (user) => {
 
 function windowResize(){
     if(window.innerWidth < 1300){
-        for(let y = 0; y<document.querySelectorAll('.bulan-kalender').length; y++){
-            document.querySelectorAll('.bulan-kalender')[y].innerHTML = document.querySelectorAll('.bulan-kalender')[y].innerHTML.slice(0,3);
-        }                           
-        if(window.innerWidth < 800){
-            document.querySelector('#kalender').style.setProperty('display', 'block', 'important')
-        } else {
-            document.querySelector('#kalender').style.setProperty('display', 'grid', 'important')
-        }       
+
     } else if(window.innerWidth > 1300){
-        for(let y = 0; y<document.querySelectorAll('.bulan-kalender').length; y++){
-            document.querySelectorAll('.bulan-kalender')[y].innerHTML = bulan[y];
-        }                           
+
     }
 }
 
@@ -492,151 +360,6 @@ function loginAct(e){
         e.target.innerHTML = 'Sign up';
         e.target.previousElementSibling.innerHTML = "Don't have an account?";
         e.target.parentElement.parentElement.parentElement.querySelector('button[type=submit]').innerHTML = 'Sign in';
-    }
-}
-
-function renderPengaturanAktivitasKalender(doc){
-    let readAdm = doc.data().readAdm;
-    let readMem = doc.data().readMem;
-    let editAdm = doc.data().editAdm;
-    let editMem = doc.data().editMem;
-    let delAdm = doc.data().delAdm;
-    let delMem = doc.data().delMem;
-    document.querySelector('#izin-baca-aktivitas-kalender-adm').checked = readAdm;
-    document.querySelector('#izin-baca-aktivitas-kalender-mem').checked = readMem;
-    document.querySelector('#izin-edit-aktivitas-kalender-adm').checked = editAdm;
-    document.querySelector('#izin-edit-aktivitas-kalender-mem').checked = editMem;
-    document.querySelector('#izin-hapus-aktivitas-kalender-adm').checked = delAdm;
-    document.querySelector('#izin-hapus-aktivitas-kalender-mem').checked = delMem;
-}
-
-
-function renderAktivitasKalender(doc){
-    let username = doc.data().username;
-    let date = doc.data().date;
-    let description = doc.data().description;
-    let event = document.createElement('div');  
-    let eventOnList = document.createElement('div');
-    let modalEdit = document.createElement('div');
-    event.setAttribute('id', 'aktivitas-kalender' + doc.id);
-    event.setAttribute('data-id', doc.id);
-    event.setAttribute('data-date', Number(date.replace(/-/g, '')));
-    event.classList.add('aktivitas-kalender', 'rounded');
-    eventOnList.setAttribute('id', 'aktivitas-kalender-onlist' + doc.id);
-    eventOnList.setAttribute('data-id', doc.id);
-    eventOnList.setAttribute('data-date', date);
-
-    if(document.getElementById(date)){
-        if(document.getElementById(date).hasAttribute('current-date')){
-            eventOnList.setAttribute('current-event', '');
-        } else {
-            eventOnList.setAttribute('noncurrent-event', '');
-        }
-    } else {
-        eventOnList.setAttribute('noncurrent-event', '');
-    }
-    let day = date.slice(8,10);
-    let month = date.slice(5,7);
-    let year = date.slice(0,4);
-    eventOnList.classList.add('aktivitas-kalender-onlist');     
-    event.innerHTML = `
-    <div class="menu-konfigurasi-aktivitas-kalender">
-        <i class='fas fa-copy copy-aktivitas-kalender' id="copy${doc.id}"></i>
-        <i class='fas fa-pencil-alt edit-aktivitas-kalender' data-toggle="modal" data-target="#modal-aktivitas-kalender${doc.id}"></i>
-        <i class="fa fa-trash hapus-aktivitas-kalender" id="hapus${doc.id}"></i>
-    </div>
-    <div id="modal-tanggal-aktivitas-kalender${doc.id}" class="modal-tanggal-aktivitas-kalender">${day + ' ' + bulan[Number(month) - 1] + ' ' + year}</div>
-    <div id="modal-deskripsi-aktivitas-kalender${doc.id}" class="modal-deskripsi-aktivitas-kalender">${description}</div>
-    <usn>${username}</usn>
-    `
-    eventOnList.innerHTML = `
-    <div style="overflow:hidden;">
-        <div id="tampilan-deskripsi-aktivitas-kalender${doc.id}" class="tampilan-deskripsi-aktivitas-kalender">${description}</div>
-        <usn>${username}</usn>
-    </div>
-    `   
-    modalEdit.innerHTML = `
-    <div class="modal fade" id="modal-aktivitas-kalender${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <form id="update-aktivitas-kalender${doc.id}">
-            <div class="modal-header">
-              <h5 class="modal-title">Edit Content</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="form-group">
-                <label>Date</label>
-                <input class="form-control" type="date" id="tanggal-aktivitas-kalender${doc.id}" value="${date}" required>
-              </div>            
-              <div class="form-group">
-                <label>Description</label>
-                <textarea class="form-control" oninput="auto_grow(this)" id="deskripsi-aktivitas-kalender${doc.id}" required>${description.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    `
-
-    document.querySelector('#list-aktivitas-kalender').appendChild(event);
-    document.querySelector('#list-aktivitas-kalender-onlist').appendChild(eventOnList);
-    document.body.appendChild(modalEdit);
-
-    document.querySelector('#copy' + doc.id).addEventListener('click', function(e){
-        let range = document.getSelection().getRangeAt(0);
-        range.selectNode(document.querySelector("#modal-deskripsi-aktivitas-kalender" + doc.id));
-        window.getSelection().addRange(range);
-        document.execCommand("copy");       
-    })
-
-    document.querySelector('#hapus' + doc.id).addEventListener('click', function(e){
-        db.collection('aktivitasKalender').doc(doc.id).delete().then(() => {
-            alert('The event has been delete');
-        })
-    })
-
-    document.querySelector('#update-aktivitas-kalender' + doc.id).addEventListener('submit', function(e){
-        e.preventDefault();
-        db.collection('aktivitasKalender').doc(doc.id).update({
-            date : this['tanggal-aktivitas-kalender' + doc.id].value,
-            description : this['deskripsi-aktivitas-kalender' + doc.id].value.replace(/\n\r?/g, '<br/>')
-        }).then(() => {
-            $('#modal-aktivitas-kalender' + doc.id).modal('hide')
-            alert('The event has been update');
-        })
-    })
-
-
-}
-
-function renderUpdateAktivitasKalender(doc){
-    let date = doc.data().date;
-    let day = date.slice(8,10);
-    let month = date.slice(5,7);
-    let year = date.slice(0,4); 
-    let description = doc.data().description;
-    document.querySelector('#aktivitas-kalender' + doc.id).setAttribute('data-date', date.replace(/-/g, ''))
-    document.querySelector('#aktivitas-kalender-onlist' + doc.id).setAttribute('data-date', date);
-    document.querySelector('#tanggal-aktivitas-kalender' + doc.id).value = date;
-    document.querySelector('#deskripsi-aktivitas-kalender' + doc.id).value = description.replace(/<br\s*[\/]?>/gi, "\n");
-    document.querySelector('#tampilan-deskripsi-aktivitas-kalender' + doc.id).innerHTML = description;
-    document.querySelector('#modal-tanggal-aktivitas-kalender' + doc.id).innerHTML = day + ' ' + bulan[Number(month) - 1] + ' ' + year;
-    document.querySelector('#modal-deskripsi-aktivitas-kalender' + doc.id).innerHTML = description;
-
-    if(document.querySelector('[current-date]').getAttribute('id') == date){
-        document.querySelector('#aktivitas-kalender-onlist' + doc.id).setAttribute('current-event', '');
-        document.querySelector('#aktivitas-kalender-onlist' + doc.id).removeAttribute('noncurrent-event');
-    } else {
-        document.querySelector('#aktivitas-kalender-onlist' + doc.id).setAttribute('noncurrent-event', '');
-        document.querySelector('#aktivitas-kalender-onlist' + doc.id).removeAttribute('current-event');
     }
 }
 
@@ -949,12 +672,350 @@ function renderUpdatePengguna(doc){
     })
 }
 
-function renderTugas(doc){
+function renderPengaturanTugas(doc){
+    let completeAdm = doc.data().completeAdm;
+    let completeMem = doc.data().completeMem;
+    let completeAse = doc.data().completeAse;
+    let readAdm = doc.data().readAdm;
+    let readMem = doc.data().readMem;
+    let readAse = doc.data().readAse;
+    let editAdm = doc.data().editAdm;
+    let editMem = doc.data().editMem;
+    let editAse = doc.data().editAse;
+    let delAdm = doc.data().delAdm;
+    let delMem = doc.data().delMem;
+    let delAse = doc.data().delAse;
+    let permission = [completeAdm, completeMem, completeAse, readAdm, readMem, readAse, editAdm, editMem, editAse, delAdm, delMem, delAse];
+    [document.querySelector('#izin-selesai-tugas-adm'), document.querySelector('#izin-selesai-tugas-mem'), document.querySelector('#izin-selesai-tugas-rec'),
+    document.querySelector('#izin-baca-tugas-adm'), document.querySelector('#izin-baca-tugas-mem'), document.querySelector('#izin-baca-tugas-rec'),
+    document.querySelector('#izin-edit-tugas-adm'), document.querySelector('#izin-edit-tugas-mem'), document.querySelector('#izin-edit-tugas-rec'),
+    document.querySelector('#izin-hapus-tugas-adm'), document.querySelector('#izin-hapus-tugas-mem'), document.querySelector('#izin-hapus-tugas-rec')].forEach((item, index) => {
+        if(permission[index] == true){
+            item.checked = true;
+        }
+    })
+}
 
+function renderTugas(doc){
+    let dateRelease = doc.data().dateRelease;
+    let targetedUsername = doc.data().targetedUsername;
+    let targetedUserUID = doc.data().targetedUserUID;
+    let status = doc.data().status;
+    let description = doc.data().description;
+    let dateDueExists = doc.data().dateDueExists;
+    let dateDue = doc.data().dateDue;
+    let late = doc.data().late;
+    let dateCompletion = doc.data().dateCompletion;
+    let dateDueWeek = doc.data().dateDueWeek;
+    let dateDueDay = doc.data().dateDueDay;
+    let dateDueHour = doc.data().dateDueHour;
+    let dateDueMinute = doc.data().dateDueMinute;
+    let dateDueInput = 0;
+    let checked;
+    let setDueDate;
+    let notSetDueDate;
+    if(dateDueExists){
+        setDueDate = 'checked';
+        if(dateDueWeek){
+            dateDueWeek = 'selected';
+            dateDueInput = (dateDue - dateRelease)/(7 * 24 * 60 * 60 * 1000)
+        } else if(dateDueDay){
+            dateDueDay = 'selected';
+            dateDueInput = (dateDue - dateRelease)/(24 * 60 * 60 * 1000)
+        } else if(dateDueHour){
+            dateDueHour = 'selected';
+            dateDueInput = (dateDue - dateRelease)/(60 * 60 * 1000)
+        } else if(dateDueMinute){
+            dateDueMinute = 'selected';
+            dateDueInput = (dateDue - dateRelease)/(60 * 1000)
+        }       
+        let hourDue = String(new Date(dateDue).getHours()).padStart(2, '0');
+        let minuteDue = String(new Date(dateDue).getMinutes()).padStart(2, '0');
+        let dayDue = String(new Date(dateDue).getDate()).padStart(2, '0');
+        let monthDue = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        monthDue = monthDue[new Date(dateDue).getMonth()];
+        let yearDue = new Date(dateDue).getFullYear();        
+        dateDue = hourDue + ':' + minuteDue + ' / ' + dayDue + ' ' + monthDue + ' ' + yearDue;
+        switch(status){
+            case "PENDING":
+            status = "<div class='text-danger font-italic'>has not been completed yet</div>";
+            dateCompletion = '-';
+            break;
+            case "COMPLETE":
+            checked = 'checked';
+            let hourCompletion = String(new Date(dateCompletion).getHours()).padStart(2, '0');
+            let minuteCompletion = String(new Date(dateCompletion).getMinutes()).padStart(2, '0');
+            let dayCompletion = String(new Date(dateCompletion).getDate()).padStart(2, '0');
+            let monthCompletion = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            monthCompletion = monthCompletion[new Date(dateCompletion).getMonth()];
+            let yearCompletion = new Date(dateCompletion).getFullYear();        
+            dateCompletion = hourCompletion + ':' + minuteCompletion + ' / ' + dayCompletion + ' ' + monthCompletion + ' ' + yearCompletion;            
+            if(late){
+                status = "<div class='text-success font-italic'>Late completion and has been completed</div>";
+            } else {
+                status = "<div class='text-success font-italic'>has been completed</div>";
+            }            
+        }
+    } else {
+        switch(status){
+            case "PENDING":
+            status = "<div class='text-danger font-italic'>has not been completed yet</div>";
+            dateCompletion = '-';
+            break;
+            case "COMPLETE":
+            status = "<div class='text-success font-italic'>has been completed</div>";
+            checked = 'checked';
+            let hourCompletion = String(new Date(dateCompletion).getHours()).padStart(2, '0');
+            let minuteCompletion = String(new Date(dateCompletion).getMinutes()).padStart(2, '0');
+            let dayCompletion = String(new Date(dateCompletion).getDate()).padStart(2, '0');
+            let monthCompletion = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            monthCompletion = monthCompletion[new Date(dateCompletion).getMonth()];
+            let yearCompletion = new Date(dateCompletion).getFullYear();        
+            dateCompletion = hourCompletion + ':' + minuteCompletion + ' / ' + dayCompletion + ' ' + monthCompletion + ' ' + yearCompletion;            
+        }
+        notSetDueDate = 'checked';
+        dateDue = 'none';
+    }
+    let task = document.createElement('div');
+    let modalInfo = document.createElement('div');
+    let modalEdit = document.createElement('div');
+    task.setAttribute('data-id', doc.id);
+    let hourRelease = String(new Date(dateRelease).getHours()).padStart(2, '0');
+    let minuteRelease = String(new Date(dateRelease).getMinutes()).padStart(2, '0');
+    let dayRelease = String(new Date(dateRelease).getDate()).padStart(2, '0');
+    let monthRelease = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    monthRelease = monthRelease[new Date(dateRelease).getMonth()];
+    let yearRelease = new Date(dateRelease).getFullYear();
+    dateRelease = hourRelease + ':' + minuteRelease + ' / ' + dayRelease + ' ' + monthRelease + ' ' + yearRelease;
+    task.classList.add('my-2', 'position-relative', 'align-items-center', 'bg-light', 'tugas');
+    task.innerHTML = `
+    <input type="checkbox" class="checkbox-permission m-auto" id="checkbox-tugas${doc.id}" ${checked}>
+    <div class="py-3 deskripsi-tugas" id="deskripsi-tugas${doc.id}" data-toggle="modal" data-target="#modal-tugas${doc.id}">${description}</div>
+    `
+    modalInfo.innerHTML = `
+    <div class="modal fade" id="modal-tugas${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="pengaturan-tugas">
+                    <div class="modal-header justify-content-center">
+                        <h5 class="modal-title">Information About Task</h5>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped table-bordered mb-0 tabel-tugas">
+                            <thead>
+                                <tr>
+                                    <th scope="col" colspan="3" class="p-1 border-bottom-0 text-left font-weight-bold">Information About Task</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-1">Release Date</td>
+                                    <td class="p-1 text-center">:</td>
+                                    <td class="p-1">${dateRelease}</td>
+                                </tr>              
+                                <tr>
+                                    <td class="p-1">Completion Date</td>
+                                    <td class="p-1 text-center">:</td>
+                                    <td class="p-1" id="tanggal-penyelesaian-tugas${doc.id}">${dateCompletion}</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Due Date</td>
+                                    <td class="p-1 text-center">:</td>
+                                    <td class="p-1 w-50" id="tanggal-berakhir-tugas${doc.id}">${dateDue}</td>
+                                </tr>                                
+                                <tr>
+                                    <td class="p-3" colspan="3"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Status</td>
+                                    <td class="p-1 text-center">:</td>
+                                    <td class="p-1" id="status-tugas${doc.id}">${status}</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Action</td>
+                                    <td class="p-1 text-center">:</td>
+                                    <td class="p-1">
+                                        <i class="material-icons bg-warning rounded p-1 task-action" data-toggle="modal" data-target="#modal-edit-tugas${doc.id}">edit</i>
+                                        <i class="material-icons bg-danger rounded p-1 task-action text-light" id="delete${doc.id}">delete_forever</i>
+                                    </td>
+                                </tr>                                
+                                <tr>
+                                    <td class="p-1" colspan="3">
+                                        <div class="font-weight-bold">Task Description :</div>
+                                        <div>${description}</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    `
+
+    modalEdit.innerHTML = `
+    <div class="modal fade" id="modal-edit-tugas${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="tambah-tugas">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create a task <i class="fa fa-gear" id="tombol-pengaturan-tugas" data-toggle="modal" data-target="#modal-pengaturan-tugas"></i></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">          
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control" oninput="auto_grow(this)" id="deskripsi-tugas${doc.id}" required>${description.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                        </div>
+                        <div class="form-group bg-light border p-2">
+                            <label class="font-weight-bold">Additional Settings</label>
+                            <div class="d-flex mb-2">
+                                <input class="m-1" type="radio" name="task" id="set-due-date-task${doc.id}" ${setDueDate}>
+                                <div>
+                                    <div set-due-date-hd class="font-weight-bold">Set due date on a task</div>
+                                    <div set-due-date-bd class="d-none">
+                                        <div>Due date completion will be based on :</div>
+                                        <div class="d-flex">
+                                            <select class="form-control w-50 mr-2" id="due-date-basis${doc.id}">
+                                                <option disabled hidden>-</option>
+                                                <option ${dateDueWeek}>Week</option>
+                                                <option ${dateDueDay}>Day</option>
+                                                <option ${dateDueHour}>Hour</option>
+                                                <option ${dateDueMinute}>Minute</option>
+                                            </select>
+                                            <input type="number" class="form-control w-50" value="${dateDueInput}" id="due-date-input${doc.id}" min="0" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>            
+                            <div class="d-flex mb-2">
+                                <input class="m-1" type="radio" name="task" id="not-set-due-date-task${doc.id}" ${notSetDueDate}>
+                                <div>
+                                    <div not-set-due-date-hd class="font-weight-bold text-primary">Don't set due date on a task</div>
+                                    <div not-set-due-date-bd class="d-block">The Assignee would be freely to complete the related task anytime</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>    
+    `
+
+    document.querySelector('#list-tugas').appendChild(task);
+    document.body.appendChild(modalInfo);
+    document.body.appendChild(modalEdit);
+
+    document.querySelector('#checkbox-tugas' + doc.id).addEventListener('change', function(){
+        if(this.checked){
+            db.collection('tugass').doc(doc.id).get().then(item => {
+                let late;
+                if(item.data().dateDueExists){
+                    if(new Date().getTime() > item.data().dateDue){
+                        late = true;
+                    } else {
+                        late = false;
+                    }
+                } else {
+                    late = firebase.firestore.FieldValue.delete();
+                }
+                db.collection('tugass').doc(doc.id).update({
+                    status : 'COMPLETE',
+                    dateCompletion : new Date().getTime(),
+                    late : late
+                }).catch(err => {
+                    return firebaseError(err);
+                })                
+            })            
+        } else {
+            db.collection('tugass').doc(doc.id).update({
+                status : 'PENDING',
+                dateCompletion : firebase.firestore.FieldValue.delete(),
+                late : firebase.firestore.FieldValue.delete()
+            }).catch(err => {
+                return firebaseError(err);
+            })            
+        }
+    })
+
+    document.querySelector('#delete' + doc.id).addEventListener('click', function(){
+        let alert = confirm('Are you sure want to delete this task?');
+        if(alert){
+            db.collection('tugass').doc(doc.id).delete().then(() => {
+                $('#modal-tugas' + doc.id).modal('hide');
+                document.querySelector('#modal-tugas' + doc.id).parentElement.remove();
+            })
+        }
+    })
 }
 
 function renderUpdateTugas(doc){
-
+    let status = doc.data().status;
+    let dateDueExists = doc.data().dateDueExists;
+    let dateDue = doc.data().dateDue;
+    let dateCompletion = doc.data().dateCompletion;
+    let late = doc.data().late;
+    if(dateDueExists){
+        let hourDue = String(new Date(dateDue).getHours()).padStart(2, '0');
+        let minuteDue = String(new Date(dateDue).getMinutes()).padStart(2, '0');
+        let dayDue = String(new Date(dateDue).getDate()).padStart(2, '0');
+        let monthDue = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        monthDue = monthDue[new Date(dateDue).getMonth()];
+        let yearDue = new Date(dateDue).getFullYear();        
+        dateDue = hourDue + ':' + minuteDue + ' / ' + dayDue + ' ' + monthDue + ' ' + yearDue;
+        switch(status){
+            case "PENDING":
+            status = "<div class='text-danger font-italic'>has not been completed yet</div>";
+            dateCompletion = '-';
+            break;
+            case "COMPLETE":
+            document.querySelector('#checkbox-tugas' + doc.id).checked = true;
+            let hourCompletion = String(new Date(dateCompletion).getHours()).padStart(2, '0');
+            let minuteCompletion = String(new Date(dateCompletion).getMinutes()).padStart(2, '0');
+            let dayCompletion = String(new Date(dateCompletion).getDate()).padStart(2, '0');
+            let monthCompletion = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            monthCompletion = monthCompletion[new Date(dateCompletion).getMonth()];
+            let yearCompletion = new Date(dateDue).getFullYear();        
+            dateCompletion = hourCompletion + ':' + minuteCompletion + ' / ' + dayCompletion + ' ' + monthCompletion + ' ' + yearCompletion;            
+            if(late){
+                status = "<div class='text-success font-italic'>Late completion and has been completed</div>";
+            } else {
+                status = "<div class='text-success font-italic'>has been completed</div>";
+            }            
+        }
+    } else {
+        switch(status){
+            case "PENDING":
+            status = "<div class='text-danger font-italic'>has not been completed yet</div>";
+            dateCompletion = '-';
+            break;
+            case "COMPLETE":
+            status = "<div class='text-success font-italic'>has been completed</div>";
+            checked = 'checked';
+            let hourCompletion = String(new Date(dateCompletion).getHours()).padStart(2, '0');
+            let minuteCompletion = String(new Date(dateCompletion).getMinutes()).padStart(2, '0');
+            let dayCompletion = String(new Date(dateCompletion).getDate()).padStart(2, '0');
+            let monthCompletion = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            monthCompletion = monthCompletion[new Date(dateCompletion).getMonth()];
+            let yearCompletion = new Date(dateCompletion).getFullYear();        
+            dateCompletion = hourCompletion + ':' + minuteCompletion + ' / ' + dayCompletion + ' ' + monthCompletion + ' ' + yearCompletion;            
+        }
+        dateDue = 'none';        
+    }
+    document.querySelector('#tanggal-penyelesaian-tugas' + doc.id).innerHTML = dateCompletion;
+    document.querySelector('#status-tugas' + doc.id).innerHTML = status;
+    document.querySelector('#tanggal-berakhir-tugas' + doc.id).innerHTML = dateDue;
 }
 
 function auto_grow(element){

@@ -89,64 +89,12 @@
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade active show" id="halaman-beranda" role="tabpanel">
 
-    <div id="kalender" class="rounded">
-      <div id="aktivitas-kalender">
-        <div id="tampilan-tanggal-hari-sekarang">
-          <div id="tanggal-sekarang"></div>
-          <div id="hari-sekarang"></div>
-        </div>
-        <div id="body-lihat-list-aktivitas">
-          <div id="header-lihat-list-aktivitas">Current Events <i class='far fa-calendar-alt rounded-circle' id="lihat-list-aktivitas" data-toggle="modal" data-target="#modal-list-aktivitas-kalender"></i></div>
-          <div id="list-aktivitas-kalender-onlist"></div>
-          <div class="btn btn-primary d-block w-100" id="tombol-tambah-aktivitas-kalender" data-toggle="modal" data-target="#modal-tambah-aktivitas-kalender">Post an event</div>
-        </div>    
-      </div>
-      <div id="tampilan-kalender">
-        <div id="tahun-kalender">
-          <div id="pilih-tahun-kalender">
-            <i class="fa fa-caret-left arah-tahun-kalender" id="undur-tahun-kalender"></i>
-            <div id="tahun-kalender-sekarang"></div>
-            <i class="fa fa-caret-right arah-tahun-kalender" id="maju-tahun-kalender"></i>
-          </div>
-        </div>
-        <div id="bulan-kalender">
-          <div class="bulan-kalender" data-value="0">Januari</div>
-          <div class="bulan-kalender" data-value="1">Februari</div>
-          <div class="bulan-kalender" data-value="2">Maret</div>
-          <div class="bulan-kalender" data-value="3">April</div>
-          <div class="bulan-kalender" data-value="4">Mei</div>
-          <div class="bulan-kalender" data-value="5">Juni</div>
-          <div class="bulan-kalender" data-value="6">Juli</div>
-          <div class="bulan-kalender" data-value="7">Agustus</div>
-          <div class="bulan-kalender" data-value="8">September</div>
-          <div class="bulan-kalender" data-value="9">Oktober</div>
-          <div class="bulan-kalender" data-value="10">November</div>
-          <div class="bulan-kalender" data-value="11">Desember</div>
-        </div>
-        <div id="hari-kalender">
-          <div class="hari-kalender" data-value="0">Minggu</div>
-          <div class="hari-kalender" data-value="1">Senin</div>
-          <div class="hari-kalender" data-value="2">Selasa</div>
-          <div class="hari-kalender" data-value="3">Rabu</div>
-          <div class="hari-kalender" data-value="4">Kamis</div>
-          <div class="hari-kalender" data-value="5">Jumat</div>
-          <div class="hari-kalender" data-value="6">Sabtu</div>
-        </div>
-        <div id="tanggal-kalender"></div>
-      </div>
-    </div>
-
     <div class="rounded bg-white px-4 py-3 mx-3 my-2" style="box-shadow: 0px 0px 3px black;">
       <div class='d-flex align-items-center pt-2 pb-1' style="border-bottom: 1px solid darkslategrey;">
-        <div id="selesaikan-semua-tugas" class="mr-auto d-flex align-items-center"><i class="material-icons">check</i> Completed all tasks</div>
+        <div id="selesaikan-semua-tugas" class="mr-auto d-flex align-items-center">Completed all tasks</div>
           <i class="material-icons mr-1" id="tombol-tambah-tugas" data-toggle="modal" data-target="#modal-tambah-tugas">add_circle_outline</i>
       </div>
-      <div id="list-tugas">
-        <div class="my-2 position-relative align-items-center" style="display: grid;grid-template-columns: 50px auto;">
-          <input type="checkbox" class="checkbox-permission m-auto">
-          <div class="py-3 deskripsi-tugas">Ganti Gambar Produk Ganti Gambar Produk Ganti Gambar Produk Ganti Gambar Produk</div>
-        </div>
-      </div>
+      <div id="list-tugas"></div>
       <div class="d-flex align-items-center mb-3" style="border-top: 1px solid darkslategrey;">
         <div class="mr-auto"></div>
         <div class="d-flex">
@@ -208,38 +156,12 @@
   </div>  
 </div>
 
-
-<div class="modal fade" id="modal-tambah-aktivitas-kalender" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form id="tambah-aktivitas-kalender">
-        <div class="modal-header">
-          <h5 class="modal-title">Post an event <i class="fa fa-gear" data-toggle="modal" id="tombol-pengaturan-aktivitas-kalender" data-target="#modal-pengaturan-aktivitas-kalender"></i></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label>Description</label>
-            <textarea class="form-control" oninput="auto_grow(this)" id="deskripsi-aktivitas-kalender" required></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <div class="modal fade" id="modal-tambah-tugas" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <form id="tambah-tugas">
         <div class="modal-header">
-          <h5 class="modal-title">Create a task <i class="fa fa-gear" id="tombol-pengaturan-aktivitas-kalender" data-toggle="modal" data-target="#modal-pengaturan-tugas"></i></h5>
+          <h5 class="modal-title">Create a task <i class="fa fa-gear" id="tombol-pengaturan-tugas" data-toggle="modal" data-target="#modal-pengaturan-tugas"></i></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -255,53 +177,35 @@
             <label>Description</label>
             <textarea class="form-control" oninput="auto_grow(this)" id="deskripsi-tugas" required></textarea>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="modal-pengaturan-aktivitas-kalender" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form id="pengaturan-aktivitas-kalender">
-        <div class="modal-header">
-          <h5 class="modal-title">Calendar Events Settings</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Permission</th>
-                <th scope="col" class="text-center">Admin</th>
-                <th scope="col" class="text-center">Member</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Read Content</td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-baca-aktivitas-kalender-adm" checked></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-baca-aktivitas-kalender-mem" checked></td>
-              </tr>
-              <tr>
-                <td>Edit Content</td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-edit-aktivitas-kalender-adm" checked></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-edit-aktivitas-kalender-mem" checked></td>
-              </tr>
-              <tr>
-                <td>Delete Content</td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-hapus-aktivitas-kalender-adm" checked></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-hapus-aktivitas-kalender-mem" checked></td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="form-group bg-light border p-2">
+            <label class="font-weight-bold">Additional Settings</label>
+            <div class="d-flex mb-2">
+              <input class="m-1" type="radio" name="task" id="set-due-date-task">
+              <div>
+                <div set-due-date-hd class="font-weight-bold">Set due date on a task</div>
+                <div set-due-date-bd class="d-none">
+                  <div>Due date completion will be based on :</div>
+                  <div class="d-flex">
+                    <select class="form-control w-50 mr-2" id="due-date-basis">
+                      <option disabled hidden selected>-</option>
+                      <option>Week</option>
+                      <option>Day</option>
+                      <option>Hour</option>
+                      <option>Minute</option>
+                    </select>
+                    <input type="number" class="form-control w-50" id="due-date-input" min="0" disabled>
+                  </div>
+                </div>
+              </div>
+            </div>            
+            <div class="d-flex mb-2">
+              <input class="m-1" type="radio" name="task" id="not-set-due-date-task" checked>
+              <div>
+                <div not-set-due-date-hd class="font-weight-bold text-primary">Don't set due date on a task</div>
+                <div not-set-due-date-bd class="d-block">The Assignee would be freely to complete the related task anytime</div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -323,7 +227,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <table class="table table-striped">
+          <table class="table table-striped table-bordered mb-0">
             <thead>
               <tr>
                 <th scope="col">Permission</th>
@@ -362,6 +266,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="reset" class="btn btn-info">Reset</button>
           <button type="submit" class="btn btn-primary">Save changes</button>
         </div>
       </form>
