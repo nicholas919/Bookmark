@@ -1,34 +1,31 @@
 auth.onAuthStateChanged(user => {
   if(user){
-
     db.collection('user').onSnapshot(snapshot =>{
         let changes = snapshot.docChanges();
         changes.forEach(change =>{
-        	user.getIdTokenResult().then(idTokenResult => {
-        		if(idTokenResult.claims.moderator){
-		            if(change.type == 'added'){
-		                if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
-		            	    renderPengguna(change.doc);
-		                }
-		            } else if (change.type == 'modified'){
-		                renderUpdatePengguna(change.doc);
-		            }
-	        	}
-        	})
+		    if(change.type == 'added'){
+		       	if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
+		         	renderPengguna(change.doc);
+		        }
+		    } else if (change.type == 'modified'){
+		        renderUpdatePengguna(change.doc);
+		    }
         })
     }, err => {
-    	firebaseError(err);
+    	console.log(err.message)
     })
 
     db.collection('pengaturanTugas').onSnapshot(snapshot =>{
         let changes = snapshot.docChanges();
         changes.forEach(change =>{
-            if(change.type == 'added' || change.type == 'modified'){
-            	renderPengaturanTugas(change.doc);
-            }
+        	if(change.doc.id == auth.currentUser.uid){
+            	if(change.type == 'added' || change.type == 'modified'){
+            		renderPengaturanTugas(change.doc);
+            	}
+        	}
         })
     }, err => {
-    	firebaseError(err);
+    	console.log(err.message)
     })
 
     db.collection('tugass').onSnapshot(snapshot =>{
@@ -46,8 +43,8 @@ auth.onAuthStateChanged(user => {
             }
         })
     }, err => {
-		firebaseError(err);
-	})		
+    	console.log(err.message)
+    })		
 
 /*
     db.collection('aktivitasKalender').onSnapshot(snapshot =>{
