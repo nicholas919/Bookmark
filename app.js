@@ -692,6 +692,8 @@ function renderPengaturanTugas(doc){
     document.querySelector('#izin-hapus-tugas-adm'), document.querySelector('#izin-hapus-tugas-mem'), document.querySelector('#izin-hapus-tugas-rec')].forEach((item, index) => {
         if(permission[index] == true){
             item.checked = true;
+        } else {
+            item.checked = false;
         }
     })
 }

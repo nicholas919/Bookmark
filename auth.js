@@ -1,15 +1,20 @@
 auth.onAuthStateChanged(user => {
   if(user){
+
     db.collection('user').onSnapshot(snapshot =>{
         let changes = snapshot.docChanges();
         changes.forEach(change =>{
-            if(change.type == 'added'){
-                if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
-            	    renderPengguna(change.doc);
-                }
-            } else if (change.type == 'modified'){
-                renderUpdatePengguna(change.doc);
-            }
+        	user.getIdTokenResult().then(idTokenResult => {
+        		if(idTokenResult.claims.moderator){
+		            if(change.type == 'added'){
+		                if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
+		            	    renderPengguna(change.doc);
+		                }
+		            } else if (change.type == 'modified'){
+		                renderUpdatePengguna(change.doc);
+		            }
+	        	}
+        	})
         })
     }, err => {
     	firebaseError(err);
