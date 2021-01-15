@@ -16,152 +16,61 @@
 </head>
 <body>
 
-<form id="form-masuk" class="need-validation bg-white rounded" novalidate>
-  <div style="padding: 60px 20px 20px;">
-    <img src="bookmark-alt-flat.png" class="rounded-circle" id="ikon-bookmark">
+<div class="poltergeist position-fixed navbar w-100-250px top-0 end-0">
+</div>
+
+<div data-toggle="modal" data-target="#add-task-modal">Tambah Tugas</div>
+<div id="list-tugas"></div>
+<form class="auth-form need-validation bg-white rounded my-5 mx-auto" name="login-form">
+  <div class="pt-4 px-3 pb-1 position-relative">
+    <h4 class="font-weight-bold text-center auth-form-label">Login</h4>
     <div class="form-group">
-      <input type="email" class="form-control rounded-0" id="email-login" placeholder="Enter email" style="box-shadow:none;" required>
-      <div class="valid-tooltip">
-        Looks good!
-      </div>
-      <div class="invalid-tooltip">
-        Please provide a valid email 
-      </div>
+      <input type="email" class="form-control rounded-0 no-shadow" name="email" placeholder="Enter email" required>
     </div>
     <div class="form-group">
-      <input type="password" class="form-control rounded-0" id="password-login" placeholder="Enter password" style="box-shadow:none;" required>
-      <div class="valid-tooltip">
-        Looks good!
-      </div>
-      <div class="invalid-tooltip">
-        Please provide a required password for email
-      </div>
+      <input type="password" class="form-control rounded-0 no-shadow" name="password" placeholder="Enter password" required>
     </div>
-    <button id="submit-login" type="submit" class="btn d-block w-100 rounded-0">Sign in</button>
-    <div style="display: flex;"><div>Don't have an account?</div><div style="color:dodgerblue;margin-left:3px;cursor: pointer;" id="sign-up">Sign up</div></div>
+    <button type="submit" class="text-white font-weight-bold btn d-block w-100 rounded-0">Sign in</button>
+    <div class="d-flex"><div>Don't have an account?</div><a href="#" class="auth-form-toggle ml-1 text-decoration-none" name="sign-up">Sign up</a></div>
   </div>
-  <div class="rounded-bottom" id="parent-lupa-password"><div id="lupa-password">Forgot password?</div></div>
+  <a href="#" class="auth-form-toggle d-block p-3 rounded-bottom text-secondary border text-decoration-none bg-light text-center" name="forgot-password">Forgot password?</a>
 </form> 
 
-
-<div id="nav-sidebar">
-  <div class="d-flex align-items-center p-3" style="background-color: #446083;color:white;">
-    <img src="bookmark-alt-flat.png" class="mr-2" style="width: 36px;">
-    <div style="font-family: 'Righteous', cursive;font-size: 18px;text-shadow: 0px 0px 3px black;">Galaxy Bookmark</div>
-  </div>
-  <div id="tab-halaman" class="p-1">
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-beranda" role="tab" aria-controls="halaman-beranda" aria-selected="true"><i class="material-icons">home</i><div>Home</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-menu" role="tab" aria-controls="halaman-menu" aria-selected="true"><i class="material-icons">widgets</i><div>Menu</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-firebase-custom-claims" role="tab" aria-controls="halaman-firebase-custom-claims" aria-selected="true"><i class="material-icons">security</i><div>Custom Claims</div></div>
-      <div class="tab-halaman rounded p-2 m-1"><i class="material-icons">bookmark</i><div>Information</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-catatan" role="tab" aria-controls="halaman-catatan" aria-selected="true"><i class="material-icons">speaker_notes</i><div>Public Notes</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-indent-cust" role="tab" aria-controls="halaman-indent-cust" aria-selected="true"><i class="material-icons">insert_invitation</i><div>Customer's Indent</div></div>
-      <div class="tab-halaman rounded p-2 m-1"><i class="material-icons">comment_bank</i><div>Format Order</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-format-order-wa" role="tab" aria-controls="halaman-format-order-wa" aria-selected="true"><i class="material-icons">textsms</i><div>Format Order WA</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-format-order-dealer" role="tab" aria-controls="halaman-format-order-dealer" aria-selected="true"><i class="material-icons">list_alt</i>Format Order Dealer</div>
-      <div class="tab-halaman rounded p-2 m-1"><i class="material-icons">question_answer</i><div>Return</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-retur-customer" role="tab" aria-controls="halaman-retur-customer" aria-selected="true"><i class="material-icons" style="transform:rotateY(180deg);">shopping_cart</i><div>Customer's Return</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-retur-dealer" role="tab" aria-controls="halaman-retur-dealer" aria-selected="true"><i class="material-icons">supervised_user_circle</i><div>Dealer's Return</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-swot-analysis" role="tab" aria-controls="halaman-swot-analysis" aria-selected="true"><i class="material-icons">timeline</i><div>SWOT Analysis</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-achievement" role="tab" aria-controls="halaman-achievement" aria-selected="true"><i class="material-icons">touch_app</i><div>Achievement</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-cetak-label" role="tab" aria-controls="halaman-cetak-label" aria-selected="true"><i class="material-icons">receipt</i><div>Invoice</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-surat-jalan" role="tab" aria-controls="halaman-surat-jalan" aria-selected="true"><i class="material-icons">connect_without_contact</i><div>Delivery Notes</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-kalkulator" role="tab" aria-controls="halaman-kalkulator" aria-selected="true"><i class="material-icons">calculate</i><div>Calculator</div></div>
-      <div class="tab-halaman rounded p-2 m-1" data-toggle="pill" href="#halaman-transaksi-berjalan" role="tab" aria-controls="halaman-transaksi-berjalan" aria-selected="true"><i class="material-icons">dynamic_form</i><div>Transaction Log</div></div>
-  </div>
-</div>
-
-<div id="navbar">
-  <div id="parent-burger-menu">
-    <i class="material-icons" id="burger-menu">menu</i>
-  </div>
-  <div id="parent-kolom-pencari" style="">
-    <input type="text" class="rounded" id="kolom-pencari">
-    <i class='fas fa-search ikon-kolom-pencari'></i>
-  </div>
-  <div></div>
-  <div id="parent-menu-user">
-    <i class='fas fa-question-circle rounded-circle' id="help-center"></i>
-    <i class='fas fa-user-circle rounded-circle' id="user"></i>
-  </div>
-</div>
-
-<div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade active show" id="halaman-beranda" role="tabpanel">
-
-    <div class="rounded bg-white px-4 py-3 mx-3 my-2" style="box-shadow: 0px 0px 3px black;">
-      <div class='d-flex align-items-center pt-2 pb-1' style="border-bottom: 1px solid darkslategrey;">
-        <div id="selesaikan-semua-tugas" class="mr-auto d-flex align-items-center">Completed all tasks</div>
-          <i class="material-icons mr-1" id="tombol-tambah-tugas" data-toggle="modal" data-target="#modal-tambah-tugas">add_circle_outline</i>
-      </div>
-      <div id="list-tugas"></div>
-      <div class="d-flex align-items-center mb-3" style="border-top: 1px solid darkslategrey;">
-        <div class="mr-auto"></div>
-        <div class="d-flex">
-          <div class="mr-2 font-weight-bold" id="tampilkan-semua-tugas">All</div>
-          <div class="mr-2" id="tampilkan-tugas-pending">Pending</div>
-          <div id="tampilkan-tugas-selesai">Completed</div>
-        </div>
-      </div>
+<form class="auth-form need-validation bg-white rounded my-5 mx-auto" name="register-form">
+  <div class="pt-4 px-3 pb-1 position-relative">
+    <h4 class="font-weight-bold text-center auth-form-label">Register</h4>
+    <div class="form-group">
+      <input type="text" class="form-control rounded-0 no-shadow" name="name" placeholder="Enter name" required>
+    </div>    
+    <div class="form-group">
+      <input type="email" class="form-control rounded-0 no-shadow" name="email" placeholder="Enter email" required>
     </div>
-
-  </div>
-  <div class="tab-pane fade" id="halaman-menu" role="tabpanel">
-    
-  </div>  
-  <div class="tab-pane fade" id="halaman-firebase-custom-claims" role="tabpanel">
-
-    <div class="rounded bg-white px-4 py-3 mx-3 mt-2 mb-3" style="box-shadow: 0px 0px 3px black;">
-      <div class="d-flex">
-        <div class="font-weight-bold mr-auto" style="color:dimgray;">Custom Claims Ability</div>
-        <i class="fa fa-question-circle" id="help-center-custom-claim"></i>       
-      </div>      
-      <table class="table table-bordered table-striped table-hover mb-0">
-        <thead class="bg-light">
-          <tr>
-            <th scope="col" class="text-center align-middle border-bottom-0" rowspan="2">Ability</th>      
-            <th scope="col" class="text-center align-middle border-bottom-0" colspan="3">Custom Claims</th>
-          </tr>
-          <tr>
-            <th scope="col" class="text-center align-middle border-bottom-0">Moderator</th>      
-            <th scope="col" class="text-center align-middle border-bottom-0">Admin</th>
-            <th scope="col" class="text-center align-middle border-bottom-0">Member</th>
-          </tr>           
-        </thead>
-      </table>
-      <div class="btn btn-light rounded-0 w-100 border">Add</div>
+    <div class="form-group">
+      <input type="password" class="form-control rounded-0 no-shadow" name="password" placeholder="Enter password" required>
     </div>
+    <button type="submit" class="text-white font-weight-bold btn d-block w-100 rounded-0">Sign up</button>
+    <div class="d-flex"><div>Already have an account?</div><a href="#" class="auth-form-toggle ml-1 text-decoration-none" name="sign-in">Sign in</a></div>
+  </div>
+  <a href="#" class="auth-form-toggle d-block p-3 rounded-bottom text-secondary border text-decoration-none bg-light text-center" name="forgot-password">Forgot password?</a>
+</form>
 
-    <div class="rounded bg-white px-4 py-3 mx-3 my-2" style="box-shadow: 0px 0px 3px black;">
-      <div class="d-flex">
-        <div class="font-weight-bold mr-auto" style="color:dimgray;">User Custom Claims</div>
-        <i class="fa fa-question-circle" id="help-center-custom-claim"></i>
-      </div>
-      <div class="table-responsive">
-        <table class="table table-bordered table-striped table-hover" id="tabel-pengguna">
-          <thead class="bg-light">
-            <tr>
-              <th scope="col" class="text-center align-middle border-bottom-0" style="width: 20%">UID</th>
-              <th scope="col" class="text-center align-middle border-bottom-0" style="width: 20%">Name</th>
-              <th scope="col" class="text-center align-middle border-bottom-0" style="width: 20%">Email</th>
-              <th scope="col" class="text-center align-middle border-bottom-0" style="width: 20%">Current Custom Claims</th>
-              <th scope="col" class="text-center align-middle border-bottom-0" style="width: 20%">Action</th>
-            </tr>
-          </thead>
-          <tbody id="list-req-custom-claim">
-          </tbody>
-        </table>
-      </div>
-    </div>  
-  </div>  
-</div>
+<form class="auth-form need-validation bg-white rounded my-5 mx-auto" name="forgot-password-form">
+  <div class="pt-4 px-3 pb-3 position-relative">    
+    <div class="form-group">
+      <h4 class="font-weight-bold text-center auth-form-label">Forgot Password</h4>
+      <input type="email" class="form-control rounded-0 no-shadow" name="email" placeholder="Enter email" required>
+    </div>
+    <button type="submit" class="text-white font-weight-bold btn d-block w-100 rounded-0">Reset my password</button>
+    <div class="d-flex"><div>Just remembered?</div><a href="#" class="auth-form-toggle ml-1 text-decoration-none" name="sign-in">Sign in</a></div>
+  </div>
+</form> 
 
-<div class="modal fade" id="modal-tambah-tugas" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="add-task-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form id="tambah-tugas">
+      <form id="add-task">
         <div class="modal-header">
-          <h5 class="modal-title">Create a task <i class="fa fa-gear" id="tombol-pengaturan-tugas" data-toggle="modal" data-target="#modal-pengaturan-tugas"></i></h5>
+          <h5 class="modal-title">Create a task <i class="fa fa-gear" data-toggle="modal" data-target="#task-setting-modal"></i></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -169,21 +78,22 @@
         <div class="modal-body">
           <div class="form-group">
             <label>Assignee</label>
-            <select class="form-control" id="penerima-tugas">
+            <select class="form-control" id="task-assignee">
               <option disabled hidden selected>Choose the user</option>
+              <option uid="dAKaJscLzJM6Gw4cXKcw1jgHOe73">dummy</option>
             </select>
           </div>          
           <div class="form-group">
             <label>Description</label>
-            <textarea class="form-control" oninput="auto_grow(this)" id="deskripsi-tugas" required></textarea>
+            <textarea class="form-control" oninput="auto_grow(this)" id="task-description" required></textarea>
           </div>
           <div class="form-group bg-light border p-2">
             <label class="font-weight-bold">Additional Settings</label>
             <div class="d-flex mb-2">
-              <input class="m-1" type="radio" name="task" id="set-due-date-task">
+              <input class="m-1 due-date-control" type="radio" name="task" set-due-date>
               <div>
-                <div set-due-date-hd class="font-weight-bold">Set due date on a task</div>
-                <div set-due-date-bd class="d-none">
+                <div class="font-weight-bold due-date-lab">Set due date on a task</div>
+                <div class="due-date-bod">
                   <div>Due date completion will be based on :</div>
                   <div class="d-flex">
                     <select class="form-control w-50 mr-2" id="due-date-basis">
@@ -193,16 +103,16 @@
                       <option>Hour</option>
                       <option>Minute</option>
                     </select>
-                    <input type="number" class="form-control w-50" id="due-date-input" min="0" disabled>
+                    <input type="number" class="form-control w-50" id="due-date-input" min="0">
                   </div>
                 </div>
               </div>
             </div>            
             <div class="d-flex mb-2">
-              <input class="m-1" type="radio" name="task" id="not-set-due-date-task" checked>
+              <input class="m-1 due-date-control" type="radio" name="task" not-set-due-date checked>
               <div>
-                <div not-set-due-date-hd class="font-weight-bold text-primary">Don't set due date on a task</div>
-                <div not-set-due-date-bd class="d-block">The Assignee would be freely to complete the related task anytime</div>
+                <div class="font-weight-bold text-primary due-date-lab">Don't set due date on a task</div>
+                <div class="d-block due-date-bod">The Assignee would be freely to complete the related task anytime</div>
               </div>
             </div>
           </div>
@@ -216,10 +126,10 @@
   </div>
 </div>
 
-<div class="modal fade" id="modal-pengaturan-tugas" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="task-setting-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form id="pengaturan-tugas">
+      <form id="task-setting">
         <div class="modal-header">
           <h5 class="modal-title">Tasks Settings</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -239,27 +149,21 @@
             <tbody>
               <tr>
                 <td>Complete Tasks</td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-selesai-tugas-adm" checked></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-selesai-tugas-mem"></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-selesai-tugas-rec" checked></td>
+                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-complete-task-adm" checked></td>
+                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-complete-task-mem"></td>
+                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-complete-task-ase" checked></td>
               </tr>              
               <tr>
-                <td>Read Tasks</td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-baca-tugas-adm" checked></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-baca-tugas-mem"></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-baca-tugas-rec" checked></td>
-              </tr>
-              <tr>
                 <td>Edit Tasks</td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-edit-tugas-adm" checked></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-edit-tugas-mem"></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-edit-tugas-rec"></td>
+                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-edit-task-adm" checked></td>
+                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-edit-task-mem"></td>
+                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-edit-task-ase"></td>
               </tr>
               <tr>
                 <td>Delete Tasks</td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-hapus-tugas-adm" checked></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-hapus-tugas-mem"></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="izin-hapus-tugas-rec"></td>
+                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-delete-task-adm" checked></td>
+                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-delete-task-mem"></td>
+                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-delete-task-ase"></td>
               </tr>
             </tbody>
           </table>
@@ -274,22 +178,20 @@
   </div>
 </div>
 
-<div class="modal fade" id="modal-list-aktivitas-kalender" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Calendar Events</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="list-aktivitas-kalender"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+<table class="table table-borderless">
+  <thead>
+    <tr>
+      <th scope="col" class="text-center align-middle fs-1 p-2">Email</th>
+      <th scope="col" class="text-center align-middle fs-1 p-2">Name</th>
+      <th scope="col" class="text-center align-middle fs-1 p-2">Custom Claims</th>
+      <th scope="col" class="text-center align-middle fs-1 p-2">User UID</th>
+    </tr>
+  </thead>
+  <tbody id="custom-claim-request-list">
+
+  </tbody>
+</table>
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -310,8 +212,8 @@
   const auth = firebase.auth();
   const functions = firebase.functions();
 </script>
-<script src="auth.js"></script>
 <script src="app.js"></script>
+<script src="auth.js"></script>
 <script>
     $("#tab-halaman .tab-halaman").click(function(){
       $("#tab-halaman .tab-halaman").removeClass('active');

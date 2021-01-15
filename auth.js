@@ -1,50 +1,39 @@
 auth.onAuthStateChanged(user => {
   if(user){
-    db.collection('user').onSnapshot(snapshot =>{
-        let changes = snapshot.docChanges();
-        changes.forEach(change =>{
-		    if(change.type == 'added'){
-		       	if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
-		         	renderPengguna(change.doc);
-		        }
-		    } else if (change.type == 'modified'){
-		        renderUpdatePengguna(change.doc);
-		    }
-        })
-    }, err => {
-    	console.log(err.message)
-    })
-
-    db.collection('pengaturanTugas').onSnapshot(snapshot =>{
-        let changes = snapshot.docChanges();
-        changes.forEach(change =>{
-        	if(change.doc.id == auth.currentUser.uid){
-            	if(change.type == 'added' || change.type == 'modified'){
-            		renderPengaturanTugas(change.doc);
-            	}
-        	}
-        })
-    }, err => {
-    	console.log(err.message)
-    })
-
-    db.collection('tugass').onSnapshot(snapshot =>{
-        let changes = snapshot.docChanges();
-        changes.forEach(change =>{
-            if(change.type == 'added'){
-                if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
-            	    renderTugas(change.doc);
-                }
-            } else if(change.type == 'removed'){
-            	let el = document.querySelector('[data-id="' + change.doc.id + '"]');
-            	el.remove();
-            } else if (change.type == 'modified'){
-                renderUpdateTugas(change.doc);
-            }
-        })
-    }, err => {
-    	console.log(err.message)
-    })		
+  	user.getIdTokenResult().then(idTokenResult => {
+  		if(idTokenResult.claims.moderator){
+		    db.collection('users').onSnapshot(snapshot =>{
+		        let changes = snapshot.docChanges();
+		        changes.forEach(change =>{
+				    if(change.type == 'added'){
+					    if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
+					        renderPengguna(change.doc);
+					    }
+				    } else if (change.type == 'modified'){
+				        renderUpdatePengguna(change.doc);
+				    }
+		        })
+		    })
+		} else if(idTokenResult.claims.adminKantor){
+		    db.collection('users').onSnapshot(snapshot =>{
+		        let changes = snapshot.docChanges();
+		        changes.forEach(change =>{
+				    if(change.type == 'added'){
+					    if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
+					        renderPengguna(change.doc);
+					    }
+				    } else if (change.type == 'modified'){
+				        renderUpdatePengguna(change.doc);
+				    }
+		        })
+		    })			
+		} else {
+		    db.collection('users').doc(auth.currentUser.uid).onSnapshot({
+		    	includeMetadataChanges : true
+		    }, function(doc){
+		    	renderAuthToken(doc);
+		    })			
+		}
 
 /*
     db.collection('aktivitasKalender').onSnapshot(snapshot =>{
@@ -91,229 +80,178 @@ auth.onAuthStateChanged(user => {
 		firebaseError(err);
 	})	
 */
-  	setupUI(user);  		
+  		setupUI(user);
+  	})  		
   } else {
   	setupUI();
   }
 })
 
-document.querySelector('#form-masuk').addEventListener('submit', formMasuk);
-
-document.querySelector('#tambah-tugas').addEventListener('submit', function(e){
+const addTask = document.querySelector('#add-task');
+addTask.addEventListener('submit', function(e){
 	e.preventDefault();
-	db.collection('pengaturanTugas').doc(auth.currentUser.uid).get().then(function(doc){
-		if(!doc.exists){
-			db.collection('pengaturanTugas').doc(auth.currentUser.uid).set({
-				completeAdm : true,
-				completeMem : false,
-				completeAse : true,
-				readAdm : true,
-				readMem : false,
-				readAse : true, 
-				editAdm : true,
-				editMem : false,
-				editAse : false, 
-				delAdm : true,
-				delMem : false,
-				delAse : false	
-			})			
-		}
-		let dateRelease = new Date().getTime();
-		if(document.querySelector('#set-due-date-task').checked){
-			let dateDue = dateRelease;
-			let dateDueWeek = false;
-			let dateDueDay = false;
-			let dateDueHour = false;
-			let dateDueMinute = false;
-			switch(document.querySelector('#due-date-basis').value){
-				case "Week":
-				dateDue = dateDue + (document.querySelector('#due-date-input').value * 7 * 24 * 60 * 60 * 1000);
-				dateDueWeek = true;
-				break;
-				case "Day":
-				dateDue = dateDue + (document.querySelector('#due-date-input').value * 24 * 60 * 60 * 1000);
-				dateDueDay = true;
-				break;
-				case "Hour":
-				dateDue = dateDue + (document.querySelector('#due-date-input').value * 60 * 60 * 1000);
-				dateDueHour = true;
-				break;
-				case "Minute":
-				dateDue = dateDue + (document.querySelector('#due-date-input').value * 60 * 1000);
-				dateDueMinute = true;
+	let releaseDate = new Date().getTime();
+	let dueDateExists;
+	let dueDateBasis;
+	let dueDate;
+	document.querySelectorAll('.due-date-control').forEach(item => {
+		if(item.checked){
+			if(item.hasAttribute('set-due-date')){
+				dueDateExists = true;
+				if(this['due-date-basis'].value == '-' || this['due-date-input'].value == 0){
+					return alert('You may need to fill due date of task if you want to set due date on it');
+				} else {
+					dueDateBasis = this['due-date-basis'].value;
+					switch(dueDateBasis){
+						case "Week":
+						dueDate = releaseDate + (this['due-date-input'].value/(7*24*60*60*1000));
+						break;
+						case "Day":
+						dueDate = releaseDate + (this['due-date-input'].value/(24*60*60*1000));
+						break;
+						case "Hour":
+						dueDate = releaseDate + (this['due-date-input'].value/(60*60*1000));
+						break;
+						case "Minute":
+						dueDate = releaseDate + (this['due-date-input'].value/(60*1000));
+					}
+				}
+			} else if(item.hasAttribute('not-set-due-date')){
+				dueDateExists = false;
+				dueDateBasis = null;
+				dueDate = null;
 			}
-			db.collection('tugass').add({
-				dateRelease : dateRelease,
-				targetedUsername : this['penerima-tugas'].value,
-				targetedUserUID : this['penerima-tugas'].querySelector('option:checked').getAttribute('uid'),
-				status : 'PENDING',
-				description : this['deskripsi-tugas'].value.replace(/\n\r?/g, '<br/>'),
-				username : auth.currentUser.displayName,
-				userUID : auth.currentUser.uid,
-				dateDueExists : true,
-				dateDueWeek : dateDueWeek,
-				dateDueDay : dateDueDay,
-				dateDueHour : dateDueHour,
-				dateDueMinute : dateDueMinute,
-				dateDue : dateDue
-			}).then(() => {
-				$('#modal-tambah-tugas').modal('hide');
-				alert('This task has been uploaded!');					
-			})
-		} else if(document.querySelector('#not-set-due-date-task').checked){
-			db.collection('tugass').add({
-				dateRelease : dateRelease,
-				targetedUsername : this['penerima-tugas'].value,
-				targetedUserUID : this['penerima-tugas'].querySelector('option:checked').getAttribute('uid'),
-				status : 'PENDING',
-				description : this['deskripsi-tugas'].value.replace(/\n\r?/g, '<br/>'),
-				username : auth.currentUser.displayName,
-				userUID : auth.currentUser.uid,
-				dateDueExists : false
-			}).then(() => {
-				$('#modal-tambah-tugas').modal('hide');
-				alert('This task has been uploaded!');					
-			})			
 		}
+	})
+	db.collection('tugass').add({
+		assignorUID : auth.currentUser.uid,
+		assigneeUID : this['task-assignee'].querySelector('option:checked').getAttribute('uid'),
+		assigneeName: this['task-assignee'].value,
+		description : this['task-description'].value.replace(/\n\r?/g, '<br/>'),
+		taskComplete : false,
+		releaseDate : releaseDate,
+		dueDateExists : dueDateExists,
+		dueDateBasis : dueDateBasis,
+		dueDate : dueDate
+	}).then(() => {
+		this.reset();
+		alert('Task has been added');
 	})
 })
 
-document.querySelector('#pengaturan-tugas').addEventListener('submit', function(e){
+const taskSetting = document.querySelector('#task-setting');
+taskSetting.addEventListener('submit', function(e){
 	e.preventDefault();
-	db.collection('pengaturanTugas').doc(auth.currentUser.uid).get().then(function(doc){
+	db.collection('pengaturanTugas').doc(auth.currentUser.uid).get().then(doc => {
 		if(doc.exists){
 			db.collection('pengaturanTugas').doc(auth.currentUser.uid).update({
-				completeAdm : this['izin-selesai-tugas-adm'].checked,
-				completeMem : this['izin-selesai-tugas-mem'].checked,
-				completeAse : this['izin-selesai-tugas-rec'].checked,
-				readAdm : this['izin-baca-tugas-adm'].checked,
-				readMem : this['izin-baca-tugas-mem'].checked,
-				readAse : this['izin-baca-tugas-rec'].checked, 
-				editAdm : this['izin-edit-tugas-adm'].checked,
-				editMem : this['izin-edit-tugas-mem'].checked,
-				editAse : this['izin-edit-tugas-rec'].checked, 
-				delAdm : this['izin-hapus-tugas-adm'].checked,
-				delMem : this['izin-hapus-tugas-mem'].checked,
-				delAse : this['izin-hapus-tugas-rec'].checked
+				completeAdm : this['allow-complete-task-adm'].checked,
+				completeMem : this['allow-complete-task-mem'].checked,
+				completeAse : this['allow-complete-task-ase'].checked,
+				readAdm : this['allow-read-task-adm'].checked,
+				readMem : this['allow-read-task-mem'].checked,
+				readAse : this['allow-read-task-ase'].checked,
+				editAdm : this['allow-edit-task-adm'].checked,
+				editMem : this['allow-edit-task-mem'].checked,
+				editAse : this['allow-edit-task-ase'].checked,
+				delAdm : this['allow-delete-task-adm'].checked,
+				delMem : this['allow-delete-task-mem'].checked,
+				delAse : this['allow-delete-task-ase'].checked
 			}).then(() => {
-				$('#modal-pengaturan-tugas').modal('hide');
-				alert('Tasks settings has been updated!');
+				alert('Task setting has been updated');
 			})
 		} else {
 			db.collection('pengaturanTugas').doc(auth.currentUser.uid).set({
-				completeAdm : this['izin-selesai-tugas-adm'].checked,
-				completeMem : this['izin-selesai-tugas-mem'].checked,
-				completeAse : this['izin-selesai-tugas-rec'].checked,
-				readAdm : this['izin-baca-tugas-adm'].checked,
-				readMem : this['izin-baca-tugas-mem'].checked,
-				readAse : this['izin-baca-tugas-rec'].checked, 
-				editAdm : this['izin-edit-tugas-adm'].checked,
-				editMem : this['izin-edit-tugas-mem'].checked,
-				editAse : this['izin-edit-tugas-rec'].checked, 
-				delAdm : this['izin-hapus-tugas-adm'].checked,
-				delMem : this['izin-hapus-tugas-mem'].checked,
-				delAse : this['izin-hapus-tugas-rec'].checked				
+				completeAdm : this['allow-complete-task-adm'].checked,
+				completeMem : this['allow-complete-task-mem'].checked,
+				completeAse : this['allow-complete-task-ase'].checked,
+				readAdm : this['allow-read-task-adm'].checked,
+				readMem : this['allow-read-task-mem'].checked,
+				readAse : this['allow-read-task-ase'].checked,
+				editAdm : this['allow-edit-task-adm'].checked,
+				editMem : this['allow-edit-task-mem'].checked,
+				editAse : this['allow-edit-task-ase'].checked,
+				delAdm : this['allow-delete-task-adm'].checked,
+				delMem : this['allow-delete-task-mem'].checked,
+				delAse : this['allow-delete-task-ase'].checked
 			}).then(() => {
-				$('#modal-pengaturan-tugas').modal('hide');
-				alert('Tasks settings has been setted!');
-			})
+				alert('Task setting has been setted');
+			})			
 		}
 	})
 })
 
-function resendEmailVerification(e){
-	e.preventDefault();
-	auth.currentUser.sendEmailVerification().then(() => {
-		alert('A verification link has been sent to your email addresses')
-	}, err => {
-		firebaseError(err);
-	})
-}
+const authForm = document.querySelectorAll('.auth-form');
+const authFormToggle = document.querySelectorAll('.auth-form-toggle');
 
-function formMasuk(e){
-	e.preventDefault();
-	let email = document.querySelector('#email-login').value;
-	let password = document.querySelector('#password-login').value;
-	auth.signInWithEmailAndPassword(email, password).then(() => {
-		
-	}).then(() => {
-		e.target.reset();
-	}, err => {
-		firebaseError(err);
-	})
-}
+authFormToggle.forEach(item => {
+    item.addEventListener('click', function(){
+        switch(this.getAttribute('name')){
+            case "sign-in":
+            authForm.forEach(form => {
+                if(form.getAttribute('name') == 'login-form'){
+                    form.classList.add('d-block');                    
+                    form.classList.remove('d-none');
+                } else {
+                    form.classList.add('d-none');
+                    form.classList.remove('d-block');
+                }
+            })
+            break;
+            case "sign-up":
+            authForm.forEach(form => {
+                if(form.getAttribute('name') == 'register-form'){
+                    form.classList.add('d-block');                    
+                    form.classList.remove('d-none');
+                } else {
+                    form.classList.add('d-none');
+                    form.classList.remove('d-block');
+                }
+            })            
+            break;
+            case "forgot-password":
+            authForm.forEach(form => {
+                if(form.getAttribute('name') == 'forgot-password-form'){
+                    form.classList.add('d-block');                    
+                    form.classList.remove('d-none');
+                } else {
+                    form.classList.add('d-none');
+                    form.classList.remove('d-block');
+                }
+            })            
+        }
+    })
+})
 
-function formDaftar(e){
-	e.preventDefault();
-	let nama = document.querySelector('#nama-login').value;
-	let email = document.querySelector('#email-login').value;
-	let password = document.querySelector('#password-login').value;
-	auth.createUserWithEmailAndPassword(email, password).then(() => {
-		e.target.reset();
-		auth.currentUser.updateProfile({
-			displayName : nama
-		}).then(() => {
-			auth.currentUser.sendEmailVerification();
-		})
-	}, err => {
-		firebaseError(err);
-	})
-}
-
-function formReset(e){
-	e.preventDefault();
-	let email = document.querySelector('#email-login').value;
-	auth.sendPasswordResetEmail(email).then(() => {
-		checkEmail(email);
-	}, err => {
-		firebaseError(err);
-	})
-}
-
-function firebaseError(err){
-	if(document.querySelector('#firebase-error')){
-		if(document.querySelector('#firebase-error').innerHTML != err.message){
-			document.querySelector('#firebase-error').remove();
-		}
-	} else {
-		let alert = document.createElement('div');
-		alert.setAttribute('id', 'firebase-error');
-		alert.innerHTML = err.message;
-		if(/Mobi/.test(navigator.userAgent) || /Android/i.test(navigator.userAgent) || window.innerWidth <= 900){
-			alert.classList.add('alert-firebase-error-andro');
-			if(document.querySelector('#form-reset')){
-				document.querySelector('#label-forgot-password').parentElement.insertBefore(alert, document.querySelector('#label-forgot-password').nextSibling);
-			} else if(document.querySelector('#form-daftar')){
-				document.querySelector('#nama-login').parentElement.parentElement.insertBefore(alert, document.querySelector('#nama-login').parentElement);
-			} else if(document.querySelector('#form-masuk')){
-				document.querySelector('#email-login').parentElement.parentElement.insertBefore(alert, document.querySelector('#email-login').parentElement);
-			}
-		} else {
-			alert.classList.add('alert-firebase-error');
-			document.body.appendChild(alert)
-		}
-
-		setTimeout(function(){
-			for(let opacity = 1; opacity >= 0; opacity = opacity.toFixed(1) - 0.1){
-				setTimeout(function(){
-					if(document.querySelector('#firebase-error')){
-						document.querySelector('#firebase-error').style.opacity = opacity;
-						if(opacity == 0){
-							document.querySelector('#firebase-error').remove();
-						}					
-					}
-				},300 + (1-opacity)*500)
-			}
-		}, 500)
-	}	
-}
-
-function checkEmail(email){
-	document.querySelector('#email-login').remove();
-	let alert = document.createElement('div');
-	alert.setAttribute('id', 'emailed-password-reset-link');
-	alert.innerHTML = 'We have emailed your password reset link, check it out!';
-	document.querySelector('#label-forgot-password').parentElement.insertBefore(alert, document.querySelector('#label-forgot-password').nextSibling);
-	document.querySelector('#form-reset').querySelector('button[type=submit]').remove();
-
-}
+authForm.forEach(form => {
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+        let name;
+        let email = this['email'].value;
+        let password;
+        switch(this.getAttribute('name')){
+            case "login-form":
+            password = this['password'].value;
+            auth.signInWithEmailAndPassword(email, password).then(() => {
+                this.reset();
+            })
+            break;
+            case "register-form":
+            name = this['name'].value;            
+            password = this['password'].value;
+            auth.createUserWithEmailAndPassword(email, password).then(() => {
+                this.reset();
+                auth.currentUser.updateProfile({
+                    displayName : name
+                }).then(() => {
+                    auth.currentUser.sendEmailVerification();
+                })
+            })            
+            break;
+            case "forgot-password-form":
+            auth.sendPasswordResetEmail(email).then(() => {
+                alert('We have emailed your password reset link, check it out!');
+            })
+        }        
+    })
+})

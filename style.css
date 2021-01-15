@@ -1,376 +1,82 @@
-.task-action{
-  font-size: 16px !important;
-}
-
-#list-tugas{
-  height: 210px;
-}
-
-input[type='number'] {
-    -moz-appearance:textfield;
-}
+/* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-.tabel-tugas tbody tr td:nth-child(1){
-  width: 35%;
-}
-
-.tabel-tugas tbody tr td:nth-child(2){
-  width: 5%;
-}
-
-.user-action{
-  display: grid;
-  grid-row-gap: 5px;
-}
-
-.user-token{
-  color:dodgerblue;
-}
-
-[on-request]{
-  color:orange;
-}
-
-#nav-sidebar{
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: calc(100% - (100% - 250px));
-  height: 100%;
-  background-color: white;
-  transition:left 0.4s linear;
-  display: none;
-}
-
-.tugas{
-  display: grid;
-  grid-template-columns: 50px auto;
-}
-
-#selesaikan-semua-tugas{
-  cursor: pointer;
-  color:mediumseagreen;
-  font-weight: bold;
-}
-
-#tampilkan-semua-tugas, #tampilkan-tugas-pending, #tampilkan-tugas-selesai, #tombol-tambah-tugas, .deskripsi-tugas, #help-center-custom-claim, #tombol-pengaturan-tugas, #set-due-date-task, #not-set-due-date-task,
-.task-action{
+input[type=radio]{
   cursor: pointer;
 }
 
-.deskripsi-tugas{
-  font-size: 15px;
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
-#parent-menu-user{
-  text-align: right;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-#parent-kolom-pencari{
-  display: flex;
-  position: relative;
-  align-items: center;  
-}
-
-#parent-burger-menu{
-  display: flex;
-}
-
-#burger-menu{
-  cursor: pointer;
-  display: none;
-}
-
-.copy-tugas, .edit-tugas, .hapus-tugas{
-  font-size: 18px !important;
-  margin-right: 5px;
-  cursor: pointer;
-}
-
-[type=checkbox]::before{
-  border-radius: 50%;
-}
-
-.copy-tugas{
-  color:steelblue;
-}
-
-.edit-tugas{
-  color:tomato;
-}
-
-.hapus-tugas{
-  color:crimson;
-}
-
-.checkbox-permission{
-  width: 20px;
-  height: 20px;
-}
-
-input[type=checkbox]{
-  cursor: pointer;
-}
-
-#kolom-pencari{
-  border:1px solid #ced4da;
-  width:100%;
-  padding:6px 38px 6px 12px;
-}
-
-.ikon-kolom-pencari{
-  position: absolute;
-  right: 3px;
-  width: 32px;
-  display: flex !important;
-  justify-content: center;
-  align-items: center;
-  color:black;
-}
-
-#kolom-pencari:focus{
-  outline: none;
-}
-
-#manage-account, #log-out{
-  margin-top: 10px;
-  border:1px solid lightgrey;
-  color:darkslategrey;
-}
-
-#user-info{
-  position: fixed;
-  right: 0px;
-  top:58px;
-  margin-right:10px;
-  text-align: center;
-  background-color: white;
-  border:1px solid dimgrey;
-  padding: 10px 30px 20px;
-}
-
-#nama-user{
-  font-weight: bold;
-}
-
-.user{
-  font-size: 60px;
-  color:rgb(26, 115, 232);
-  margin-bottom: 8px;
-}
-
-#user{
-  font-size: 32px;
-  cursor: pointer;
-  margin-left: 5px;
-}
-
-#user:hover{
-  box-shadow: 0px 0px 4px black;
-}
-
-#navbar{
-  background-color: rgb(26, 115, 232);
-  color:white;
-  height: 48px;
-  display: none;
-  align-items: center;
-  padding:0px 20px;
-  grid-template-columns: auto 70% auto 80px;
-  transition:margin-left 0.4s linear;
-  transition:width 0.4s linear;
-  margin-left: 250px;
-  position: fixed;
+.w-100-250px{
   width: calc(100% - 250px);
-  top: 0;
-  z-index: 1;
 }
 
-.tab-halaman{
-  cursor: pointer;
-  color:dimgrey;
-  display: grid;
-  grid-template-columns: 25px auto 20px;
-  grid-column-gap: 5px;
-  align-items: center;
-}
-
-.tab-halaman i{
-  font-size: 20px;
-}
-
-.tab-halaman:hover{
-  background-color: #f2f5f7;
-  color:#2d2d2e;
-}
-
-#myTabContent{
-  margin-left: 250px;
-  transition:margin-left 0.4s linear;
+.due-date-bod{
   display: none;
-  margin-top: 55px;
 }
 
-#pic-user{
-  background-color: white;
-  font-weight: bold;
+/*positioning goes here*/
+.top-0{
+  top:0px;
 }
 
-#pic-user:hover{
-  box-shadow: 0px 0px 3px black;
+.bottom-0{
+  bottom: 0px;
 }
 
-#servicestack{
-  color:#495464;
-  font-size:100px;
+.end-0{
+  right:0px;
 }
 
-#send-req-custom-claims{
-  background-color: #495464;
-  display: inline-block;
-  font-weight: bold;
-  color:#eeeeee;
-  padding: 8px;
-  margin-top: 8px;
-  cursor: pointer;
+.start-0{
+  left: 0px;
+}
+/*positioning end here*/
+
+.auth-form button[type=submit]{
+  background-color: #00587a;
 }
 
-#req-custom-claims{
-  color:dimgrey;
-  text-align: center;
-  position: absolute;
-  right: 0;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  align-items: center;
-  justify-content: center;
-  width:400px;
-  margin:150px auto;
-}
-
-#label-forgot-password{
-  color:steelblue;
-  font-weight: bold;
-  font-size: 28px;
-  margin-bottom: 12px;
-  text-align: center;
-}
-
-#label-verify-email{
-  text-align: center;
-  color:steelblue;
-  font-weight: bold;
-  font-size: 24px;  
-}
-
-#parent-lupa-password{
-  background-color: #dce3e8;
-  text-align: center;
-  padding: 11px 0px 13px;
-  border-top:1px solid lightgrey;
-}
-
-#lupa-password{
-  color:grey;
-  cursor: pointer;
-  display: inline;
-}
-
-.alert-firebase-error-andro{
-  border:1px solid crimson;
-  background-color: #d9534f;
-  margin:-5px 0px 10px;
-  padding: 5px;
-  color:white;
-  text-align: center;
-}
-
-.alert-firebase-error{
-  position: fixed;
-  right: 15px;
-  padding: 8px;
-  bottom: 15px;
-  background-color:#d9534f;
-  border-top:1px solid #d9534f;
-  border-right:1px solid #d9534f;
-  border-left:1px solid #d9534f;
-  border-bottom: 3px solid darkred;
-  color:white;
-  cursor: default;
-  max-width: 300px;
-}
-
-#emailed-password-reset-link{
-  border:1px solid mediumseagreen;
-  background-color:#9be8a1;
-  margin:-5px 0px 10px;
-  padding: 5px;
-  color:darkgreen;
-  text-align: center;
-}
-
-#submit-login{
-  color:white;
-  background-color:#00587a;
-  font-weight: bold;
-}
-
-#ikon-bookmark{
-  padding:8px;
-  width: 90px;
-  background-color: #4793d1;
-  position: absolute;
-  left:calc(50% - (90px/2));
-  top:calc(-100px + (100px/2))
-}
-
-#form-masuk, #form-daftar, #form-reset, #form-verify-email{
+.auth-form{
+  width: 350px;
+  box-shadow: 0px 0px 8px dimgrey;
   display: none;
-  margin:150px auto;
-  position: absolute;
-  box-shadow:0px 0px 8px dimgrey;
-  left:10%;
-  right:10%;
-  width: 350px; 
 }
 
-#notify-verify-email{
-  text-align: center;
-  margin-bottom: 15px;
-  margin-top: -10px;
+.auth-form-label{
+  top:calc(-40px/2);
 }
 
-*{
-  font-family: Roboto,"Helvetica Neue",sans-serif;
+.auth-form-label{
+  color:#00587a;
 }
 
-@media only screen and (max-width: 1000px){
-#navbar{
-  margin-left: 0px;
-  width: 100%;
+/*background-color goes here*/
+.snow{
+  background-color: #fafafa !important;
 }
 
-#myTabContent{
-  margin-left: 0px;
+.poltergeist{
+  background-color: #4793d1 !important;
 }
 
-#nav-sidebar{
-  left: calc(-1*(100% - (100% - 250px)));
+/*end of background-color list*/
+
+
+/*font-size goes here*/
+.fs-1{
+  font-size: 0.75rem;
 }
 
-#burger-menu{
-  display: flex;
-}
+.fs-2{
+  font-size: 1.5rem;
 }
 
-@media only screen and (max-width: 700px){
-
-}
+/*font-size end here*/
