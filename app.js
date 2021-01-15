@@ -607,11 +607,12 @@ function renderAuthToken(doc){
                 function getIdToken(){
                     user.getIdToken(true).then(() => {
                         user.getIdTokenResult().then(idTokenResultAft => {
-                            if((token == null && idTokenResultBef.claims.moderator == false && idTokenResultBef.claims.adminKantor == false && idTokenResultBef.claims.member == false) ||
-                               (token == 'admin' && idTokenResultBef.claims.adminKantor == true) ||
-                               (token == 'member' && idTokenResultBef.claims.member == true)){
+                            if((token == null && idTokenResultAft.claims.moderator == false && idTokenResultAft.claims.adminKantor == false && idTokenResultAft.claims.member == false) ||
+                               (token == 'admin' && idTokenResultAft.claims.adminKantor == true) ||
+                               (token == 'member' && idTokenResultAft.claims.member == true)){
                                 clearInterval(getNewIdToken)
                                 alert("There's a change on page views, page will be refresh");
+                                window.location.reload();
                             }                        
                         })
                     })
