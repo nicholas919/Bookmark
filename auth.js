@@ -14,19 +14,6 @@ auth.onAuthStateChanged(user => {
 				    }
 		        })
 		    })
-		} else if(idTokenResult.claims.adminKantor){
-		    db.collection('users').onSnapshot(snapshot =>{
-		        let changes = snapshot.docChanges();
-		        changes.forEach(change =>{
-				    if(change.type == 'added'){
-					    if(!document.querySelector('[data-id="' + change.doc.id + '"]')){
-					        renderPengguna(change.doc);
-					    }
-				    } else if (change.type == 'modified'){
-				        renderUpdatePengguna(change.doc);
-				    }
-		        })
-		    })			
 		} else {
 		    db.collection('users').doc(auth.currentUser.uid).onSnapshot({
 		    	includeMetadataChanges : true

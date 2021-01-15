@@ -598,25 +598,22 @@ function renderAuthToken(doc){
     let token = doc.data().token;
     auth.onAuthStateChanged(user => {
         user.getIdTokenResult().then(idTokenResultBef => {
+            console.log(idTokenResultBef.claims);
             if((token == null && idTokenResultBef.claims.moderator == false && idTokenResultBef.claims.adminKantor == false && idTokenResultBef.claims.member == false) ||
                (token == 'admin' && idTokenResultBef.claims.adminKantor == true) ||
                (token == 'member' && idTokenResultBef.claims.member == true)){
 
             } else {
-                let getNewIdToken = setInterval(getIdToken, 1000);
-                function getIdToken(){
-                    user.getIdToken(true).then(() => {
-                        user.getIdTokenResult().then(idTokenResultAft => {
-                            if((token == null && idTokenResultAft.claims.moderator == false && idTokenResultAft.claims.adminKantor == false && idTokenResultAft.claims.member == false) ||
-                               (token == 'admin' && idTokenResultAft.claims.adminKantor == true) ||
-                               (token == 'member' && idTokenResultAft.claims.member == true)){
-                                clearInterval(getNewIdToken)
-                                alert("There's a change on page views, page will be refresh");
-                                window.location.reload();
-                            }                        
-                        })
+                user.getIdToken(true).then(() => {
+                    user.getIdTokenResult().then(idTokenResultAft => {
+                        console.log(idTokenResultAft.claims)
+                        if((token == null && idTokenResultAft.claims.moderator == false && idTokenResultAft.claims.adminKantor == false && idTokenResultAft.claims.member == false) ||
+                            (token == 'admin' && idTokenResultAft.claims.adminKantor == true) ||
+                            (token == 'member' && idTokenResultAft.claims.member == true)){
+                            window.location.reload();
+                        }                        
                     })
-                }
+                })
             }
         })
     })
