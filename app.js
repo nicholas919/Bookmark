@@ -106,8 +106,11 @@ const setupUI = (user) => {
                         }
                     })
 
-                    document.querySelector('[menu-toggle]').addEventListener('click', function(e){
+                    document.querySelector('[menu-toggle]').addEventListener('click', function(e){                        
                         e.stopPropagation();
+                        if(window.innerWidth < 500){
+                            document.querySelector('[menu-identifier-list]').style.width = `calc(100% - (${Number(window.getComputedStyle(document.querySelector('[menu-identifier-list]'), null).margin.replace('px','')) * 2}px))`;
+                        }                        
                         document.querySelectorAll('[dropdown]').forEach(item => {
                             if(item.hasAttribute('menu-identifier-list')){
                                 item.classList.toggle('d-none');
