@@ -1,3 +1,8 @@
+const pendingTaskList = document.querySelector('[pending-task-list]');
+const completedTaskList = document.querySelector('[completed-task-list]'); 
+const month = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+const authUserList = document.querySelector('[auth-user-list]');
+const menuCategoryList = document.querySelector('[menu-category-list]')
 const setupUI = (user) => {   
     if(user){
         document.body.classList.add('snow');
@@ -8,21 +13,308 @@ const setupUI = (user) => {
                 form.classList.remove('d-block');
             }
         })
-        document.querySelectorAll('.due-date-control').forEach(item => {
-            item.addEventListener('change', function(){
-                document.querySelectorAll('.due-date-lab').forEach(lab => {
-                    lab.classList.toggle('text-primary')
-                })
-                document.querySelectorAll('.due-date-bod').forEach(bod => {
-                    bod.classList.toggle('d-block');
-                })
+
+        function sortByNumber(obj){
+            let sort = obj.sort;
+            let list = obj.list;
+            let elements = obj.elements;
+            let att = obj.att;
+            Array.from(elements).sort(function(a, b){
+                if(sort == 'asc'){
+                    return a.getAttribute(`${att}`) - b.getAttribute(`${att}`);
+                } else if(sort == 'des'){
+                    return b.getAttribute(`${att}`) - a.getAttribute(`${att}`);                    
+                }
+            }).forEach(item => {
+                list.prepend(item);
             })
-        })
+        }
+
+        function sortByPriority(obj){
+            let sort = obj.sort;
+            let list = obj.list;
+            let elements = obj.elements;
+            Array.from(elements).sort(function(a, b){
+                if(sort == 'asc'){
+                    return (a.getAttribute('data-priority') == 'high') - (b.getAttribute('data-priority') == 'high') || (a.getAttribute('data-priority') == 'moderate') - (b.getAttribute('data-priority') == 'moderate') || (a.getAttribute('data-priority') == 'low') - (b.getAttribute('data-priority') == 'low');
+                } else if(sort == 'des'){
+                    return (a.getAttribute('data-priority') == 'low') - (b.getAttribute('data-priority') == 'low') || (a.getAttribute('data-priority') == 'moderate') - (b.getAttribute('data-priority') == 'moderate') || (a.getAttribute('data-priority') == 'high') - (b.getAttribute('data-priority') == 'high');                    
+                }
+            }).forEach(item => {
+                list.prepend(item);
+            })            
+        }
+
         if(user.emailVerified){
-            user.getIdTokenResult().then(idTokenResult => {                
+            user.getIdTokenResult().then(idTokenResult => {   
+
+                document.querySelector('[user-name]').innerHTML = auth.currentUser.displayName;
+                document.querySelector('[user-email]').innerHTML = auth.currentUser.email;
+
+                if(idTokenResult.claims.moderator || idTokenResult.claims.adminKantor){
+                    document.querySelectorAll('[add-row]').forEach(item => {
+                        item.addEventListener('click', function(e){
+                            e.stopPropagation();
+                            document.querySelector(`[${this.getAttribute('clone-node-from')}]`).appendChild(document.querySelector(`[${this.getAttribute('clone-node-from')}]`).querySelector('tr').cloneNode(true))
+                        })
+                    })
+                }
+
+                if(idTokenResult.claims.moderator || idTokenResult.claims.adminKantor || idTokenResult.claims.member){
+                    [document.querySelectorAll('[sort-by-string]'), document.querySelectorAll('[sort-by-number]')].forEach(queryItem => {
+                        queryItem.forEach(item => {
+                            item.addEventListener('click', function(e){
+                                e.stopPropagation();
+                                let list = this.closest('table').querySelector('tbody');
+                                if(this.classList.contains('fa-caret-down')){
+                                    this.classList.remove('fa-caret-down');
+                                    this.classList.add('fa-caret-up');
+                                    if(this.hasAttribute('sort-by-string')){
+                                        sortByPriority({sort : 'asc', list : list, elements : document.querySelectorAll(`[${this.getAttribute('sort-tasks')}]`)})
+                                    } else if(this.hasAttribute('sort-by-number')){
+                                        sortByNumber({sort : 'asc', list : list, elements : document.querySelectorAll(`[${this.getAttribute('sort-tasks')}]`), att : this.getAttribute('data-sort')})
+                                    } 
+                                } else {
+                                    this.classList.remove('fa-caret-up');
+                                    this.classList.add('fa-caret-down');
+                                    if(this.hasAttribute('sort-by-string')){
+                                        sortByPriority({sort : 'des', list : list, elements : document.querySelectorAll(`[${this.getAttribute('sort-tasks')}]`)})
+                                    } else if(this.hasAttribute('sort-by-number')){
+                                        sortByNumber({sort : 'des', list : list, elements : document.querySelectorAll(`[${this.getAttribute('sort-tasks')}]`), att : this.getAttribute('data-sort')})
+                                    }                                                                                                                 
+                                }
+                            })
+                        })
+                    })
+
+                    document.querySelector('[user]').addEventListener('click', function(e){
+                        e.stopPropagation();
+                        document.querySelectorAll('[dropdown]').forEach(item => {
+                            if(item.hasAttribute('user-information')){
+                                item.classList.toggle('d-none');
+                            } else {
+                                item.classList.add('d-none')
+                            }
+                        })
+                    })
+
+                    document.querySelector('[sign-out]').addEventListener('click', function(e){
+                        e.stopPropagation();
+                        let confirmAlert = confirm('Apa anda yakin ingin keluar dari situs?');
+                        if(confirmAlert){
+                            auth.signOut();
+                        }
+                    })
+
+                    document.querySelector('[menu-toggle]').addEventListener('click', function(e){
+                        e.stopPropagation();
+                        document.querySelectorAll('[dropdown]').forEach(item => {
+                            if(item.hasAttribute('menu-identifier-list')){
+                                item.classList.toggle('d-none');
+                                if(item.classList.contains('d-none')){
+                                    document.querySelector('[menu-icon-toggle]').classList.add('fa-caret-down');
+                                    document.querySelector('[menu-icon-toggle]').classList.remove('fa-caret-up');
+                                } else {
+                                    document.querySelector('[menu-icon-toggle]').classList.remove('fa-caret-down');
+                                    document.querySelector('[menu-icon-toggle]').classList.add('fa-caret-up');
+                                }
+                            } else {
+                                item.classList.add('d-none');
+                            }
+                        })
+                    })
+
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.addEventListener('click', function() {
+                            document.querySelector('[current-active-page]').innerHTML = `<span>${this.innerText}</span>`
+                            document.querySelectorAll('.nav-link').forEach(item => {
+                                item.classList.remove('active');
+                            })
+                        })
+                    })
+
+                    document.querySelectorAll('.tab-show-link').forEach(link => {
+                        link.addEventListener('click', function(){
+                            if(!this.classList.contains('text-primary')){
+                                this.parentElement.querySelectorAll('.tab-show-link').forEach(item => {
+                                    item.classList.toggle('text-primary');
+                                })
+                                document.querySelectorAll(`[${this.parentElement.getAttribute('data-target')}]`).forEach(item => {
+                                    item.classList.toggle('d-none');
+                                })
+                            }
+                        })
+                    })
+
+                    window.addEventListener('scroll', function(){
+                        document.querySelectorAll('.nav-link').forEach(item => {
+                            if(item.classList.contains('active')){
+                                if(item.innerText != document.querySelector('[current-active-page]').innerText){
+                                    document.querySelector('[current-active-page]').innerHTML = `<span>${item.innerText}</span>`
+                                }
+                            }
+                        })                        
+                        if(document.body.scrollTop > 0 || document.documentElement.scrollTop > 0){
+                            document.querySelector('[current-active-page]').setAttribute('slide-to-show', true);                            
+                            document.querySelector('[navbar]').classList.add('box-shadow', 'snow');
+                            document.querySelector('[navbar]').classList.remove('bg-transparent');
+                        } else {
+                            document.querySelector('[current-active-page]').setAttribute('slide-to-show', false);   
+                            document.querySelector('[navbar]').classList.add('bg-transparent');
+                            document.querySelector('[navbar]').classList.remove('box-shadow', 'snow');
+                        }
+                    })
+
+                    document.querySelector('[current-active-page]').addEventListener('click', function(){
+                        document.body.scrollTop = 0;
+                        document.documentElement.scrollTop = 0;
+                    })
+
+                    document.querySelectorAll('[search-input]').forEach(item => {
+                    // !! PROBLEM !! => IF THERE'S AN UPDATE ON ITS CONTENTS, WHAT SHOULD THIS FUNCTION DO? 
+                        item.addEventListener('keyup', function(e){
+                            let value = this.value;
+                            let parentElMatch = false;
+                            let parentEl = this.closest('[search-input-identifier]');
+
+                            if(value.length == 0){
+                                // IF CONDITION VALUE LENGTH EQUAL TO 0 START FROM HERE
+                                parentEl.querySelectorAll('table').forEach(table => {// PREVENT FOR HAVING MORE THAN ONE TABLE IN PARENT
+                                    if(!table.classList.contains('d-none')){
+                                        table.querySelectorAll('tbody tr').forEach(tr => {
+                                            tr.classList.remove('d-none');//PREVENTING FROM LINE BREAK DISAPPEARANCE 
+                                            tr.querySelectorAll('td').forEach(td => {
+                                                let childConditionMeet = false;// IF TRUE(ALLOW HIGHLIGHT INDEXOF OCCURENCE IN THIS ELEMENT INNERTEXT) WHEN TD CHILD LENGTH IS EQUAL 0 OR TD CHILD LENGTH IS GREATER THAN 0 AND ONLY CONTAIN SPAN AND BR ELEMENTS
+                                                if(td.children.length == 0){
+                                                    childConditionMeet = true;
+                                                } else if(td.children.length > 0){
+                                                    if(td.querySelectorAll('span').length + td.querySelectorAll('br').length == td.children.length){
+                                                        childConditionMeet = true;
+                                                    }
+                                                }                    
+
+                                                if(childConditionMeet){
+                                                    let text = td.innerText;// GET THE ORIGINAL TEXT OF TD
+                                                    td.innerHTML = text.replace(/\n\r?/g, '<br/>');//TD INNERHTML TO THE ORIGINAL TEXT
+                                                }
+
+                                            })
+                                        })
+                                    }
+                                })
+                                // IF CONDITION VALUE LENGTH EQUAL TO 0 END FROM HERE
+                            } else {
+                                // IF CONDITION VALUE LENGTH GREATER THAN 0 START FROM HERE
+                                parentEl.querySelectorAll('table').forEach(table => {// PREVENT FOR HAVING MORE THAN ONE TABLE IN PARENT
+                                    if(!table.classList.contains('d-none')){                                
+                                        table.querySelectorAll('tbody tr').forEach(tr => {
+                                            tr.classList.remove('d-none');// PREVENTING FROM LINE BREAK DISAPPEARANCE 
+                                            let trConditionMeet = false;// IF TRUE(SHOW TR) WHEN INDEXOF OCCURRENCE IS MORE THAN 0                                     
+                                            tr.querySelectorAll('td').forEach(td => {
+                                                let childConditionMeet = false;// IF TRUE(ALLOW HIGHLIGHT INDEXOF OCCURENCE IN THIS ELEMENT INNERTEXT) WHEN TD CHILD LENGTH IS EQUAL 0 OR TD CHILD LENGTH IS GREATER THAN 0 AND ONLY CONTAIN SPAN AND BR ELEMENTS
+                                                if(td.children.length == 0){
+                                                    childConditionMeet = true;
+                                                } else if(td.children.length > 0){
+                                                    if(td.querySelectorAll('span').length + td.querySelectorAll('br').length == td.children.length){
+                                                        childConditionMeet = true;
+                                                    }
+                                                }
+
+                                                if(childConditionMeet){
+                                                    let indices = [];                                     
+                                                    let text = td.innerText;                                            
+                                                    let index = text.toLowerCase().indexOf(value.toLowerCase());                   
+                                                    while(index != -1){// WHILE LOOP START FROM HERE
+                                                        indices.push(index);
+                                                        index = text.toLowerCase().indexOf(value.toLowerCase(), index + 1);
+                                                    }// WHILE LOOP END FROM HERE
+
+                                                    if(indices.length > 0){
+                                                        trConditionMeet = true;
+                                                    }
+
+                                                    let result = '';
+                                                    let x = 0;      
+                                                    while(x<indices.length){//WHILE LOOP START FROM HERE
+                                                        if(indices.length > 1){// IF INDEXOF OCCURRENCE is MORE THAN 1
+                                                            if(x == 0){// IF THIS IS THE FIRST LOOP OF INDEXOF OCCURRENCE                                                    
+                                                                if(indices[x] == 0){// IF INDEXOF OCCURRENCE START FROM 0
+                                                                    result += `<span class="highlight">${text.substring(indices[x], indices[x] + value.length)}</span>`;
+                                                                } else {// IF INDEXOF OCCURRENCE NOT START FROM 0
+                                                                    result += `${text.substring(0, indices[x])}<span class="highlight">${text.substring(indices[x], indices[x] + value.length)}</span>`;
+                                                                }
+                                                            } else if(x == indices.length - 1){// IF THIS IS THE LAST LOOP OF INDEXOF OCCURRENCE
+                                                                if(indices[x] - 1 == indices[x - 1]){// IF THE PREVIOUS INDEXOF OCCURRENCE IS EQUAL TO CURRENT INDEXOF OCCURRENCE LESS 1
+                                                                    result = result.slice(0, result.length - 7);// GET THE PREVIOUS RESULT WITHOUT SPAN END TAG(SPAN END TAG HAS 7 CHARACTERS LENGTH)
+                                                                    result += `${text.substring(indices[x], indices[x] + value.length)}</span>${text.substring(indices[x] + value.length, text.length)}`;
+                                                                } else if(indices[x] - 1 != indices[x - 1]){// IF THE PREVIOUS INDEXOF OCCURRENCE IS NOT EQUAL TO CURRENT INDEXOF OCCURRENCE LESS 1
+                                                                    result += `${text.substring(indices[x - 1] + value.length, indices[x])}<span class="highlight">${text.substring(indices[x], indices[x] + value.length)}</span>${text.substring(indices[x] + value.length, text.length)}`
+                                                                }                                                    
+                                                            } else {// IF THIS NOT THE FIRST OR LAST LOOP OF INDEXOF OCCURRENCE
+                                                                if(indices[x] - 1 == indices[x - 1]){// IF THE PREVIOUS INDEXOF OCCURRENCE IS EQUAL TO CURRENT INDEXOF OCCURRENCE LESS 1
+                                                                    result = result.slice(0, result.length - 7);// GET THE PREVIOUS RESULT WITHOUT SPAN END TAG(SPAN END TAG HAS 7 CHARACTERS LENGTH)
+                                                                    result += `${text.substring(indices[x], indices[x] + value.length)}</span>`;
+                                                                } else if(indices[x] - 1 != indices[x - 1]){// IF THE PREVIOUS INDEXOF OCCURRENCE IS NOT EQUAL TO CURRENT INDEXOF OCCURRENCE LESS 1
+                                                                    result += `${text.substring(indices[x - 1] + value.length, indices[x])}<span class="highlight">${text.substring(indices[x], indices[x] + value.length)}</span>`
+                                                                }
+                                                            }
+                                                        } else if(indices.length == 1){// IF INDEXOF OCCURRENCE is EQUAL TO 1
+                                                            if(indices[x] == 0){// IF INDEXOF OCCURRENCE START FROM 0
+                                                                result += `<span class="highlight">${text.substring(indices[x], indices[x] + value.length)}</span>${text.substring(indices[x] + value.length, text.length)}`;
+                                                            } else if(indices[x] != 0){// IF INDEXOF OCCURRENCE NOT START FROM 0
+                                                                result += `${text.substring(0, indices[x])}<span class="highlight">${text.substring(indices[x], indices[x] + value.length)}</span>${text.substring(indices[x] + value.length, text.length)}`;                                                      
+                                                            }                                                    
+                                                        }
+                                                        x++;                                                
+                                                    }//WHILE LOOP END FROM HERE
+                                                    if(result.length == 0){// PREVENT TD FROM INNERHTML A NULL VALUE
+                                                        result = text;
+                                                    }
+                                                    td.innerHTML = result.replace(/\n\r?/g, '<br/>');                                                                                                                              
+                                                }
+                                            })
+                                            if(trConditionMeet){
+                                                tr.classList.remove('d-none');
+                                            } else {                                                
+                                                tr.classList.add('d-none');
+                                            }
+                                        })
+                                    }
+                                })
+                                // IF CONDITION VALUE LENGTH GREATER THAN 0 END FROM HERE
+                            }
+                        })
+                    })
+
+                }
+
 
                 if(idTokenResult.claims.moderator){
-                    
+                    const addUser = document.querySelector('#add-user');
+                    addUser.addEventListener('submit', function(e){
+                        e.preventDefault();
+                        let name = addUser['name'].value;
+                        let email = addUser['email'].value;
+                        let password = addUser['password'].value;
+                        let addAuthUser = functions.httpsCallable('addAuthUser');
+                        addAuthUser({displayName: name, email: email, password: password}).then((changes) => {
+                            if(changes.data.uid == null){
+                                alert(changes.data.message)
+                            } else {
+                                db.collection('users').doc(changes.data.uid).collection('obj').doc('property').set({
+                                    email : email
+                                }).then(() => {
+                                    db.collection('users').doc(changes.data.uid).set({
+                                        name : name
+                                    }).then(() => {
+                                        alert(changes.data.message)
+                                    })
+                                })
+                            }
+                            
+                        })
+                    })
+
                 } else if(idTokenResult.claims.adminKantor){
                     
                 } else if(idTokenResult.claims.member){
@@ -48,7 +340,7 @@ const setupUI = (user) => {
                                         window.location.reload();
                                     })                         
                                 } else {
-                                    alert('Request has already been sent before')
+                                    alert('Request have already been sent before')
                                 }    
                             } else {
                                 db.collection('users').doc(auth.currentUser.uid).set({
@@ -86,16 +378,16 @@ const setupUI = (user) => {
                 e.preventDefault();
                 auth.currentUser.reload();
                 if(auth.currentUser.emailVerified){
-                    alert("Your email has been verified! You'll be signed out of websites");
+                    alert("Your email have been verified! You'll be signed out of sites");
                     auth.signOut();
                 } else {
-                    alert("Your email hasn't been verified!");
+                    alert("Your email haven't been verified!");
                 }
             });
 
             document.querySelector('#resend-verification-email').addEventListener('click', function(){
                 auth.currentUser.sendEmailVerification().then(() => {
-                    alert('Verification email has been sent!')
+                    alert('Verification email have been sent!')
                 }).catch(err => {
                     alert(err.message);
                 });
@@ -120,12 +412,16 @@ const setupUI = (user) => {
     }
 };
 
-function renderPengguna(doc){
+function renderUserMod(doc){
     db.collection('users').doc(doc.id).collection('obj').doc('property').get().then(secDoc => {
         let name = doc.data().name;
         let token = doc.data().token;
         let email = secDoc.data().email;
         let tr = document.createElement('tr');
+        let option = document.createElement('option');
+        option.setAttribute('uid', doc.id);
+        tr.classList.add('border-bottom');
+        tr.setAttribute('data-id', doc.id);
         let inputAdmin, inputAdminLabel, inputMember, inputMemberLabel, inputNone, inputNoneLabel;
         inputAdmin = inputAdminLabel = inputMember = inputMemberLabel = inputNone = inputNoneLabel = '';
         switch(token){
@@ -142,29 +438,41 @@ function renderPengguna(doc){
             inputNoneLabel = ' text-primary font-weight-bold';
         }
         tr.innerHTML = `
-        <td class="text-center align-middle fs-1">${email}</td>
-        <td class="text-center align-middle fs-1">${name}</td>
+        <td class="text-center align-middle auth-user-data fs-1">${email}</td>
+        <td class="text-center align-middle auth-user-data fs-1">${name}</td>
         <td class="text-center align-middle fs-1">
             <div class="d-flex justify-content-center">       
                 <div class="d-flex align-items-center mr-2">
-                    <input type="radio" name="${doc.id}" class="mr-1 custom-claim-input${doc.id}" set-as-admin ${inputAdmin}>
-                    <div class="custom-claim-label${doc.id}${inputAdminLabel}" set-as-admin-lab>Admin</div>
+                    <input type="radio" name="${doc.id}" class="mr-1 custom-claim-input" set-as-admin ${inputAdmin}>
+                    <div class="custom-claim-label${inputAdminLabel}" set-as-admin-lab>Admin</div>
                 </div>
                 <div class="d-flex align-items-center mr-2">
-                    <input type="radio" name="${doc.id}" class="mr-1 custom-claim-input${doc.id}" set-as-member ${inputMember}>
-                    <div class="custom-claim-label${doc.id}${inputMemberLabel}" set-as-member-lab>Member</div>
+                    <input type="radio" name="${doc.id}" class="mr-1 custom-claim-input" set-as-member ${inputMember}>
+                    <div class="custom-claim-label${inputMemberLabel}" set-as-member-lab>Member</div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <input type="radio" name="${doc.id}" class="mr-1 custom-claim-input${doc.id}" set-as-none ${inputNone}>
-                    <div class="custom-claim-label${doc.id}${inputNoneLabel}" set-as-none-lab>None</div>
+                    <input type="radio" name="${doc.id}" class="mr-1 custom-claim-input" set-as-none ${inputNone}>
+                    <div class="custom-claim-label${inputNoneLabel}" set-as-none-lab>None</div>
                 </div>                
             </div>            
         </td>
-        <td class="text-center align-middle fs-1">${doc.id}</td>
+        <td class="text-center align-middle auth-user-data fs-1">${doc.id}</td>
+        <td class="text-center align-middle fs-1"><i class="btn btn-danger fa fa-user-times" auth-delete-user></i></td>
         `
-        document.querySelector('#custom-claim-request-list').appendChild(tr)
+        option.innerHTML = name;
 
-        document.querySelectorAll('.custom-claim-input' + doc.id).forEach(input => {
+        authUserList.appendChild(tr)
+
+        addTask['assign-task-to'].appendChild(option);
+        Array.from(addTask['assign-task-to'].querySelectorAll('option')).sort(function(a, b){
+            if(a.innerHTML < b.innerHTML) { return 1; }
+            if(a.innerHTML > b.innerHTML) { return -1; }
+            return 0;         
+        }).forEach(item => {
+            addTask['assign-task-to'].prepend(item);
+        })  
+
+        document.querySelectorAll('[data-id="' + doc.id + '"] .custom-claim-input').forEach(input => {
             input.addEventListener('change', function(){
                 if(this.checked){
                     if(this.hasAttribute('set-as-admin')){
@@ -208,11 +516,42 @@ function renderPengguna(doc){
             })
         })
 
+        document.querySelector('[data-id="' + doc.id + '"] [auth-delete-user]').addEventListener('click', function(){
+            let confirmAlert = confirm('Apa anda yakin ingin menghapus data user ini?')
+            if(confirmAlert){
+                let deleteUser = functions.httpsCallable('deleteUser');
+                deleteUser({ uid: doc.id }).then((changes) => {
+                    if(changes.data.userDeleted == true){
+                        db.collection('users').doc(doc.id).delete();
+                        db.collection('users').doc(doc.id).collection('obj').doc('property').delete();
+                        alert(changes.data.message)
+                    } else {
+                        alert(changes.data.message)
+                    }
+                })
+            }
+        })
+
 
     })
 }
 
-function renderUpdatePengguna(doc){
+function renderUserAdm(doc){
+    let name = doc.data().name;
+    let option = document.createElement('option');
+    option.setAttribute('uid', doc.id);
+    option.innerHTML = name;
+    addTask['assign-task-to'].appendChild(option);
+    Array.from(addTask['assign-task-to'].querySelectorAll('option')).sort(function(a, b){
+        if(a.innerHTML < b.innerHTML) { return 1; }
+        if(a.innerHTML > b.innerHTML) { return -1; }
+        return 0;         
+    }).forEach(item => {
+        addTask['assign-task-to'].prepend(item);
+    })  
+}
+
+function renderUpdateUser(doc){
     db.collection('users').doc(doc.id).collection('obj').doc('property').get().then(secDoc => {
         let addAdmin = functions.httpsCallable('addAdmin');
         let addMember = functions.httpsCallable('addMember');
@@ -227,12 +566,12 @@ function renderUpdatePengguna(doc){
             removeToken({email: email});
             token = 'none'
         }
-        document.querySelectorAll('.custom-claim-input' + doc.id).forEach(item => {
+        document.querySelectorAll('[data-id="' + doc.id + '"] .custom-claim-input').forEach(item => {
             if(item.hasAttribute(`set-as-${token}`)){
                 item.checked = true;
             }
         })
-        document.querySelectorAll('.custom-claim-label' + doc.id).forEach(item => {
+        document.querySelectorAll('[data-id="' + doc.id + '"] .custom-claim-label').forEach(item => {
             if(item.hasAttribute(`set-as-${token}-lab`)){
                 item.classList.add('text-primary', 'font-weight-bold');
             } else {
@@ -268,160 +607,144 @@ function renderPengaturanTugas(doc){
     })
 }
 
-function renderTugas(doc){
-    let releaseDate = doc.data().releaseDate;
-    let assigneeName = doc.data().assigneeName;
-    let assigneeUID = doc.data().assigneeUID;
-    let taskComplete = doc.data().taskComplete;
+function renderTask(doc){
+    let tr = document.createElement('tr');
+    let modal = document.createElement('div');    
+    let complete = doc.data().complete;
+    let assignedTo = doc.data().assignedTo;
+    let taskPriority = doc.data().taskPriority;
     let description = doc.data().description;
-    let dateDueExists = doc.data().dateDueExists;
-    let dateDueBasis = doc.data().dateDueBasis;
-    let dateDue = doc.data().dateDue;
-    let late = doc.data().late;
-    let completionDate = doc.data().completionDate;
-    let dateDueInput = 0;
-    let checked;
-    let setDueDate;
-    let notSetDueDate;
-    if(dateDueExists){
-        setDueDate = 'checked';
-        switch(dateDueBasis){
-
-        }
-        if(dateDueWeek){
-            dateDueWeek = 'selected';
-            dateDueInput = (dateDue - releaseDate)/(7 * 24 * 60 * 60 * 1000)
-        } else if(dateDueDay){
-            dateDueDay = 'selected';
-            dateDueInput = (dateDue - releaseDate)/(24 * 60 * 60 * 1000)
-        } else if(dateDueHour){
-            dateDueHour = 'selected';
-            dateDueInput = (dateDue - releaseDate)/(60 * 60 * 1000)
-        } else if(dateDueMinute){
-            dateDueMinute = 'selected';
-            dateDueInput = (dateDue - releaseDate)/(60 * 1000)
-        }       
-        let hourDue = String(new Date(dateDue).getHours()).padStart(2, '0');
-        let minuteDue = String(new Date(dateDue).getMinutes()).padStart(2, '0');
-        let dayDue = String(new Date(dateDue).getDate()).padStart(2, '0');
-        let monthDue = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        monthDue = monthDue[new Date(dateDue).getMonth()];
-        let yearDue = new Date(dateDue).getFullYear();        
-        dateDue = hourDue + ':' + minuteDue + ' / ' + dayDue + ' ' + monthDue + ' ' + yearDue;
-        switch(status){
-            case "PENDING":
-            status = "<div class='text-danger font-italic'>has not been completed yet</div>";
-            completionDate = '-';
-            break;
-            case "COMPLETE":
-            checked = 'checked';
-            let hourCompletion = String(new Date(completionDate).getHours()).padStart(2, '0');
-            let minuteCompletion = String(new Date(completionDate).getMinutes()).padStart(2, '0');
-            let dayCompletion = String(new Date(completionDate).getDate()).padStart(2, '0');
-            let monthCompletion = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            monthCompletion = monthCompletion[new Date(completionDate).getMonth()];
-            let yearCompletion = new Date(completionDate).getFullYear();        
-            completionDate = hourCompletion + ':' + minuteCompletion + ' / ' + dayCompletion + ' ' + monthCompletion + ' ' + yearCompletion;            
-            if(late){
-                status = "<div class='text-success font-italic'>Late completion and has been completed</div>";
-            } else {
-                status = "<div class='text-success font-italic'>has been completed</div>";
-            }            
-        }
+    let taskmaster = doc.data().taskmaster;
+    let dueWeek = doc.data().dueWeek;
+    let dueDay = doc.data().dueDay;
+    let dueHour = doc.data().dueHour;
+    let dueMinute = doc.data().dueMinute;
+    let availableSince = doc.data().availableSince;
+    let completionTime = doc.data().completionTime;
+    let dueTime = (availableSince + (dueWeek * 7 * 24 * 60 * 60 * 1000) + (dueDay * 24 * 60 * 60 * 1000) + (dueHour * 60 * 60 * 1000) + (dueMinute * 60 * 1000));
+    tr.setAttribute('available-time', availableSince);
+    tr.setAttribute('due-time', dueTime);   
+    tr.setAttribute('data-priority', taskPriority.toLowerCase());
+    let hourAS = String(new Date(availableSince).getHours()).padStart(2, '0');
+    let minuteAS = String(new Date(availableSince).getMinutes()).padStart(2, '0');
+    let dateAS = String(new Date(availableSince).getDate()).padStart(2, '0');
+    let monthAS = month[new Date(availableSince).getMonth()];
+    let yearAS = new Date(availableSince).getFullYear();
+    availableSince = dateAS + ' ' + monthAS + ' ' + yearAS + ' ' + hourAS + ':' + minuteAS;
+    let hourDT = String(new Date(dueTime).getHours()).padStart(2, '0');
+    let minuteDT = String(new Date(dueTime).getMinutes()).padStart(2, '0');
+    let dateDT = String(new Date(dueTime).getDate()).padStart(2, '0');
+    let monthDT = month[new Date(dueTime).getMonth()];
+    let yearDT = new Date(dueTime).getFullYear();
+    dueTime = dateDT + ' ' + monthDT + ' ' + yearDT + ' ' + hourDT + ':' + minuteDT;
+    let taskPriorityHigh;
+    let taskPriorityModerate;
+    let taskPriorityLow;
+    if(complete){
+        tr.setAttribute('task-complete', '');
+        tr.setAttribute('completion-time', completionTime);
+        complete = 'checked';
+        let hourCT = String(new Date(completionTime).getHours()).padStart(2, '0');
+        let minuteCT = String(new Date(completionTime).getMinutes()).padStart(2, '0');
+        let dateCT = String(new Date(completionTime).getDate()).padStart(2, '0');
+        let monthCT = month[new Date(completionTime).getMonth()];
+        let yearCT = new Date(completionTime).getFullYear();
+        completionTime = dateCT + ' ' + monthCT + ' ' + yearCT + ' ' + hourCT + ':' + minuteCT;
+        completionTime = `<td class="fs-1 align-middle text-center" task-completionTime>${completionTime}</td>`;        
     } else {
-        switch(status){
-            case "PENDING":
-            status = "<div class='text-danger font-italic'>has not been completed yet</div>";
-            completionDate = '-';
-            break;
-            case "COMPLETE":
-            status = "<div class='text-success font-italic'>has been completed</div>";
-            checked = 'checked';
-            let hourCompletion = String(new Date(completionDate).getHours()).padStart(2, '0');
-            let minuteCompletion = String(new Date(completionDate).getMinutes()).padStart(2, '0');
-            let dayCompletion = String(new Date(completionDate).getDate()).padStart(2, '0');
-            let monthCompletion = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            monthCompletion = monthCompletion[new Date(completionDate).getMonth()];
-            let yearCompletion = new Date(completionDate).getFullYear();        
-            completionDate = hourCompletion + ':' + minuteCompletion + ' / ' + dayCompletion + ' ' + monthCompletion + ' ' + yearCompletion;            
-        }
-        notSetDueDate = 'checked';
-        dateDue = 'none';
+        tr.setAttribute('task-incomplete', '')
+        complete = '';
+        completionTime = '';
+    }    
+    switch(taskPriority){
+        case "High":
+        taskPriorityHigh = 'selected';
+        break;
+        case "Moderate":
+        taskPriorityModerate = 'selected';
+        break;
+        case "Low":
+        taskPriorityLow = 'selected';
     }
-    let task = document.createElement('div');
-    let modalInfo = document.createElement('div');
-    let modalEdit = document.createElement('div');
-    task.setAttribute('data-id', doc.id);
-    let hourRelease = String(new Date(releaseDate).getHours()).padStart(2, '0');
-    let minuteRelease = String(new Date(releaseDate).getMinutes()).padStart(2, '0');
-    let dayRelease = String(new Date(releaseDate).getDate()).padStart(2, '0');
-    let monthRelease = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    monthRelease = monthRelease[new Date(releaseDate).getMonth()];
-    let yearRelease = new Date(releaseDate).getFullYear();
-    releaseDate = hourRelease + ':' + minuteRelease + ' / ' + dayRelease + ' ' + monthRelease + ' ' + yearRelease;
-    task.classList.add('my-2', 'position-relative', 'align-items-center', 'bg-light', 'tugas');
-    task.innerHTML = `
-    <input type="checkbox" class="checkbox-permission m-auto" id="checkbox-tugas${doc.id}" ${checked}>
-    <div class="py-3 deskripsi-tugas" id="deskripsi-tugas${doc.id}" data-toggle="modal" data-target="#modal-tugas${doc.id}">${description}</div>
+    tr.setAttribute('data-id', doc.id);
+    tr.classList.add('border-bottom');
+    tr.innerHTML = `
+    <td class="fs-1 align-middle text-center" task-availableSince>${availableSince}</td>
+    <td class="fs-1 align-middle text-center font-weight-bold" task-assignedTo>${assignedTo}</td>
+    <td class="fs-1 align-middle text-left" task-description>${description}</td>    
+    <td class="fs-1 align-middle text-center font-weight-bold priority-${taskPriority.toLowerCase()}" task-priority>${taskPriority}</td>
+    ${completionTime}
+    <td class="fs-1 align-middle text-center" task-dueTime>${dueTime}</td>
+    <td class="align-middle text-center"><input type="checkbox" class="m-1" task-status ${complete}></td>    
+    <td class="fs-1 align-middle text-center position-relative" task-action>
+        <i class="material-icons" task-action-button role="button">more_vert</i>
+        <div class="position-absolute rounded bg-white zi-1 border d-none top-0" dropdown>
+            <div class="btn p-1 fs-1" data-toggle="modal" data-target="#edit-task-modal${doc.id}" role="button">Edit tugas</div>
+            <div class="btn p-1 fs-1" delete-task role="button">Hapus tugas</div>
+        </div>
+    </td>
     `
-    modalInfo.innerHTML = `
-    <div class="modal fade" id="modal-tugas${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+
+    modal.innerHTML = `
+    <div class="modal fade" id="edit-task-modal${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form id="pengaturan-tugas">
-                    <div class="modal-header justify-content-center">
-                        <h5 class="modal-title">Information About Task</h5>
+                <form>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Tugas</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                    <div class="modal-body">
-                        <table class="table table-striped table-bordered mb-0 tabel-tugas">
-                            <thead>
-                                <tr>
-                                    <th scope="col" colspan="3" class="p-1 border-bottom-0 text-left font-weight-bold">Information About Task</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="p-1">Release Date</td>
-                                    <td class="p-1 text-center">:</td>
-                                    <td class="p-1">${releaseDate}</td>
-                                </tr>              
-                                <tr>
-                                    <td class="p-1">Completion Date</td>
-                                    <td class="p-1 text-center">:</td>
-                                    <td class="p-1" id="tanggal-penyelesaian-tugas${doc.id}">${completionDate}</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-1">Due Date</td>
-                                    <td class="p-1 text-center">:</td>
-                                    <td class="p-1 w-50" id="tanggal-berakhir-tugas${doc.id}">${dateDue}</td>
-                                </tr>                                
-                                <tr>
-                                    <td class="p-3" colspan="3"></td>
-                                </tr>
-                                <tr>
-                                    <td class="p-1">Status</td>
-                                    <td class="p-1 text-center">:</td>
-                                    <td class="p-1" id="status-tugas${doc.id}">${status}</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-1">Action</td>
-                                    <td class="p-1 text-center">:</td>
-                                    <td class="p-1">
-                                        <i class="material-icons bg-warning rounded p-1 task-action" data-toggle="modal" data-target="#modal-edit-tugas${doc.id}">edit</i>
-                                        <i class="material-icons bg-danger rounded p-1 task-action text-white" id="delete${doc.id}">delete_forever</i>
-                                    </td>
-                                </tr>                                
-                                <tr>
-                                    <td class="p-1" colspan="3">
-                                        <div class="font-weight-bold">Task Description :</div>
-                                        <div>${description}</div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <div class="modal-body">        
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea oninput="auto_grow(this)" name="task-description" class="form-control">${description.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Task Priority</label>
+                            <select class="form-control" name="task-priority">
+                                <option ${taskPriorityHigh}>High</option>
+                                <option ${taskPriorityModerate}>Moderate</option>
+                                <option ${taskPriorityLow}>Low</option>
+                            </select>
+                        </div>           
+                        <div class="form-group">
+                            <label>Task Due Time</label>        
+                            <div class="row">
+                                <div class="input-group mb-2 mr-2 pr-0 col-6">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">Week</div>
+                                    </div>
+                                    <input type="number" class="form-control" value="${dueWeek}" name="task-due-week">
+                                </div>
+                                <div class="input-group mb-2 pl-0 col">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text px-4">Day</div>
+                                    </div>
+                                    <input type="number" class="form-control" value="${dueDay}" name="task-due-day">
+                                </div>                                                                                  
+                            </div>
+                            <div class="row"> 
+                                <div class="input-group mb-2 mr-2 pr-0 col-6">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text pr-3">Hour</div>
+                                    </div>
+                                    <input type="number" class="form-control" value="${dueHour}" name="task-due-hour">
+                                </div>    
+                                <div class="input-group mb-2 pl-0 col">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">Minute</div>
+                                    </div>
+                                    <input type="number" class="form-control" value="${dueMinute}" name="task-due-minute">
+                                </div>                                                                                
+                            </div>
+                            <div task-due-time></div>
+                        </div>
+                    </div>                    
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
@@ -429,192 +752,479 @@ function renderTugas(doc){
     </div>
     `
 
-    modalEdit.innerHTML = `
-    <div class="modal fade" id="modal-edit-tugas${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    if(complete){
+        completedTaskList.append(tr);
+    } else {
+        pendingTaskList.prepend(tr);
+    }
+
+    document.body.appendChild(modal);
+
+    document.querySelector('[data-id="' + doc.id + '"] [task-action-button').addEventListener('click', function(e){
+        e.stopPropagation();
+        document.querySelectorAll('[dropdown]').forEach(item => {
+            if(item.parentElement.parentElement.getAttribute('data-id') != doc.id){
+                item.classList.add('d-none');
+            }
+        })
+        document.querySelector('[data-id="' + doc.id + '"] [dropdown]').classList.toggle('d-none');        
+        let elPosition = this.getBoundingClientRect();
+        let elParentPosition = this.parentElement.getBoundingClientRect();
+        document.querySelector('[data-id="' + doc.id + '"] [dropdown]').style.right = (elParentPosition.width - elPosition.width) + 'px';
+        document.querySelector('[data-id="' + doc.id + '"] [dropdown]').style.top = (elParentPosition.height - document.querySelector('[data-id="' + doc.id + '"] [dropdown]').getBoundingClientRect().height)/2 + 'px';
+    })
+
+    document.querySelector('[data-id="' + doc.id + '"] [delete-task]').addEventListener('click', function(e){
+        e.stopPropagation();
+        let confirmAlert = confirm(`Apa anda yakin ingin menghapus tugas ini?`)
+        if(confirmAlert){
+            db.collection('tasks').doc(doc.id).delete().then(() => {
+                alert(`Tugas telah dihapus!`);
+            })
+        }
+    })
+
+    document.querySelector(`#edit-task-modal${doc.id} form`).addEventListener('submit', function(e){
+        e.preventDefault();
+        db.collection('tasks').doc(doc.id).update({
+            description : this['task-description'].value.replace(/\n\r?/g, '<br/>'),
+            taskPriority : this['task-priority'].value,
+            dueWeek : this['task-due-week'].value,
+            dueDay : this['task-due-day'].value,
+            dueHour : this['task-due-hour'].value,
+            dueMinute : this['task-due-minute'].value
+        }).then(() => {
+            alert(`${assignedTo}'s task have been updated!`);
+        })
+    })
+
+    document.querySelector('[data-id="' + doc.id + '"] [task-status]').addEventListener('change', function(){
+        if(this.checked){
+            db.collection('tasks').doc(doc.id).update({
+                complete : true,
+                completionTime : new Date().getTime()
+            }).then(() => {
+                alert('Task have been completed');
+            })
+        } else {
+            db.collection('tasks').doc(doc.id).update({
+                complete : false,
+                completionTime : firebase.firestore.FieldValue.delete()
+            }).then(() => {
+                alert(`${assignedTo}'s task completion has been canceled`);
+            })
+        }
+    })
+
+}   
+
+function renderUpdateTask(doc){
+    let complete = doc.data().complete;
+    let assignedTo = doc.data().assignedTo;
+    let taskPriority = doc.data().taskPriority;
+    let description = doc.data().description;
+    let taskmaster = doc.data().taskmaster;
+    let dueWeek = doc.data().dueWeek;
+    let dueDay = doc.data().dueDay;
+    let dueHour = doc.data().dueHour;
+    let dueMinute = doc.data().dueMinute;
+    let availableSince = doc.data().availableSince;
+    let completionTime = doc.data().completionTime;
+    let dueTime = (availableSince + (dueWeek * 7 * 24 * 60 * 60 * 1000) + (dueDay * 24 * 60 * 60 * 1000) + (dueHour * 60 * 60 * 1000) + (dueMinute * 60 * 1000));
+    document.querySelector('[data-id="' + doc.id + '"]').setAttribute('available-time', availableSince);
+    document.querySelector('[data-id="' + doc.id + '"]').setAttribute('due-time', dueTime);
+    document.querySelector('[data-id="' + doc.id + '"]').setAttribute('data-priority', taskPriority.toLowerCase());
+    let hourAS = String(new Date(availableSince).getHours()).padStart(2, '0');
+    let minuteAS = String(new Date(availableSince).getMinutes()).padStart(2, '0');
+    let dateAS = String(new Date(availableSince).getDate()).padStart(2, '0');
+    let monthAS = month[new Date(availableSince).getMonth()];
+    let yearAS = new Date(availableSince).getFullYear();
+    availableSince = dateAS + ' ' + monthAS + ' ' + yearAS + ' ' + hourAS + ':' + minuteAS;
+    let hourDT = String(new Date(dueTime).getHours()).padStart(2, '0');
+    let minuteDT = String(new Date(dueTime).getMinutes()).padStart(2, '0');
+    let dateDT = String(new Date(dueTime).getDate()).padStart(2, '0');
+    let monthDT = month[new Date(dueTime).getMonth()];
+    let yearDT = new Date(dueTime).getFullYear();
+    dueTime = dateDT + ' ' + monthDT + ' ' + yearDT + ' ' + hourDT + ':' + minuteDT;
+    if(completionTime == null){
+        completionTime = '-'
+        if(document.querySelector('[data-id="' + doc.id + '"] [task-completionTime]')){
+            document.querySelector('[data-id="' + doc.id + '"]').removeAttribute('completion-time');
+            document.querySelector('[data-id="' + doc.id + '"] [task-completionTime]').remove();
+        }
+    } else {
+        if(!document.querySelector('[data-id="' + doc.id + '"] [task-completionTime]')){
+            document.querySelector('[data-id="' + doc.id + '"]').setAttribute('completion-time', completionTime);
+            let hourCT = String(new Date(completionTime).getHours()).padStart(2, '0');
+            let minuteCT = String(new Date(completionTime).getMinutes()).padStart(2, '0');
+            let dateCT = String(new Date(completionTime).getDate()).padStart(2, '0');
+            let monthCT = month[new Date(completionTime).getMonth()];
+            let yearCT = new Date(completionTime).getFullYear();
+            completionTime = dateCT + ' ' + monthCT + ' ' + yearCT + ' ' + hourCT + ':' + minuteCT;            
+            let td = document.createElement('td');
+            td.classList.add('fs-1', 'align-middle', 'text-center');
+            td.setAttribute('task-completionTime', '');
+            td.innerHTML = completionTime;       
+            document.querySelector('[data-id="' + doc.id + '"]').insertBefore(td, document.querySelector('[data-id="' + doc.id + '"] [task-priority]').nextSibling); 
+        }
+    }
+    if(complete){
+        if(document.querySelector('[data-id="' + doc.id + '"]').hasAttribute('task-incomplete')){
+            document.querySelector('[data-id="' + doc.id + '"]').setAttribute('task-complete', '');
+            document.querySelector('[data-id="' + doc.id + '"]').removeAttribute('task-incomplete');
+            completedTaskList.append(document.querySelector('[data-id="' + doc.id + '"]'));
+        }
+    } else {
+        if(document.querySelector('[data-id="' + doc.id + '"]').hasAttribute('task-complete')){
+            document.querySelector('[data-id="' + doc.id + '"]').setAttribute('task-incomplete', '');
+            document.querySelector('[data-id="' + doc.id + '"]').removeAttribute('task-complete');
+            pendingTaskList.prepend(document.querySelector('[data-id="' + doc.id + '"]'));
+        }
+    }      
+    document.querySelector('[data-id="' + doc.id + '"] [task-status]').checked = complete;
+    document.querySelector('[data-id="' + doc.id + '"] [task-assignedTo]').innerHTML = assignedTo;
+    ['priority-low', 'priority-moderate', 'priority-high'].forEach(item => {
+        if(document.querySelector('[data-id="' + doc.id + '"] [task-priority]').classList.contains(item)){
+            document.querySelector('[data-id="' + doc.id + '"] [task-priority]').classList.remove(item);
+        }
+    })
+    document.querySelector('[data-id="' + doc.id + '"] [task-priority]').classList.add(`priority-${taskPriority.toLowerCase()}`);
+    document.querySelector('[data-id="' + doc.id + '"] [task-priority]').innerHTML = taskPriority;
+    document.querySelector('[data-id="' + doc.id + '"] [task-description]').innerHTML = description;
+    document.querySelector('[data-id="' + doc.id + '"] [task-availableSince]').innerHTML = availableSince;
+    document.querySelector('[data-id="' + doc.id + '"] [task-dueTime]').innerHTML = dueTime;
+    document.querySelector(`#edit-task-modal${doc.id} form`)['task-description'].value = description.replace(/<br\s*[\/]?>/gi, "\n");
+    document.querySelector(`#edit-task-modal${doc.id} form`)['task-priority'].querySelectorAll('option').forEach((item, index) => {
+        if(item.innerHTML == taskPriority){
+            document.querySelector(`#edit-task-modal${doc.id} form`)['task-priority'].selectedIndex = index;
+        }
+    })
+    document.querySelector(`#edit-task-modal${doc.id} form`)['task-due-week'].value = dueWeek;
+    document.querySelector(`#edit-task-modal${doc.id} form`)['task-due-day'].value = dueDay;
+    document.querySelector(`#edit-task-modal${doc.id} form`)['task-due-hour'].value = dueHour;
+    document.querySelector(`#edit-task-modal${doc.id} form`)['task-due-minute'].value = dueMinute;
+}
+
+let goodsTransportIndicatorList = document.querySelector('[goods-transport-indicator-list]');
+let goodsTransportList = document.querySelector('[goods-transport-list]');
+function renderGoodsTransport(doc){  
+    let indicator = document.createElement('div');
+    let content = document.createElement('div');
+    let history = document.createElement('div');
+    let edit = document.createElement('div');
+    let goodsTransportDate = doc.data().goodsTransportDate;
+    let dateValue = goodsTransportDate;
+    indicator.setAttribute('goods-transport-date', goodsTransportDate)    
+    let description = doc.data().description;
+    let dateGT = String(new Date(goodsTransportDate).getDate()).padStart(2, '0');
+    let monthGT = month[new Date(goodsTransportDate).getMonth()];
+    let yearGT = new Date(goodsTransportDate).getFullYear();
+    goodsTransportDate = dateGT + ' ' + monthGT + ' ' + yearGT;
+    indicator.setAttribute('data-id', doc.id);
+    indicator.setAttribute('goods-transport-indicator', '');
+    indicator.classList.add('py-1', 'pr-2', 'pl-4', 'fs-2', 'text-secondary', 'font-weight-500')
+    indicator.setAttribute('role', 'button');
+    indicator.innerHTML = goodsTransportDate;
+    content.setAttribute('data-id', doc.id);
+    content.setAttribute('goods-transport-content', '');
+    content.classList.add('fs-2', 'mb-4', 'position-relative', 'h-100', 'd-none')
+    content.innerHTML = `
+    <div class="p-2 w-100 bg-light font-weight-bold border-bottom d-flex align-items-center">
+        <i class="fa fa-archive mx-1 text-secondary"></i>
+        <span class="text-secondary">Perpindahan ${goodsTransportDate}</span>
+        <i class="material-icons ml-auto fs-5 mr-1 text-dark" copy-goods-transport-description role="button">content_copy</i>
+    </div>
+    <div class="p-2" goods-transport-description>${description}</div>
+    `;
+    history.innerHTML = `
+    <div class="modal fade" id="update-history-modal${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form id="tambah-tugas">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-history"></i>
+                        <span>Update history</span>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">        
+
+                </div>                    
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    `
+    edit.innerHTML = `
+    <div class="modal fade" id="edit-goods-transport-modal${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form>
                     <div class="modal-header">
-                        <h5 class="modal-title">Create a task <i class="fa fa-gear" id="tombol-pengaturan-tugas" data-toggle="modal" data-target="#modal-pengaturan-tugas"></i></h5>
+                        <h5 class="modal-title">Edit Perpindahan</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">          
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Tanggal</label>
+                            <input type="date" name="goods-transport-date" class="form-control" value="${dateValue}" required>
+                        </div>                            
                         <div class="form-group">
                             <label>Description</label>
-                            <textarea class="form-control" oninput="auto_grow(this)" id="deskripsi-tugas${doc.id}" required>${description.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
+                            <textarea oninput="auto_grow(this)" name="goods-transport-description" class="form-control" required>${description.replace(/<br\s*[\/]?>/gi, "&#13;&#10;")}</textarea>
                         </div>
-                        <div class="form-group bg-light border p-2">
-                            <label class="font-weight-bold">Additional Settings</label>
-                            <div class="d-flex mb-2">
-                                <input class="m-1" type="radio" name="task" id="set-due-date-task${doc.id}" ${setDueDate}>
-                                <div>
-                                    <div set-due-date-hd class="font-weight-bold">Set due date on a task</div>
-                                    <div set-due-date-bd class="d-none">
-                                        <div>Due date completion will be based on :</div>
-                                        <div class="d-flex">
-                                            <select class="form-control w-50 mr-2" id="due-date-basis${doc.id}">
-                                                <option disabled hidden>-</option>
-                                                <option ${dateDueWeek}>Week</option>
-                                                <option ${dateDueDay}>Day</option>
-                                                <option ${dateDueHour}>Hour</option>
-                                                <option ${dateDueMinute}>Minute</option>
-                                            </select>
-                                            <input type="number" class="form-control w-50" value="${dateDueInput}" id="due-date-input${doc.id}" min="0" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>            
-                            <div class="d-flex mb-2">
-                                <input class="m-1" type="radio" name="task" id="not-set-due-date-task${doc.id}" ${notSetDueDate}>
-                                <div>
-                                    <div not-set-due-date-hd class="font-weight-bold text-primary">Don't set due date on a task</div>
-                                    <div not-set-due-date-bd class="d-block">The Assignee would be freely to complete the related task anytime</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </div>                    
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
         </div>
-    </div>    
+    </div>
     `
+    goodsTransportIndicatorList.appendChild(indicator);
+    goodsTransportList.appendChild(content);
+    document.body.appendChild(history);
+    document.body.appendChild(edit);
 
-    document.querySelector('#list-tugas').appendChild(task);
-    document.body.appendChild(modalInfo);
-    document.body.appendChild(modalEdit);
-
-    document.querySelector('#checkbox-tugas' + doc.id).addEventListener('change', function(){
-        if(this.checked){
-            db.collection('tugass').doc(doc.id).get().then(item => {
-                let late;
-                if(item.data().dateDueExists){
-                    if(new Date().getTime() > item.data().dateDue){
-                        late = true;
-                    } else {
-                        late = false;
-                    }
-                } else {
-                    late = firebase.firestore.FieldValue.delete();
-                }
-                db.collection('tugass').doc(doc.id).update({
-                    status : 'COMPLETE',
-                    dateCompletion : new Date().getTime(),
-                    late : late
-                }).catch(err => {
-                    return firebaseError(err);
-                })                
-            })            
-        } else {
-            db.collection('tugass').doc(doc.id).update({
-                status : 'PENDING',
-                dateCompletion : firebase.firestore.FieldValue.delete(),
-                late : firebase.firestore.FieldValue.delete()
-            }).catch(err => {
-                return firebaseError(err);
-            })            
-        }
+    document.querySelector('[data-id="' + doc.id + '"][goods-transport-indicator]').addEventListener('click', function(e){
+        e.stopPropagation();
+        document.querySelectorAll('[goods-transport-indicator]').forEach(indicator => {
+            if(indicator.getAttribute('data-id') == doc.id){
+                indicator.classList.add('lightgrey');
+            } else {
+                indicator.classList.remove('lightgrey');
+            }
+        })        
+        document.querySelectorAll('[goods-transport-content]').forEach(content => {
+            if(content.getAttribute('data-id') == doc.id){
+                content.classList.remove('d-none');
+            } else {
+                content.classList.add('d-none');
+            }      
+        })
     })
 
-    document.querySelector('#delete' + doc.id).addEventListener('click', function(){
-        let alert = confirm('Are you sure want to delete this task?');
-        if(alert){
-            db.collection('tugass').doc(doc.id).delete().then(() => {
-                $('#modal-tugas' + doc.id).modal('hide');
-                document.querySelector('#modal-tugas' + doc.id).parentElement.remove();
-            })
-        }
+    document.querySelector('[data-id="' + doc.id + '"] [copy-goods-transport-description]').addEventListener('click', function(e){
+        e.stopPropagation();
+        let range = document.getSelection().getRangeAt(0);
+        range.selectNode(document.querySelector('[data-id="' + doc.id + '"] [goods-transport-description]'));
+        window.getSelection().addRange(range);
+        document.execCommand("copy");        
     })
+
+    document.querySelector(`#edit-goods-transport-modal${doc.id} form`).addEventListener('submit', function(e){
+        e.preventDefault();
+        db.collection('tasks').doc(doc.id).update({
+            description : this['task-description'].value.replace(/\n\r?/g, '<br/>'),
+            taskPriority : this['task-priority'].value,
+            dueWeek : this['task-due-week'].value,
+            dueDay : this['task-due-day'].value,
+            dueHour : this['task-due-hour'].value,
+            dueMinute : this['task-due-minute'].value
+        }).then(() => {
+            alert(`${assignedTo}'s task have been updated!`);
+        })
+    })
+
+    Array.from(document.querySelectorAll('[goods-transport-indicator]')).sort(function(a, b){
+        if(a.getAttribute('goods-transport-date') < b.getAttribute('goods-transport-date')) { return 1; }
+        if(a.getAttribute('goods-transport-date') > b.getAttribute('goods-transport-date')) { return -1; }
+        return 0;         
+    }).forEach(item => {
+        goodsTransportIndicatorList.prepend(item);
+    })  
+
+/*    document.querySelector('[data-id="' + doc.id + '"] [delete-goods-transport]').addEventListener('click', function(){
+        let confirmAlert = confirm('Apa anda yakin ingin menghapus data perpindahan ini');
+        if(confirmAlert){
+            db.collection('goodsTransport').doc(doc.id).delete().then(() => {
+                alert('Data perpindahan telah dihapus!')
+            })   
+        }   
+    })*/        
+
 }
 
-function renderUpdateTugas(doc){
-    let status = doc.data().status;
-    let dateDueExists = doc.data().dateDueExists;
-    let dateDue = doc.data().dateDue;
-    let dateCompletion = doc.data().dateCompletion;
-    let late = doc.data().late;
-    if(dateDueExists){
-        let hourDue = String(new Date(dateDue).getHours()).padStart(2, '0');
-        let minuteDue = String(new Date(dateDue).getMinutes()).padStart(2, '0');
-        let dayDue = String(new Date(dateDue).getDate()).padStart(2, '0');
-        let monthDue = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        monthDue = monthDue[new Date(dateDue).getMonth()];
-        let yearDue = new Date(dateDue).getFullYear();        
-        dateDue = hourDue + ':' + minuteDue + ' / ' + dayDue + ' ' + monthDue + ' ' + yearDue;
-        switch(status){
-            case "PENDING":
-            status = "<div class='text-danger font-italic'>has not been completed yet</div>";
-            dateCompletion = '-';
-            break;
-            case "COMPLETE":
-            document.querySelector('#checkbox-tugas' + doc.id).checked = true;
-            let hourCompletion = String(new Date(dateCompletion).getHours()).padStart(2, '0');
-            let minuteCompletion = String(new Date(dateCompletion).getMinutes()).padStart(2, '0');
-            let dayCompletion = String(new Date(dateCompletion).getDate()).padStart(2, '0');
-            let monthCompletion = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            monthCompletion = monthCompletion[new Date(dateCompletion).getMonth()];
-            let yearCompletion = new Date(dateDue).getFullYear();        
-            dateCompletion = hourCompletion + ':' + minuteCompletion + ' / ' + dayCompletion + ' ' + monthCompletion + ' ' + yearCompletion;            
-            if(late){
-                status = "<div class='text-success font-italic'>Late completion and has been completed</div>";
-            } else {
-                status = "<div class='text-success font-italic'>has been completed</div>";
-            }            
-        }
-    } else {
-        switch(status){
-            case "PENDING":
-            status = "<div class='text-danger font-italic'>has not been completed yet</div>";
-            dateCompletion = '-';
-            break;
-            case "COMPLETE":
-            status = "<div class='text-success font-italic'>has been completed</div>";
-            checked = 'checked';
-            let hourCompletion = String(new Date(dateCompletion).getHours()).padStart(2, '0');
-            let minuteCompletion = String(new Date(dateCompletion).getMinutes()).padStart(2, '0');
-            let dayCompletion = String(new Date(dateCompletion).getDate()).padStart(2, '0');
-            let monthCompletion = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            monthCompletion = monthCompletion[new Date(dateCompletion).getMonth()];
-            let yearCompletion = new Date(dateCompletion).getFullYear();        
-            dateCompletion = hourCompletion + ':' + minuteCompletion + ' / ' + dayCompletion + ' ' + monthCompletion + ' ' + yearCompletion;            
-        }
-        dateDue = 'none';        
-    }
-    document.querySelector('#tanggal-penyelesaian-tugas' + doc.id).innerHTML = dateCompletion;
-    document.querySelector('#status-tugas' + doc.id).innerHTML = status;
-    document.querySelector('#tanggal-berakhir-tugas' + doc.id).innerHTML = dateDue;
+function renderUpdateGoodsTransport(doc){
+
+}
+
+function renderMenuCategory(doc){
+    let div = document.createElement('div');
+    let editMenuCategory = document.createElement('div');
+    let addMenu = document.createElement('div');
+    let dateCreate = doc.data().dateCreate;
+    let name = doc.data().name;
+    div.setAttribute('data-id', doc.id);
+    div.setAttribute('data-date-create', dateCreate);
+    div.setAttribute('menu-category', '')
+    div.classList.add('ml-2', 'p-2');
+    div.innerHTML = `
+    <div class="font-weight-500 text-nowrap d-flex">
+        <span>${name}</span>
+        <i class="material-icons fs-4 p-1" role="button" data-toggle="modal" data-target="#edit-menu-category-modal${doc.id}">insert_link</i>
+    </div>
+    <ul menu-list class="list-unstyled mb-1"></ul>
+    <div role="button" class="d-flex fs-2 text-primary text-nowrap font-weight-500" data-toggle="modal" data-target="#add-menu-modal${doc.id}">
+      <span>Tambah menu</span>
+    </div>
+    `;
+
+    addMenu.innerHTML = `
+    <div class="modal fade" id="add-menu-modal${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tambah menu</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nama menu</label>
+                            <input type="text" name="menu-name" class="form-control" required>
+                        </div>                            
+                        <div class="form-group">
+                            <label>Link tujuan</label>
+                            <input type="text" name="menu-link" class="form-control" required>
+                        </div>
+                    </div>                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    `
+
+    editMenuCategory.innerHTML = `
+    <div class="modal fade" id="edit-menu-category-modal${doc.id}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Informasi Kategori Menu</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nama menu</label>
+                            <input type="text" name="menu-name" class="form-control" value="${name}" required>
+                        </div>                            
+                    </div>                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    `
+
+    menuCategoryList.appendChild(div);
+    document.body.appendChild(addMenu);
+    document.body.appendChild(editMenuCategory);
+
+    Array.from(document.querySelectorAll('[menu-category]')).sort(function(a, b){
+        if(a.getAttribute('data-date-create') < b.getAttribute('data-date-create')) { return 1; }
+        if(a.getAttribute('data-date-create') > b.getAttribute('data-date-create')) { return -1; }
+        return 0;         
+    }).forEach(item => {
+        menuCategoryList.prepend(item);
+    })
+
+    document.querySelector(`#add-menu-modal${doc.id} form`).addEventListener('submit', function(e){
+        e.preventDefault();
+        db.collection('menuCategory').doc(doc.id).collection('menu').add({
+            dateCreate : new Date().getTime(),
+            name : this['menu-name'].value,
+            link : this['menu-link'].value
+        }).then(() => {
+            alert('Menu berhasil ditambahkan!')
+            this.reset();
+        })
+    })
+
+}
+
+function renderUpdateMenuCategory(doc){
+
+}
+
+function renderMenu(doc, menuCategoryDoc){
+    let li = document.createElement('li');
+    let dateCreate = doc.data().dateCreate;
+    let name = doc.data().name;
+    let link = doc.data().link;
+    li.setAttribute('data-id', doc.id);
+    li.setAttribute('data-date-create', dateCreate);
+    li.classList.add('text-decoration-none');
+    li.innerHTML = `
+    <a href="${link}" target="_blank" class="text-decoration-none text-secondary fs-2 font-weight-500 text-nowrap" add-menu>${name}</a>
+    `;
+    document.querySelector(`[data-id=${menuCategoryDoc.id}] [menu-list]`).appendChild(li);
+
+    Array.from(document.querySelectorAll(`[data-id=${menuCategoryDoc.id}] [menu-list] li`)).sort(function(a, b){
+        if(a.getAttribute('data-date-create') < b.getAttribute('data-date-create')) { return 1; }
+        if(a.getAttribute('data-date-create') > b.getAttribute('data-date-create')) { return -1; }
+        return 0;         
+    }).forEach(item => {
+        document.querySelector(`[data-id=${menuCategoryDoc.id}] [menu-list]`).prepend(item);
+    })    
+}
+
+function renderUpdateMenu(doc, menuCategoryDoc){
+
+}
+
+function renderOtherMenu(doc){
+    let li = document.createElement('li');
+    let dateCreate = doc.data().dateCreate;
+    let name = doc.data().name;
+    let link = doc.data().link;
+    li.setAttribute('data-id', doc.id);
+    li.setAttribute('data-date-create', dateCreate);
+    li.classList.add('text-decoration-none');
+    li.innerHTML = `
+    <a href="${link}" target="_blank" class="text-decoration-none text-secondary fs-2 font-weight-500 text-nowrap" add-menu>${name}</a>
+    `;
+    document.querySelector(`[other-menu-list]`).appendChild(li);
+
+    Array.from(document.querySelectorAll(`[other-menu-list] li`)).sort(function(a, b){
+        if(a.getAttribute('data-date-create') < b.getAttribute('data-date-create')) { return 1; }
+        if(a.getAttribute('data-date-create') > b.getAttribute('data-date-create')) { return -1; }
+        return 0;         
+    }).forEach(item => {
+        document.querySelector(`[other-menu-list]`).prepend(item);
+    })
+
+}
+
+function renderUpdateOtherMenu(doc){
+
 }
 
 function auto_grow(element){
     element.style.height = (element.scrollHeight)+"px";
 }
 
-function renderAuthToken(doc){
-    let token = doc.data().token;
-    auth.onAuthStateChanged(user => {
-        user.getIdTokenResult().then(idTokenResultBef => {
-            console.log(idTokenResultBef.claims);
-            if((token == null && idTokenResultBef.claims.moderator == false && idTokenResultBef.claims.adminKantor == false && idTokenResultBef.claims.member == false) ||
-               (token == 'admin' && idTokenResultBef.claims.adminKantor == true) ||
-               (token == 'member' && idTokenResultBef.claims.member == true)){
-
-            } else {
-                user.getIdToken(true).then(() => {
-                    user.getIdTokenResult().then(idTokenResultAft => {
-                        console.log(idTokenResultAft.claims)
-                        if((token == null && idTokenResultAft.claims.moderator == false && idTokenResultAft.claims.adminKantor == false && idTokenResultAft.claims.member == false) ||
-                            (token == 'admin' && idTokenResultAft.claims.adminKantor == true) ||
-                            (token == 'member' && idTokenResultAft.claims.member == true)){
-                            window.location.reload();
-                        }                        
-                    })
-                })
-            }
-        })
-    })
+function set_input_date_now(element, date){
+    let input = document.querySelector(`${element.getAttribute('data-target')} form input[type=date]`)
+    input.value = new Date().getFullYear().toString() + '-' + (new Date().getMonth() + 1).toString().padStart(2, 0) + '-' + new Date().getDate().toString().padStart(2, 0);
 }

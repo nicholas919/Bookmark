@@ -1,3 +1,7 @@
+html {
+  scroll-behavior: smooth;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -5,8 +9,79 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type=radio]{
+::-webkit-scrollbar {
+  width: 5px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: #888;  
+  border-radius:50px;  
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+input[type=radio], input[type=checkbox], [current-active-page][slide-to-show=true]{
   cursor: pointer;
+}
+
+[current-active-page]{
+  transition: opacity 0.4s linear;
+  cursor: default;
+}
+
+[current-active-page][slide-to-show=true]{
+  opacity: 1;
+}
+
+[current-active-page][slide-to-show=false]{
+  opacity: 0;
+}
+
+[navbar]{
+  height: 48px;
+  display: grid;
+  grid-template-columns: min-content 1fr min-content;
+}
+
+[menu-identifier-list]{
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+}
+
+[menu-category-list]{
+  display: grid;
+  grid-template-columns: repeat(4, min-content);
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  height: 300px;
+}
+
+[menu-identifier-list]{
+  max-height: 450px;
+}
+
+[other-menu-list]{
+  height: 220px;
+}
+
+[user-profile]{
+  font-size: 70px;
+}
+
+[user], [user-profile]{
+  color:#0F52BA;
+}
+
+[user]{
+  font-size: xx-large;
+}
+
+.tab-show-link.text-primary{
+  border-bottom: 2px solid;
 }
 
 /* Firefox */
@@ -14,12 +89,81 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+[dropdown]{
+  display: grid !important;
+  min-width: 100px;
+}
+
+[dropdown] > a:hover{
+  background-color: #f5f5f5;
+  border-radius: 0px;
+}
+
+[task-complete]{
+  background-color: #d4f7d0;
+}
+
+.priority-high{
+  color: crimson;
+}
+
+.priority-moderate{
+  color: orange;
+}
+
+[create-goods-transport]:hover{
+  background-color: aliceblue;
+}
+
+.priority-low{
+  color: green;
+}
+
+.search-input{
+  padding-left:37px !important;
+}
+
+.search-input:focus{
+  background-color: white !important;
+}
+
+[task-status]{
+  height: 16px;
+  width: 16px;
+}
+
 .w-100-250px{
+  margin-left: 250px;
   width: calc(100% - 250px);
 }
 
-.due-date-bod{
+.due-date-bod, .auth-form{
   display: none;
+}
+
+[auth-user-identifier-action], [task-identifier-status], [task-identifier-priority], [task-identifier-action], [wa-format-order-identifier-goods-quantity]{
+  min-width: 80px;
+}
+
+[task-identifier-assignedTo], [task-identifier-availableSince], [task-identifier-completionTime], [task-identifier-dueTime], [wa-format-order-identifier-goods-price]{
+  min-width: 150px;
+}
+
+[auth-user-identifier], [wa-format-order-identifier-goods-name], [wa-format-order-identifier-subtotal], [other-menu-identifier-list]{
+  min-width: 200px;
+}
+
+[task-identifier-description]{
+  min-width: 300px;
+}
+
+[goods-transport-identifier-list] [list-panel]:nth-child(1){
+  max-width: 250px;
+  min-width: 200px;
+}
+
+[goods-transport-indicator-list]{
+  height: calc(100% - 77px);
 }
 
 /*positioning goes here*/
@@ -45,9 +189,19 @@ input[type=number] {
 }
 
 .auth-form{
-  width: 350px;
   box-shadow: 0px 0px 8px dimgrey;
-  display: none;
+}
+
+.auth-form/*, [dropdown-menu]*/{
+  width: 350px;
+}
+
+.box-shadow{
+  box-shadow: 0px 0px 2px dimgrey;  
+}
+
+[goods-transport-identifier-list], [goods-transport-identifier-list] [list-panel]{
+  min-height: 420px;
 }
 
 .auth-form-label{
@@ -67,16 +221,73 @@ input[type=number] {
   background-color: #4793d1 !important;
 }
 
+.lightgrey{
+  background-color: lightgrey !important;
+}
+
+.highlight{
+  background-color: yellow;
+}
+
 /*end of background-color list*/
 
 
 /*font-size goes here*/
 .fs-1{
-  font-size: 0.75rem;
+  font-size: 0.75rem !important;
 }
 
 .fs-2{
-  font-size: 1.5rem;
+  font-size: 0.875rem !important;
+}
+
+.fs-3{
+  font-size: 1rem !important;
+}
+
+.fs-4{
+  font-size: 1.125rem !important;
+}
+
+.fs-5{
+  font-size: 1.25rem !important;
+}
+
+.fs-6{
+  font-size: 1.375rem !important;
 }
 
 /*font-size end here*/
+
+/*z-index goes here*/
+
+.zi-1{
+  z-index: 1 !important;
+}
+
+/*z-index end here*/
+
+/*font-weight goes here */
+.font-weight-500{
+  font-weight: 500;
+}
+
+/*font-weight end here*/
+
+@media only screen and (max-width: 1000px) {
+  [menu-category-list]{
+    grid-template-columns: repeat(3, min-content);
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  [menu-category-list]{
+    grid-template-columns: repeat(2, min-content);
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  [menu-category-list]{
+    grid-template-columns: repeat(1, min-content);
+  }
+}

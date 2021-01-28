@@ -16,11 +16,6 @@
 </head>
 <body>
 
-<div class="poltergeist position-fixed navbar w-100-250px top-0 end-0">
-</div>
-
-<div data-toggle="modal" data-target="#add-task-modal">Tambah Tugas</div>
-<div id="list-tugas"></div>
 <form class="auth-form need-validation bg-white rounded my-5 mx-auto" name="login-form">
   <div class="pt-4 px-3 pb-1 position-relative">
     <h4 class="font-weight-bold text-center auth-form-label">Login</h4>
@@ -65,133 +60,463 @@
   </div>
 </form> 
 
-<div class="modal fade" id="add-task-modal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form id="add-task">
-        <div class="modal-header">
-          <h5 class="modal-title">Create a task <i class="fa fa-gear" data-toggle="modal" data-target="#task-setting-modal"></i></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label>Assignee</label>
-            <select class="form-control" id="task-assignee">
-              <option disabled hidden selected>Choose the user</option>
-              <option uid="dAKaJscLzJM6Gw4cXKcw1jgHOe73">dummy</option>
-            </select>
-          </div>          
-          <div class="form-group">
-            <label>Description</label>
-            <textarea class="form-control" oninput="auto_grow(this)" id="task-description" required></textarea>
-          </div>
-          <div class="form-group bg-light border p-2">
-            <label class="font-weight-bold">Additional Settings</label>
-            <div class="d-flex mb-2">
-              <input class="m-1 due-date-control" type="radio" name="task" set-due-date>
-              <div>
-                <div class="font-weight-bold due-date-lab">Set due date on a task</div>
-                <div class="due-date-bod">
-                  <div>Due date completion will be based on :</div>
-                  <div class="d-flex">
-                    <select class="form-control w-50 mr-2" id="due-date-basis">
-                      <option disabled hidden selected>-</option>
-                      <option>Week</option>
-                      <option>Day</option>
-                      <option>Hour</option>
-                      <option>Minute</option>
-                    </select>
-                    <input type="number" class="form-control w-50" id="due-date-input" min="0">
-                  </div>
-                </div>
-              </div>
-            </div>            
-            <div class="d-flex mb-2">
-              <input class="m-1 due-date-control" type="radio" name="task" not-set-due-date checked>
-              <div>
-                <div class="font-weight-bold text-primary due-date-lab">Don't set due date on a task</div>
-                <div class="d-block due-date-bod">The Assignee would be freely to complete the related task anytime</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
-        </div>
-      </form>
+<div class="w-100 top-0 px-3 zi-1 bg-transparent position-fixed" navbar>
+  <div class="d-flex">
+    <div role="button" menu-toggle class="d-flex align-items-center p-1 m-1 text-secondary">
+      <i class="material-icons" menu-icon-app>apps</i>
+      <span class="fs-2 font-weight-500">Menu</span>
+      <i class='fas fa-caret-down ml-1 pt-1' menu-icon-toggle></i>
+    </div>
+    <div class="d-flex align-items-center fs-2 position-relative mx-1 px-1 font-weight-500">
+      <div slide-to-show="false" current-active-page class="text-nowrap">
+        <span>Beranda</span>
+      </div>
+    </div>
+  </div>
+  <div></div>
+  <div>
+    <div class="p-1 rounded-circle bg-light">
+      <i class='fas fa-user-circle p-1' role="button" user></i>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="task-setting-modal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <form id="task-setting">
-        <div class="modal-header">
-          <h5 class="modal-title">Tasks Settings</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+<div class="position-fixed rounded px-4 py-3 border bg-white shadow-sm m-2 d-none zi-1" menu-identifier-list dropdown>
+  <h5 class="m-0">Menu</h5>
+  <div class="d-flex my-2">    
+    <div class="pr-2 overflow-auto" menu-category-list></div>
+    <div class="bg-light shadow-sm border px-3 py-2" other-menu-identifier-list>
+      <div class="font-weight-500">Menu Lainnya</div>
+      <ul other-menu-list class="my-1 list-unstyled overflow-auto pr-2"></ul>
+      <div role="button" class="d-flex fs-2 text-primary mb-2 text-nowrap font-weight-500" data-toggle="modal" data-target="#add-other-menu-modal">
+        <span>Tambah menu</span>
+      </div>
+    </div>    
+  </div>
+  <div class="d-flex">
+    <div role="button" class="d-flex fs-2 py-2 px-3 mr-1 justify-content-center border btn-light font-weight-500" add-menu-category data-toggle="modal" data-target="#add-menu-category-modal">
+      <span>Tambah Kategori</span>
+    </div>
+    <i class="material-icons p-1 fs-6 d-flex justify-content-center align-items-center" role="button">help</i>  
+  </div>
+</div>
+
+<div class="position-fixed rounded border bg-white shadow-sm m-2 d-none zi-1 text-center end-0" user-information dropdown>
+  <div class="mx-4 my-3">
+    <i class='fas fa-user-circle' user-profile></i>
+    <div class='font-weight-500' user-name></div>
+    <div user-email></div>
+  </div>
+  <div class="border-top border-bottom mb-3">
+    <div class="border btn-light rounded p-1 m-2" role="button" sign-out>Keluar</div>
+  </div>
+</div>
+
+<div class="tab-content mt-5">
+  <div class="tab-pane fade show active" id="home-tab" role="tabpanel">
+
+  </div>
+  <div class="tab-pane fade" id="task-list-tab" role="tabpanel">
+
+    <div class="mx-4 mb-3 mt-5 pt-3">
+      <h3>List Tugas</h3>  
+      <div class="border-bottom d-flex" data-target="task-identifier-panel">
+        <div class="p-2 font-weight-500 tab-show-link text-primary" role="button">Tugas Pending</div>
+        <div class="p-2 font-weight-500 tab-show-link" role="button">Tugas Selesai</div>
+      </div>
+    </div>
+
+    <div class="mx-5 my-4 rounded box-shadow" task-identifier-list search-input-identifier>
+      <div class="w-100 pt-2 pb-1 d-flex">
+        <div class="col">
+          <input class="w-100 form-control lightgrey fs-2 py-1 search-input" type="text" task-identifier-search-input search-input placeholder="Telusuri berdasarkan ditugaskan kepada, deskripsi, prioritas, dsb">
+          <i class='fas fa-search position-absolute top-0 h-100 p-2 ml-1'></i>
         </div>
-        <div class="modal-body">
-          <table class="table table-striped table-bordered mb-0">
+        <div class="mr-3">
+          <a class="btn btn-primary text-white font-weight-bold fs-2 text-decoration-none" data-toggle="modal" data-target="#add-task-modal" add-auth-user>Tambah Tugas</a>
+        </div>
+      </div>  
+      <div class="table-responsive">  
+        <table class="table table-borderless px-2 mb-0 rounded" task-identifier-panel>
+          <thead>
+            <tr>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-availableSince>
+                <span>Tersedia sejak</span>
+                <a class="fa fa-caret-down ml-1" data-sort="available-time" sort-tasks="task-incomplete" sort-by-number role="button"></a>
+              </th>              
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-assignedTo>Ditugaskan kepada</th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-description>Deskripsi</th>              
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-priority>
+                <span>Prioritas</span>
+                <a class="fa fa-caret-down ml-1" sort-tasks-by-priority sort-tasks="task-incomplete" sort-by-string role="button"></a>
+              </th>              
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-dueTime>
+                <span>Jatuh Tempo</span>
+                <a class="fa fa-caret-down ml-1" data-sort="due-time" sort-tasks="task-incomplete" sort-by-number role="button"></a>
+              </th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-status>Status</th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-action>Action</th>
+            </tr>
+          </thead>
+          <tbody pending-task-list class="bg-white"></tbody>
+        </table>
+        <table class="table table-borderless px-2 mb-0 rounded d-none" task-identifier-panel>         
+          <thead>
+            <tr>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-availableSince>
+                <span>Tersedia sejak</span>
+                <a class="fa fa-caret-down ml-1" data-sort="available-time" sort-tasks="task-complete" sort-by-number role="button"></a>
+              </th>              
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-assignedTo>Ditugaskan kepada</th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-description>Deskripsi</th>              
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-priority>
+                <span>Prioritas</span>
+                <a class="fa fa-caret-down ml-1" sort-tasks-by-priority sort-tasks="task-complete" sort-by-string role="button"></a>
+              </th>              
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-completionTime>
+                <span>Waktu penyelesaian</span>
+                <a class="fa fa-caret-down ml-1" data-sort="completion-time" sort-tasks="task-complete" sort-by-number role="button"></a>
+              </th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-dueTime>
+                <span>Jatuh Tempo</span>
+                <a class="fa fa-caret-down ml-1" data-sort="due-time" sort-tasks="task-complete" sort-by-number role="button"></a>
+              </th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-status>Status</th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" task-identifier-action>Action</th>
+            </tr>
+          </thead>
+          <tbody completed-task-list class="bg-white"></tbody>
+        </table>          
+      </div>
+      <div class="w-100 py-3 d-flex"></div>
+    </div>
+
+  </div>  
+  <div class="tab-pane fade" id="auth-user-list-tab" role="tabpanel">
+
+    <div class="mx-5 my-4 rounded box-shadow" auth-user-identifier-list search-input-identifier>
+      <div class="w-100 pt-2 pb-1 d-flex">
+        <div class="col">
+          <input class="w-100 form-control lightgrey fs-2 py-1 search-input" type="text" auth-user-identifier-search-input search-input placeholder="Search by user email address, name, or UID">
+          <i class='fas fa-search position-absolute top-0 h-100 p-2 ml-1'></i>
+        </div>
+        <div class="mr-3">
+          <a class="btn btn-primary text-white font-weight-bold fs-2 text-decoration-none" data-toggle="modal" data-target="#add-user-modal" add-auth-user>Tambah User</a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-borderless px-2 mb-0 rounded">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" auth-user-identifier-email>Email</th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" auth-user-identifier-name>Nama</th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" auth-user-identifier-claims>Custom Claims</th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" auth-user-identifier-id>User UID</th>
+              <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" auth-user-identifier-action></th>
+            </tr>
+          </thead>
+          <tbody auth-user-list class="bg-white"></tbody>
+        </table>
+      </div>
+      <div class="w-100 py-3 d-flex"></div>
+    </div>
+
+  </div>
+  <div class="tab-pane fade" id="goods-transport-tab" role="tabpanel">
+
+    <div class="mx-4 mb-3 mt-5 pt-3">
+      <h3>Perpindahan</h3>
+      <div class="border-bottom d-flex" data-target="">
+        <div class="p-2 font-weight-500 tab-show-link text-primary" role="button">Data Perpindahan</div>
+        <div class="p-2 font-weight-500 tab-show-link" role="button">Riwayat Perubahan</div>
+      </div>
+    </div>
+
+    <div class="mx-5 my-4 rounded box-shadow" goods-transport-identifier-list>
+      <div class="bg-white w-100 h-100 d-flex">
+        <div class="w-100 border-right" list-panel>
+          <div class="border-bottom p-2 fs-2 text-secondary font-weight-bold bg-light">
+            <i class='fas fa-boxes mr-1 ml-2'></i>
+            <span>Perpindahan</span>
+          </div>
+          <div class="text-primary font-weight-bold py-1 pr-1 pl-2 fs-2 d-flex text-decoration-none text-center" data-toggle="modal" onclick="set_input_date_now(this, new Date())" data-target="#add-goods-transport-modal" role="button" create-goods-transport>
+            <i class="material-icons p-1">add</i>
+            <span class="pt-1 pb-2">Tambah perpindahan</span>
+          </div>
+          <div class="overflow-auto" goods-transport-indicator-list></div>
+        </div>
+        <div class="w-100 position-relative" list-panel goods-transport-list></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="tab-pane fade" id="wa-format-order" role="tabpanel">
+
+    <div class="mx-4 mb-3 mt-5 pt-3">
+      <h3>Format Order WA</h3>  
+      <div class="border-bottom d-flex" data-target="wa-format-order-identifier-panel">
+        <div class="p-2 font-weight-500 tab-show-link text-primary" role="button">Form Order</div>
+        <div class="p-2 font-weight-500 tab-show-link" role="button">Pengaturan</div>
+      </div>
+    </div>
+
+    <div class="mx-5 my-4 rounded box-shadow" wa-format-order-identifier-list>
+      <div wa-format-order-identifier-panel>
+        <div class="table-responsive">
+          <table class="table table-borderless px-2 mb-0 rounded">
             <thead>
-              <tr>
-                <th scope="col">Permission</th>
-                <th scope="col" class="text-center">Admin</th>
-                <th scope="col" class="text-center">Member</th>
-                <th scope="col" class="text-center">Assignee</th>
+              <tr>     
+                <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" wa-format-order-identifier-goods-name>Nama Barang</th>
+                <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" wa-format-order-identifier-goods-price>Harga</th>              
+                <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" wa-format-order-identifier-goods-quantity>Kuantitas</th>
+                <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom" wa-format-order-identifier-subtotal>Subtotal</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>Complete Tasks</td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-complete-task-adm" checked></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-complete-task-mem"></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-complete-task-ase" checked></td>
-              </tr>              
-              <tr>
-                <td>Edit Tasks</td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-edit-task-adm" checked></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-edit-task-mem"></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-edit-task-ase"></td>
+            <tbody wa-format-order-list class="bg-white">
+              <tr class="border-bottom">
+                <td class="p-1"><input class="form-control" type="text" name="goods-name"></td>
+                <td class="p-1"><input class="form-control" type="number" min="0" name="goods-price"></td>
+                <td class="p-1"><input class="form-control" type="number" min="0" name="goods-quantity"></td>
+                <td class="p-1"></td>
               </tr>
-              <tr>
-                <td>Delete Tasks</td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-delete-task-adm" checked></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-delete-task-mem"></td>
-                <td class="text-center"><input type="checkbox" class="checkbox-permission" id="allow-delete-task-ase"></td>
+              <tr class="border-bottom">
+                <td class="p-1"><input class="form-control" type="text" name="goods-name"></td>
+                <td class="p-1"><input class="form-control" type="number" min="0" name="goods-price"></td>
+                <td class="p-1"><input class="form-control" type="number" min="0" name="goods-quantity"></td>
+                <td class="p-1"></td>
               </tr>
+              <tr class="border-bottom">
+                <td class="p-1"><input class="form-control" type="text" name="goods-name"></td>
+                <td class="p-1"><input class="form-control" type="number" min="0" name="goods-price"></td>
+                <td class="p-1"><input class="form-control" type="number" min="0" name="goods-quantity"></td>
+                <td class="p-1"></td>
+              </tr>                           
             </tbody>
           </table>
         </div>
+        <div class="w-100 py-1 px-2 d-flex">
+          <div class="fs-2 py-1 px-2 btn-primary rounded" role="button" clone-node-from="wa-format-order-list" add-row>Tambah Baris</div>
+        </div>        
+      </div>
+      <div class="d-none" wa-format-order-identifier-panel>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="add-user-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form id="add-user">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fa fa-user-plus"></i> Add User</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nama</label>
+            <input type="text" class="form-control" name="name" placeholder="Enter name" required>
+          </div>          
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" class="form-control" name="email" placeholder="Enter email" required>
+            <div class="text-secondary fs-1">Pastikan email yang tercantum itu aktif</div>
+          </div>          
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+            <div class="text-secondary fs-1">Password setidaknya memiliki lebih dari sama dengan 6 karakter</div>
+          </div>                      
+        </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="reset" class="btn btn-info">Reset</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 
-<table class="table table-borderless px-2">
-  <thead>
-    <tr>
-      <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom">Email</th>
-      <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom">Name</th>
-      <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom">Custom Claims</th>
-      <th scope="col" class="text-center align-middle fs-1 p-2 border-bottom">User UID</th>
-    </tr>
-  </thead>
-  <tbody id="custom-claim-request-list">
+<div class="modal fade" id="add-task-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form id="add-task">
+        <div class="modal-header">
+          <h5 class="modal-title">Tugas</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Ditugaskan kepada</label>
+            <select class="form-control" name="assign-task-to">
+              <option disabled selected hidden>-</option>         
+            </select>
+          </div>                 
+          <div class="form-group">
+            <label>Deskripsi</label>
+            <textarea oninput="auto_grow(this)" name="task-description" class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Prioritas tugas</label>
+            <select class="form-control" name="task-priority">
+              <option disabled selected hidden>-</option>
+              <option>High</option>
+              <option>Moderate</option>
+              <option>Low</option>
+            </select>
+          </div>           
+          <div class="form-group">
+            <label>Jatuh tempo tugas</label>        
+            <div class="row">
+              <div class="input-group mb-2 mr-2 pr-0 col-6">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">Week</div>
+                </div>
+                <input type="number" class="form-control" name="task-due-week">
+              </div>
+              <div class="input-group mb-2 pl-0 col">
+                <div class="input-group-prepend">
+                  <div class="input-group-text px-4">Day</div>
+                </div>
+                <input type="number" class="form-control" name="task-due-day">
+              </div>                                                                                  
+            </div>
+            <div class="row"> 
+              <div class="input-group mb-2 mr-2 pr-0 col-6">
+                <div class="input-group-prepend">
+                  <div class="input-group-text pr-3">Hour</div>
+                </div>
+                <input type="number" class="form-control" name="task-due-hour">
+              </div>    
+              <div class="input-group mb-2 pl-0 col">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">Minute</div>
+                </div>
+                <input type="number" class="form-control" name="task-due-minute">
+              </div>                                                                                
+            </div>
+          </div>
+        </div>                    
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
-  </tbody>
-</table>
+<div class="modal fade" id="add-goods-transport-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form id="add-goods-transport">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fa fa-user-plus"></i> Perpindahan</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Tanggal</label>
+            <input type="date" name="goods-transport-date" class="form-control" required>
+          </div>            
+          <div class="form-group">
+            <label>Deskripsi</label>
+            <textarea oninput="auto_grow(this)" name="goods-transport-description" class="form-control" required></textarea>
+          </div>                     
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
+<div class="modal fade" id="add-menu-category-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form id="add-menu-category">
+        <div class="modal-header">
+          <h5 class="modal-title">Tambah Kategori Menu</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nama kategori menu</label>
+            <input type="text" class="form-control" name="menu-category-name" required>
+          </div>                             
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="add-other-menu-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form id="add-other-menu">
+        <div class="modal-header">
+          <h5 class="modal-title">Tambah Menu Lainnya</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nama menu</label>
+            <input type="text" class="form-control" name="menu-name" required>
+          </div>
+          <div class="form-group">
+            <label>Link tujuan</label>
+            <input type="text" class="form-control" name="menu-link" required>
+          </div>                                       
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="m-4 rounded d-inline-block" role="tablist">
+    <a class="nav-link active fs-2" data-toggle="tab" href="#home-tab" role="tab" aria-selected="true">
+      <i class='fas fa-home mr-1'></i>
+      <span>Beranda</span>
+    </a>
+    <a class="nav-link fs-2" data-toggle="tab" href="#task-list-tab" role="tab" aria-selected="true">
+      <i class='fas fa-tasks mr-1'></i>
+      <span>List Tugas</span>
+    </a>
+    <a class="nav-link fs-2" data-toggle="tab" href="#auth-user-list-tab" role="tab" aria-selected="true">
+      <i class='fas fa-users mr-1'></i>
+      <span>List user</span>
+    </a>
+    <a class="nav-link fs-2" data-toggle="tab" href="#wa-format-order" role="tab" aria-selected="true">
+      <i class='fas fa-boxes mr-1'></i>
+      <span>Format Order WA</span>
+    </a>    
+    <a class="nav-link fs-2" data-toggle="tab" href="#goods-transport-tab" role="tab" aria-selected="true">
+      <i class='fas fa-boxes mr-1'></i>
+      <span>Perpindahan</span>
+    </a>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
